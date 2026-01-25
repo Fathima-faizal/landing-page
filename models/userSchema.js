@@ -23,6 +23,7 @@ const userSchema=new Schema({
     googleId:{
         type:String,
         unique:true,
+        sparse: true,
     },
     password:{
         type:String,
@@ -54,13 +55,16 @@ const userSchema=new Schema({
     },
     referralCode:{
         type:String,
+        //required:true//
     },
     redeemed:{
         type:Boolean,
+        //default:false//
     },
     redeemedUser:[{
         type:Schema.Types.ObjectId,
         ref:'user'
+       //required:true//
     }],
     searchHistory:[{
       category:{

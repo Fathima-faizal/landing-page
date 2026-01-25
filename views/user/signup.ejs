@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionVogue - Sign Up</title>
+    <link rel="stylesheet" href="/css/signup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">shop</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact us</a></li>
+            </ul>
+            <div class="logo">VisionVogue</div>
+            <div class="nav-icons">
+                <i class="fa-regular fa-heart"></i>
+                <i class="fa-solid fa-cart-shopping"></i>
+                <i class="fa-regular fa-user"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main class="signup-container">
+        <section class="form-box">
+            <h1>Sign Up</h1>
+            <form id="signform" class="signform" method="post" action="/signup" id="signUpForm" autocomplete="off">
+                <div class="form-group">
+  <input type="text" id="name" name="name" placeholder="name" required >
+  <div id="error1" class="error-message"></div>
+  </div>
+  <div class="form-group">
+  <input type="email"id='email' name="email" placeholder="Email" required autocomplete="off">
+  <div id="error2" class="error-message"></div>
+  </div>
+  <div calss="form-group">
+  <input type="password" id="password" name="password" placeholder="Password" required autocomplete="new-password">
+  <div id="error3" class="error-message"></div>
+  </div>
+  <button type="submit" class="btn-primary">Sign up</button>
+</form>
+
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>About Us:</h4>
+                <a href="#">Our Story</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms</a>
+                <a href="#">FAQ</a>
+            </div>
+            <div class="footer-column">
+                <h4>Support:</h4>
+                <a href="#">Shipping Policy</a>
+                <a href="#">Returns</a>
+                <a href="#">Order Tracking</a>
+                <a href="#">Help</a>
+            </div>
+            <div class="footer-column">
+                <h4>My Account:</h4>
+                <a href="#">Profile</a>
+                <a href="#">My Orders</a>
+                <a href="#">Wishlist</a>
+                <a href="#">Refer & Earn</a>
+            </div>
+            <div class="footer-column">
+                <h4>Contact:</h4>
+                <p>Email: visionvogue@gmail.com</p>
+                <p>Phone: 8923457190</p>
+            </div>
+        </div>
+        <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
+    </footer>
+
+    <script >
+        const nameid=document.getElementById('name');
+        const emailid=document.getElementById('email');
+        const passwordid=document.getElementById('password')
+        const error1=document.getElementById('error1');
+        const error2=document.getElementById('error2');
+        const error3=document.getElementById('error3')
+        const signform=document.getElementById('signform')
+        
+
+        function nameValidateChacking(e){
+          const nameval=nameid.value;
+          const namepattern=/^[A-Za-z\s]+$/;
+          if(nameval.trim()===''){
+            error1.style.display='block';
+            error1.innerHTML='Please enter a valid name'
+          }else if(!namepattern.test(nameval)){
+            error1.style.display='block',
+            error1.innerHTML=' Name can only contain alphabets and spaces'
+          }else{
+            error1.style.display='none';
+            error1.innerHTML=''
+          }
+        }
+        function emailValidateChacking(e){
+            const emailval=emailid.value;
+            const emailpattern=/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
+            if(!emailpattern.test(emailval)){
+               error2.style.display='block';
+               error2.innerHTML='Invalid format'
+            }else{
+                error2.style.display='none',
+                error2.innerHTML=''
+            }
+        }
+        
+        function passwordValidateChacking(e){
+            const passwordval=passwordid.value;
+            const alpha=/[a-zA-Z]/;
+            const digit=/\d/;
+            if(passwordval.length<8){
+                error3.style.display='block';
+                error3.innerHTML='should contain atleast 8 characters'
+            }else if(!alpha.test(passwordval)||!digit.test(passwordval)){
+                error3.style.display='block',
+                error3.innerHTML='should contain numbers and alphabets'
+            }else{
+                error3.style.display='none',
+                error3.innerHTML=''
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded',function(){
+            signform.addEventListener('submit',function(e){
+              
+                nameValidateChacking()
+                emailValidateChacking();
+                passwordValidateChacking();
+
+                if(
+                    !nameid||
+                    !emailid||
+                    !passwordid||
+                    !error1||
+                    !error2||
+                    !error3||
+                    !signform
+
+                 ){
+                    console.error('one or more element not found')
+                 }
+
+                 if(
+                    error1.innerHTML || 
+                    error2.innerHTML||
+                    error3.innerHTML
+                 ){
+                    e.preventDefault()
+                 }
+            })
+        })
+    
+    </script>
+</body>
+</html>
