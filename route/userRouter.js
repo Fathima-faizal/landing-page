@@ -7,5 +7,6 @@ router.get('/landing',userControllers. loadLandingpage)
 router.get('/login',userControllers.loginPage)
 router.get('/signup',userControllers.signupPage)
 router.post('/signup',userControllers.signup)
-
+router.post('/verify_otp',userControllers.verifyOtp)
+router.post('/resend_otp',userControllers.resendOtp)
 module.exports=router
