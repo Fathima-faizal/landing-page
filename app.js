@@ -5,6 +5,7 @@ const env=require('dotenv').config();
 const session=require('express-session');
 const db=require('./config/db');
 const connectDB = require('./config/db');
+const passport=require('./config/passport')
 const userRouter=require('./route/userRouter')
 connectDB()
 
@@ -23,6 +24,8 @@ app.use(session({
       }
 }))
 
+app.use(passport.initialize());
+app.use(passport.session())
 
 app.set('view engine','ejs')
 app.set('views',[path.join(__dirname,'views/user'),[path.join(__dirname,'views/admin')]]);

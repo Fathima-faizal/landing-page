@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionVogue - Home</title>
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="/home">Home</a></li>
+                <li><a href="#">shop</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact us</a></li>
+            </ul>
+            <div class="logo">VisionVogue</div>
+            <div class="nav-icons">
+                <i class="fa-regular fa-heart"></i>
+                <i class="fa-solid fa-cart-shopping"></i>
+                <i class="fa-regular fa-user" onclick="window.location.href='login.html'"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main class="home-content">
+        <section class="categories">
+            <h2>Categories</h2>
+            <div class="tag-container">
+                <span class="tag">Sunglasses</span>
+                <span class="tag">Prescription Glasses</span>
+                <span class="tag">Reading Glasses</span>
+                <span class="tag">Computer Glasses</span>
+                <span class="tag">Blue Light Glasses</span>
+                <span class="tag">sports Glasses</span>
+                <span class="tag">Kids Glasses</span>
+                 <span class="tag">Men's Glasses</span>
+                 <span class="tag">Women's Glasses</span>
+                <span class="tag">Designer Frames</span>
+                <span class="tag">Transparent Frame Glasses</span>
+                <span class="tag">Safety Glasses</span>
+                <span class="tag">Fashion Glasses</span>
+                <span class="tag">More...</span>
+            </div>
+        </section>
+
+        <section class="offers-grid">
+            <div class="offer-card special">
+                <div class="offer-text">
+                    <h3>Special offer</h3>
+                    <p>Flat 20% off on your first purchase. Limited time only.</p>
+                </div>
+                <img src="/image/offer image.png" alt="Special Offer">
+            </div>
+            <div class="offer-card limited">
+                <div class="offer-text">
+                    <h3>Limited Time Offer</h3>
+                    <p>Flat 20% off on your first purchase. Start your journey with us today.</p>
+                </div>
+                <img src="/image/offer image1.png" alt="Limited Offer">
+            </div>
+
+        </section>
+
+        <div class="carousel-dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+
+        <section class="product-grid">
+            <div class="product-item"><img src="/image/group1.png" alt="Product"></div>
+            <div class="product-item"><img src="/image/group2.png" alt="Product"></div>
+            <div class="product-item"><img src="/image/Group3.png" alt="Product"></div>
+            <div class="product-item"><img src="/image/Group4.png" alt="Product"></div>
+            <div class="product-item"><img src="/image/group5.png" alt="Product"></div>
+            <div class="product-item"><img src="/image/Group6.png" alt="Product"></div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>About Us:</h4>
+                <a href="#">Our Story</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms</a>
+                <a href="#">FAQ</a>
+            </div>
+            <div class="footer-column">
+                <h4>Support:</h4>
+                <a href="#">Shipping Policy</a>
+                <a href="#">Returns</a>
+                <a href="#">Order Tracking</a>
+                <a href="#">Help</a>
+            </div>
+            <div class="footer-column">
+                <h4>My Account:</h4>
+                <a href="#">Profile</a>
+                <a href="#">My Orders</a>
+                <a href="#">Wishlist</a>
+                <a href="#">Refer & Earn</a>
+            </div>
+            <div class="footer-column">
+                <h4>Contact:</h4>
+                <p>Email: visionvogue@gmail.com</p>
+                <p>Phone: 8923457190</p>
+            </div>
+        </div>
+        <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
+    </footer>
+   <script>
+    function moveSlide(index) {
+    const wrapper = document.getElementById('offerWrapper');
+    const dots = document.querySelectorAll('.dot');
+    
+    // Move the wrapper by 100% (which is 2 cards)
+    wrapper.style.transform = `translateX(-${index * 50}%)`;
+    
+    // Update active dot
+    dots.forEach(dot => dot.classList.remove('active'));
+    dots[index].classList.add('active');
+}
+</script>
+</body>
+</html>

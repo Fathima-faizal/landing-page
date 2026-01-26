@@ -130,6 +130,14 @@ const resendOtp=async(req,res)=>{
      res.status(500).json({success:false,message:'Internal server error, please try again'})
    }
 }
+const homepage=async(req,res)=>{
+  try{
+   return res.render('home')
+  }catch(error){
+     console.log('home page not found')
+        res.status(500).send('server error')
+  }
+}
 
 module.exports={
     loadLandingpage,
@@ -138,4 +146,5 @@ module.exports={
     signup,
     verifyOtp,
     resendOtp,
+    homepage,
 }

@@ -1,0 +1,156 @@
+/* Global Reset and Colors */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #2d6a3e; /* Main Green background from screenshot */
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 15px 50px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 1.4rem;
+}
+
+.nav-icons {
+    display: flex;
+    gap: 20px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+/* Home Page Content */
+.home-content {
+    padding: 40px 50px;
+    color: white;
+}
+
+.categories h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+.tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.tag {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.tag:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.offers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.offer-card {
+    background: #0a140d; 
+    border-radius: 15px;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+}
+
+.offer-text h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.offer-card img {
+    height: 150px;
+    border-radius: 10px;
+}
+
+
+.carousel-dots {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.product-item {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.product-item img {
+    max-width: 100%;
+}
+
+/* Footer */
+footer {
+    background-color: #6b8e61;
+    color: #f1f1f1;
+    padding: 40px 50px;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 30px;
+}
+
+.footer-column a {
+    display: block;
+    color: #f1f1f1;
+    text-decoration: none;
+    margin-bottom: 5px;
+    font-size: 0.85rem;
+}
+
+.copyright {
+    text-align: center;
+    margin-top: 100px;
+    font-size: 0.75rem;
+}
