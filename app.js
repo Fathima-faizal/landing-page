@@ -7,6 +7,7 @@ const db=require('./config/db');
 const connectDB = require('./config/db');
 const passport=require('./config/passport')
 const userRouter=require('./route/userRouter')
+const adminRouter=require('./route/adminRouter')
 connectDB()
 
 
@@ -28,14 +29,14 @@ app.use(passport.initialize());
 app.use(passport.session())
 
 app.set('view engine','ejs')
-app.set('views',[path.join(__dirname,'views/user'),[path.join(__dirname,'views/admin')]]);
+app.set('views',[path.join(__dirname, 'views/user'), path.join(__dirname, 'views/admin')]);
 app.use(express.static(path.join(__dirname,'public')));
 
 
 
 
 app.use('/',userRouter);
-
+app.use('/admin',adminRouter)
 app.listen(process.env.port,()=>{
     console.log('server running on port')
 })

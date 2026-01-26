@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="/css/adminLogin.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-card">
+            <h2>Welcome Admin</h2>
+            <form action="/admin/login" method="POST" autocomplete="off">
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="Email" required autocomplete="none">
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password" placeholder="Password" required autocomplete="new-password">
+                </div>
+                <button type="submit" class="login-btn">Log in</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -6,6 +6,7 @@ const passport = require('passport');
 
 router.get('/landing',userControllers. loadLandingpage)
 router.get('/login',userControllers.loginPage)
+router.post('/login',userControllers.login)
 router.get('/signup',userControllers.signupPage)
 router.post('/signup',userControllers.signup)
 router.post('/verify_otp',userControllers.verifyOtp)

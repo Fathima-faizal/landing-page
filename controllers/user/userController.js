@@ -1,7 +1,8 @@
 const User=require('../../models/userSchema');
 const env=require('dotenv').config
 const nodemailer=require('nodemailer');
-const bcrypt=require('bcrypt')
+const bcrypt=require('bcrypt');
+const user = require('../../models/userSchema');
 
 
 const loadLandingpage=async(req,res)=>{
@@ -14,7 +15,12 @@ const loadLandingpage=async(req,res)=>{
 }
 const loginPage=async(req,res)=>{
     try{
+      if(!req.session.user){
         return res.render('login')
+      }else{
+        res.redirect('home')
+      }
+     
     }catch(error){
         console.log('login page not found');
         res.status(500).send('server error')
@@ -101,7 +107,7 @@ const verifyOtp=async(req,res)=>{
         })
         await saveUserdata.save();
         req.session.user=saveUserdata._id;
-        res.json({success:true,redirectUrl:'login'})
+        res.json({ success: true, redirectUrl: '/login' });
     }else{
         res.status(400).json({success:false,message:'Invalid OTP,please try again'})
     }
@@ -138,6 +144,32 @@ const homepage=async(req,res)=>{
         res.status(500).send('server error')
   }
 }
+  const login = async (req,res)=>{
+  try{
+    console.log("BODY:", req.body);
+
+    const {email,password}=req.body;
+    const findUser=await User.findOne({isAdmin:false,email:email});
+
+    if(!findUser){
+      return res.render('login',{message:'User not found'})
+    }
+
+    const passwordMatch = await bcrypt.compare(password, findUser.password);
+
+    if(!passwordMatch){
+      return res.render('login',{message:'Incorrect Password'})
+    }
+
+    req.session.user = findUser._id;
+    return res.redirect('home');
+
+  }catch(error){
+    console.log('login error',error);
+    res.render('login',{message:'login failed'});
+  }
+}
+
 
 module.exports={
     loadLandingpage,
@@ -147,4 +179,5 @@ module.exports={
     verifyOtp,
     resendOtp,
     homepage,
+    login,
 }
