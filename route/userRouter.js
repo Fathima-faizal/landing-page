@@ -25,7 +25,7 @@ router.get('/resend-password',profileControllers.getRestPasspage);
 router.post('/resend_forgot-otp',profileControllers.getresndOtp)
 router.post('/reset-password',profileControllers.postNewPassword)
 router.get('/profile',userAuth,profileControllers.userProfile)
-
+router.get('/logout',profileControllers.logout)
 
 
 

@@ -41,9 +41,23 @@ const loaddashboard=async(req,res)=>{
       }
     }
 }
-
+const admilogout=async(req,res)=>{
+  try {
+     req.session.destroy(error=>{
+       if(error){
+        console.log('session distruction error',error);
+        return res.status(400).send('Admin error')
+       }
+       return res.redirect('/admin/login')
+     })
+  } catch (error) {
+    console.log('Admin logout error ',error);
+    res.status(500).send('Internal server error')
+  }
+}
 module.exports={
     adminLoginloaded,
     adminlogin,
     loaddashboard,
+    admilogout,
 }

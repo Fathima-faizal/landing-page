@@ -158,6 +158,24 @@ const postNewPassword=async(req,res)=>{
  }
  }
 
+ const logout=async(req,res)=>{
+  try {
+     req.session.destroy((error)=>{
+      if(error){
+        console.log('session destruction error',error.message);
+        return res.status(400).send('Client error')
+      }
+      return res.redirect('/login')
+     });
+
+  } catch (error) {
+   console.log(error);
+   res.status(500).send('Internal server error')
+    
+  }
+
+ }
+
 
 
 
@@ -169,4 +187,5 @@ module.exports={
     getresndOtp,
     postNewPassword,
     userProfile,
+    logout,
 }

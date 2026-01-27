@@ -96,7 +96,10 @@ body {
     border-radius: 5px;
     cursor: pointer;
 }
-
+.logout-top a {
+  text-decoration: none;
+  color:white
+}
 .content-wrapper {
     padding: 30px;
     background-color: #dcdcdc; /* Gray background for content area */

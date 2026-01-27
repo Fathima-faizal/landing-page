@@ -80,6 +80,10 @@ body {
     font-size: 13px;
     cursor: pointer;
 }
+.sidebar  a {
+  text-decoration: none;
+  color:#0a1f0d
+}
 
 .sidebar li.active {
     background: #f0f0f0;
