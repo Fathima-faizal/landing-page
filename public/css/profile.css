@@ -1,0 +1,152 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #2e7d32; /* Main dark green background */
+}
+
+/* Navbar */
+.navbar {
+    background: white;
+    padding: 15px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    margin-right: 20px;
+    font-size: 14px;
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.nav-icons {
+    display: flex;
+    gap: 20px;
+    font-size: 1.1rem;
+}
+.nav-icons a{
+    color: #0a1f0d;
+}
+
+
+/* Main Profile Layout */
+.profile-container {
+    padding: 40px 10%;
+    color: white;
+}
+
+.profile-container h1 {
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+.content-wrapper {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+/* Sidebar */
+.sidebar {
+    background: white;
+    color: #333;
+    width: 200px;
+    padding: 30px 0;
+}
+
+.sidebar h3 {
+    padding: 0 20px 15px;
+    border-bottom: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar li {
+    padding: 10px 20px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.sidebar li.active {
+    background: #f0f0f0;
+}
+
+/* Profile Card */
+.profile-card {
+    background: white;
+    border-radius: 8px;
+    margin-left: 70px;
+    padding: 70px;
+    flex-grow: 1;
+    text-align: center;
+    color: #333;
+    max-width: 500px;
+}
+
+.profile-card h2 {
+    margin-bottom: 30px;
+    font-weight: 400;
+}
+
+.input-field {
+    background: #7cb342; /* Lighter green for inputs */
+    color: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    text-align: left;
+    font-size: 18px;
+}
+
+.change-btn {
+    background: #0a1f0d; /* Dark button */
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Footer */
+.footer {
+    background: #558b2f; /* Muted olive green */
+    color: white;
+    padding: 40px 10% 20px;
+    margin-top: 50px;
+}
+
+.footer-columns {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.footer h4 {
+    margin-bottom: 15px;
+}
+
+.copyright {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 11px;
+    opacity: 0.8;
+}

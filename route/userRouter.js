@@ -3,6 +3,7 @@ const router=express.Router();
 const userControllers=require('../controllers/user/userController');
 const passport = require('passport');
 const profileControllers=require('../controllers/user/profileControllers')
+const {userAuth,adminAuth}=require('../middleware/auth')
 
 
 router.get('/landing',userControllers. loadLandingpage)
@@ -23,7 +24,7 @@ router.post('/verify-passForgot-otp',profileControllers.verifyForgotPassOtp)
 router.get('/resend-password',profileControllers.getRestPasspage);
 router.post('/resend_forgot-otp',profileControllers.getresndOtp)
 router.post('/reset-password',profileControllers.postNewPassword)
-
+router.get('/profile',userAuth,profileControllers.userProfile)
 
 
 

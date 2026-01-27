@@ -42,7 +42,10 @@ body {
     font-size: 1.2rem;
     cursor: pointer;
 }
-
+.nav-icons a{
+    color: #0a140d;
+    text-decoration: none;
+}
 /* Home Page Content */
 .home-content {
     padding: 40px 50px;

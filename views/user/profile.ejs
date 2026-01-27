@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionVogue - Profile</title>
+    <link rel="stylesheet" href="css/profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <nav class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">shop</a>
+            <a href="#">About</a>
+            <a href="#">Contact us</a>
+        </nav>
+        <div class="logo">VisionVogue</div>
+        <div class="nav-icons">
+             <a href="" ><i class="fa-regular fa-heart"></i></a>
+               <a href=""> <i class="fa-solid fa-cart-shopping"></i></a>
+              <a href="" > <i class="fa-regular fa-user"></i></a>
+    </header>
+
+    <main class="profile-container">
+        <h1>Profile</h1>
+        
+        <div class="content-wrapper">
+            <aside class="sidebar">
+                <h3>My Account</h3>
+                <ul>
+                    <li class="active">Profile</li>
+                    <li>Address</li>
+                    <li>Order</li>
+                    <li>Wallet</li>
+                    <li>Coupon</li>
+                    <li>Refer & Earn</li>
+                    <li>Change Password</li>
+                    <li>Contact us</li>
+                    <li>Log out</li>
+                </ul>
+            </aside>
+
+            <section class="profile-card">
+                <h2>Profile</h2>
+                <div class="input-field"><%=user.name%></div>
+                <div class="input-field"><%=user.email%></div>
+                <button class="change-btn">Change Email</button>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-columns">
+            <div class="col">
+                <h4>About Us:</h4>
+                <p>Our Story</p><p>Privacy Policy</p><p>Terms</p><p>FAQ</p>
+            </div>
+            <div class="col">
+                <h4>Support:</h4>
+                <p>Shipping Policy</p><p>Returns</p><p>Order Tracking</p><p>Help</p>
+            </div>
+            <div class="col">
+                <h4>My Account:</h4>
+                <p>Profile</p><p>My Orders</p><p>Wishlist</p><p>Refer & Earn</p>
+            </div>
+            <div class="col">
+                <h4>Contact:</h4>
+                <p>Email: visionvogue@gmail.com</p>
+                <p>Phone: 8923457190</p>
+            </div>
+        </div>
+        <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

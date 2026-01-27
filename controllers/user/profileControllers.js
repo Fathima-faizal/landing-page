@@ -145,6 +145,18 @@ const postNewPassword=async(req,res)=>{
       res.status(500).send('Interval server error')
     }
 }
+ const userProfile=async(req,res)=>{
+ try {
+   const userId=req.session.user;
+   const userData=await User.findById(userId);
+   res.render('profile',{
+    user:userData,
+   })
+ } catch (error) {
+     console.error('Error for retrieve Profile data',error);
+     res.status(500).send('Internal server error')
+ }
+ }
 
 
 
@@ -156,4 +168,5 @@ module.exports={
     getRestPasspage,
     getresndOtp,
     postNewPassword,
+    userProfile,
 }
