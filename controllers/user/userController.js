@@ -2,7 +2,7 @@ const User=require('../../models/userSchema');
 const env=require('dotenv').config
 const nodemailer=require('nodemailer');
 const bcrypt=require('bcrypt');
-const user = require('../../models/userSchema');
+// const user = require('../../models/userSchema');
 
 
 const loadLandingpage=async(req,res)=>{
@@ -47,7 +47,7 @@ async function sendVerificationEmail(email,otp){
         requireTLS:true,
         auth:{
             user:process.env.NODEMAILER_EMAIL,
-            pass:process.env.NODEMAILER_PASSWORD
+            pass:process.env.NODEMAILER_PASSWORD,
         }
       })
       const info=await transporter.sendMail({
@@ -169,7 +169,6 @@ const homepage=async(req,res)=>{
     res.render('login',{message:'login failed'});
   }
 }
-
 
 module.exports={
     loadLandingpage,

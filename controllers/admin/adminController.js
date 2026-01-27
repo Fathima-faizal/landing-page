@@ -3,6 +3,7 @@ const mongoose=require('mongoose');
 const bcrypt=require('bcrypt');
 
 
+
 const adminLoginloaded=async(req,res)=>{
     if(req.session.admin){
         return res.redirect('admin/dashboard')
@@ -28,7 +29,7 @@ const adminlogin=async(req,res)=>{
       }
      }catch(error){
       console.log('login error',error);
-      return res.redirect('pageerror');
+      return res.status(400).send('page not found')
      }
 }
 const loaddashboard=async(req,res)=>{
@@ -36,7 +37,7 @@ const loaddashboard=async(req,res)=>{
         try{
             res.render('dashboard');
         }catch(error){
-        res.redirect('pageerror')
+        res.status(500).send('Internal server error')
       }
     }
 }
@@ -44,5 +45,5 @@ const loaddashboard=async(req,res)=>{
 module.exports={
     adminLoginloaded,
     adminlogin,
-    loaddashboard
+    loaddashboard,
 }
