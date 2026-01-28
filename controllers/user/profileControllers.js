@@ -175,9 +175,142 @@ const postNewPassword=async(req,res)=>{
   }
 
  }
+  const changeEmail=async(req,res)=>{
+  try {
+     res.render('change-email')
+  } catch (error) {
+    res.status(500).send('Internal server error')
+  }
 
+  }
+ const changeEmailValid=async(req,res)=>{
+  try {
+    const {email}=req.body;
+     const userExists=await User.findOne({email});
+     if(userExists){
+       const otp=generateOtp();
+       const emailSent=await sendVerificationEmail(email,otp);
+       if(emailSent){
+        req.session.userOtp=otp;
+        req.session.userData=req.body;
+        req.session.email=email;
+        res.render('change-email-otp');
+        console.log('Email',email);
+        console.log('Email sent OTP',otp)
+       }else{
+        res.json(`email-error`);
+       }
 
+     }else{
+       res.render('change-email',{message:'User with email not exist'})
+     }
+  } catch (error) {
+    res.status(500).send('Internal server error')
+  }
+ }
+ const verifyEmailotp=async(req,res)=>{
+    try {
+      const Enterotp=req.body.otp;
+      if(Enterotp===req.session.userOtp){
+        req.session.userData=req.body.userData;
+        return res.json({success:true,redirectUrl:'/new-email'})
+      }else{
+        res.render('change-email-otp',{
+        message:'OTP not matching',
+        userData:req.session.userData
+        })
+      }
+    } catch (error) {
+       res.status(500).send('Internal server error')
+    }
+ }
+ const newEmail=async(req,res)=>{
+   try {
+       res.render('new-email')
+   } catch (error) {
+      res.status(500).send('Internal server error')
+   }
+ }
+  const updateEmail=async(req,res)=>{
+    try {
+       const newEmail=req.body.newEmail;
+       const userId=req.session.user;
+       await User.findByIdAndUpdate(userId,{email:newEmail});
+       res.redirect('/profile')
 
+    } catch (error) {
+       res.status(500).send('Internal server error')
+    }
+  };
+const resetEmail=async(req,res)=>{
+    try{
+     const {email}=req.session.userData;
+     if(!email){
+        return res.status(400).json({success:false,message:'email not found session'})
+     }
+     const otp=generateOtp();
+     req.session.userOtp=otp;
+     const emailSent=await sendVerificationEmail(email,otp);
+     if(emailSent){
+        console.log('Resend  OTP',otp);
+        res.status(200).json({success:true,message:'OTP resend successfully'})
+     }else{
+        res.status(500).json({success:false,message:'Failed resend OTP,please try again'})
+     }
+   }catch(error){
+     console.error('Error resending OTP',error);
+     res.status(500).json({success:false,message:'Internal server error, please try again'})
+   }
+}
+const changePassword=async(req,res)=>{
+  try {
+     res.render('change-password')
+  } catch (error) {
+     res.status(500).send('Internal server error')
+  }
+}
+const changePasswordValid=async(req,res)=>{
+  try {
+    const {email}=req.body;
+     const userExists=await User.findOne({email});
+     if(userExists){
+      const otp=generateOtp();
+      const emailSent=await sendVerificationEmail(email,otp);
+      if(emailSent){
+        req.session.userOtp=otp;
+        req.session.userData=req.body;
+        req.session.email=email;
+        res.render('change-password-otp');
+        console.log('Change password OTP',otp)
+      }else{
+        res.json({succes:false,message:`Failed to send OTP, please try again`})
+      }
+     }else{
+      res.render('change-password',{message:`USer with this email does not Exist`})
+     }
+  } catch (error) {
+    console.log('Error in change Password Validation',error);
+    res.status(500).send('Internal server error')
+  }
+}
+ const verifyChangePasswordOtp=async(req,res)=>{
+  try {
+     const Enterotp=req.body.otp;
+    if(Enterotp===req.session.userOtp){
+      req.session.userData=req.body.userData;
+      return res.json({success:true,redirectUrl:'/resend-password'})
+
+    }else{
+      res.render('change-password-otp',{
+        message:'OTP not matching',
+        userData:req.session.userData
+      })
+    }
+  } catch (error) {
+     res.status(500).send('Internal server error')
+  }
+ }
+ 
 
 module.exports={
     getforgotpasspage,
@@ -188,4 +321,13 @@ module.exports={
     postNewPassword,
     userProfile,
     logout,
+    changeEmail,
+    changeEmailValid,
+    verifyEmailotp,
+    newEmail,
+    updateEmail,
+    resetEmail,
+    changePassword,
+    changePasswordValid,
+    verifyChangePasswordOtp,
 }

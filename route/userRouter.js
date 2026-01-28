@@ -26,7 +26,14 @@ router.post('/resend_forgot-otp',profileControllers.getresndOtp)
 router.post('/reset-password',profileControllers.postNewPassword)
 router.get('/profile',userAuth,profileControllers.userProfile)
 router.get('/logout',profileControllers.logout)
-
-
+router.get('/change-email',userAuth,profileControllers.changeEmail)
+router.post('/change-email',userAuth,profileControllers.changeEmailValid)
+router.post('/verify-email-otp',userAuth,profileControllers.verifyEmailotp)
+router.get('/new-email',userAuth,profileControllers.newEmail)
+router.post('/update-email',userAuth,profileControllers.updateEmail)
+router.post('/resend-email-otp',userAuth,profileControllers.resetEmail)
+router.get('/change-password',userAuth,profileControllers.changePassword)
+router.post('/change-password',userAuth,profileControllers.changePasswordValid)
+router.post('/verify-changePassword-otp',userAuth,profileControllers.verifyChangePasswordOtp)
 
 module.exports=router
