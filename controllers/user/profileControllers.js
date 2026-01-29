@@ -1,4 +1,5 @@
 const User=require('../../models/userSchema');
+const Address=require('../../models/addressSchema')
 const nodemailer=require('nodemailer');
 const bcrypt=require('bcrypt');
 const env=require('dotenv').config();
@@ -149,8 +150,10 @@ const postNewPassword=async(req,res)=>{
  try {
    const userId=req.session.user;
    const userData=await User.findById(userId);
+   const addressData=await Address.findOne({userId:userId});
    res.render('profile',{
     user:userData,
+    userAddress:addressData,
    })
  } catch (error) {
      console.error('Error for retrieve Profile data',error);
@@ -310,7 +313,125 @@ const changePasswordValid=async(req,res)=>{
      res.status(500).send('Internal server error')
   }
  }
- 
+ const address=async(req,res)=>{
+  try {
+    const userId=req.session.user;
+     const userAddress = await Address.findOne({ userId: userId }); 
+     res.render('address',{ userAddress: userAddress })
+  } catch (error) {
+    res.status(500).send('Inernal server error')
+  }
+ }
+
+ const addAddress=async(req,res)=>{
+   try {
+     const user=req.session.user;
+     res.render('addAddress',{user:user})           
+   } catch (error) {
+    res.status(500).send('Internal server error')
+   }
+ }
+ const postaddAddress=async(req,res)=>{
+  try {
+    const userId=req.session.user;
+    const userData=await User.findOne({_id:userId})
+    const {address,houseName,street,landmark,city,zipCode,country}=req.body;
+    const userAddress=await Address.findOne({userId:userData._id});
+    if(!userAddress){
+      const newAddress=new Address({
+        userId:userData._id,
+        address:[{address,houseName,street,landmark,city,zipCode,country}]
+      })
+      await newAddress.save()
+    }else{
+      userAddress.address.push({address,houseName,street,landmark,city,zipCode,country})
+      await userAddress.save()
+    }
+    res.redirect('profile')
+  } catch (error) {
+    console.log('Address error',error);
+    res.status(500).send('Internal server error')
+  }
+ }
+  const editAddress=async(req,res)=>{
+   try {
+     const addressId=req.query.id;
+     const user=req.session.user;
+     const currentAddress=await Address.findOne({
+      'address._id':addressId,
+     })
+     if(!currentAddress){
+      return res.status(400).send('Client error')
+     }
+     const addressData=currentAddress.address.find((item)=>{
+      return item._id.toString()===addressId.toString();
+     })
+     if(!addressData){
+      return res.status(400).send('Client error');
+     }
+     res.render('editAddress',{address:addressData,user:user})
+   } catch (error) {
+     console.log('error',error);
+     res.status(500).send('Internal server error')
+   }
+  }
+  const postEditAddress=async(req,res)=>{
+     try {
+        const data=req.body;
+        const addressId=req.body.addressId;
+        const  user=req.session.user;
+        const findAddress=await Address.findOne({'address._id':addressId})
+        if(!findAddress){
+         return  res.status(400).send('Client error')
+        }
+        await Address.updateOne(
+          {'address._id':addressId},
+          {$set:{
+            "address.$":{
+             _id: addressId,
+             address:data.address,
+             houseName:data.houseName,
+             street:data.street,
+             landmark:data.landmark,
+             city:data.city,
+             zipCode:data.zipCode,
+             country:data.country
+            }
+          }}
+        );
+        res.redirect('address')
+     } catch (error) {
+      console.log('edit Address',error)
+      res.status(500).send('Internal server error')
+     }
+  }
+  const deleteAddress=async(req,res)=>{
+    try {
+      const addressId=req.query.id;
+      const findAddress=await Address.findOne({'address._id':addressId});
+      if(!findAddress){
+        return res.status(400).send('Address not found')
+      }
+      await Address.updateOne({
+        "address._id":addressId
+      },{
+        $pull:{
+          address:{
+            _id:addressId
+          }
+        }
+      })
+      res.redirect('address')
+    } catch (error) {
+      console.log('Error in delete address',error);
+      res.status(500).send('Internal server error')
+    }
+  }
+
+
+
+
+
 
 module.exports={
     getforgotpasspage,
@@ -330,4 +451,10 @@ module.exports={
     changePassword,
     changePasswordValid,
     verifyChangePasswordOtp,
+    address,
+    addAddress,
+    postaddAddress,
+    editAddress,
+    postEditAddress,
+    deleteAddress,
 }

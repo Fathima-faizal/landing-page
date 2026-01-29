@@ -154,6 +154,9 @@ const homepage=async(req,res)=>{
     if(!findUser){
       return res.render('login',{message:'User not found'})
     }
+    if (findUser.isBlocked) {
+                return res.render("login", { message: "Block the User" });
+            }
 
     const passwordMatch = await bcrypt.compare(password, findUser.password);
 

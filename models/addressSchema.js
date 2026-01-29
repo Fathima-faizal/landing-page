@@ -10,39 +10,34 @@ const addressSchema=new Schema({
         required:true,
     },
     address:[{
-        addressType:{
+        address:{
             type:String,
             required:true,
         },
-        name:{
+        houseName:{
+            type:String,
+            required:true,
+        },
+        street:{
+            type:String,
+            required:true
+        },
+        landmark:{
             type:String,
             required:true,
         },
         city:{
             type:String,
-            required:true
-        },
-        landMark:{
-            type:String,
             required:true,
         },
-        state:{
-            type:String,
-            required:true,
-        },
-        pincode:{
+        zipCode:{
             type:Number,
             required:true
         },
-        phone:{
+        country:{
             type:String,
             required:true,
         },
-        altphone:{
-            type:String,
-            required:true
-        }
-
     }]
 })
 const address=mongoose.model('address',addressSchema);

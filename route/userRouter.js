@@ -34,6 +34,13 @@ router.post('/update-email',userAuth,profileControllers.updateEmail)
 router.post('/resend-email-otp',userAuth,profileControllers.resetEmail)
 router.get('/change-password',userAuth,profileControllers.changePassword)
 router.post('/change-password',userAuth,profileControllers.changePasswordValid)
-router.post('/verify-changePassword-otp',userAuth,profileControllers.verifyChangePasswordOtp)
+router.post('/verify-changePassword-otp',userAuth,profileControllers.verifyChangePasswordOtp);
+router.get('/address',userAuth,profileControllers.address)
+router.get('/addAddress',userAuth,profileControllers.addAddress);
+router.post('/addAddress',userAuth,profileControllers.postaddAddress)
+router.get('/editAddress',userAuth,profileControllers.editAddress)
+router.post('/editAddress',userAuth,profileControllers.postEditAddress)
+router.get('/deleteAddress',userAuth,profileControllers.deleteAddress)
+
 
 module.exports=router

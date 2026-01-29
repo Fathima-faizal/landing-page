@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional Admin Dashboard</title>
-    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/customer.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
@@ -68,54 +68,59 @@
 
         <main class="main-content">
             <header class="top-header">
-                <h2>Admin Dashboard</h2>
+                <h2>User Management</h2>
                 <a href="/admin/logout">
                 <button class="logout-top">Log out</button>
                 </a>
             </header>
-
-            <div class="content-wrapper">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <p>Total Sales</p>
-                        <h3>15,000</h3>
-                    </div>
-                    <div class="stat-card">
-                        <p>Revenue</p>
-                        <h3>13,000</h3>
-                    </div>
-                    <div class="stat-card">
-                        <p>Orders</p>
-                        <h3>2000</h3>
+            <section class="content-body">
+                <div class="toolbar">
+                    <form action="/admin/customer" method="get">
+                    <div class="search-box">
+                        <input type="text" name="search" placeholder="Search">
+                        <button class="btn-clear">Clear</button>
+                        </form>
                     </div>
                 </div>
 
-                <div class="filter-section">
-                    <div class="date-inputs">
-                        <label>Start date <input type="date"></label>
-                        <label>End date <input type="date"></label>
-                    </div>
-                    <button class="apply-btn">Apply Range</button>
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>User Id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%for(let i=0;i<data.length;i++){%>
+                        <tr>
+                            <td><%=data[i]._id%></td>
+                            <td><%=data[i].name%></td>
+                            <td><%=data[i].email%></td>
+                            <td class="actions">
+                                <%if(data[i].isBlocked===false){%>
+                               <a href="/admin/blockCustomer?id=<%=data[i]._id%>"><button class="btn-block">block</button></a>
+                                <%}else{%>
+                               <a href="/admin/unblockCustomer?id=<%=data[i]._id%>"> <button class="btn-unblock">Unblock</button></a>
+                                <%}%>
+                            </td>
+                        </tr>
+                        <%}%>
+                    </tbody>
+                </table>
+                <div class="container">
+                    <nav aria-label="page navigation">
+                        <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
+                            <%for(let i=1;i<=totalPages;i++){%>
+                                <li class="page-item <%=(i===currentPage)? 'active':''%>">
+                                 <a class="page-link" href="?page=<%= i %>&search=<%= search %>"><%= i %></a>
+                                </li>
+                                <%}%>
+                        </ul>
+                    </nav>
                 </div>
-
-                <div class="chart-container">
-                    <h3>Sales Details</h3>
-                    <div class="chart-box">
-                        <div class="y-axis">
-                            <span>100%</span><span>80%</span><span>60%</span><span>40%</span><span>20%</span>
-                        </div>
-                        <div class="graph-area">
-                            <div class="placeholder-line"></div>
-                        </div>
-                        <div class="x-axis">
-                            <span>5k</span><span>10k</span><span>20k</span><span>25k</span><span>30k</span><span>45k</span>
-                        </div>
-                    </div>
-                    <div class="download-container">
-                        <button class="download-btn">download</button>
-                    </div>
-                </div>
-            </div>
+            </section>
         </main>
     </div>
 

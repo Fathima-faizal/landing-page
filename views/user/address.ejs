@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionVogue - Profile</title>
+    <link rel="stylesheet" href="css/address.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <nav class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">shop</a>
+            <a href="#">About</a>
+            <a href="#">Contact us</a>
+        </nav>
+        <div class="logo">VisionVogue</div>
+        <div class="nav-icons">
+             <a href="" ><i class="fa-regular fa-heart"></i></a>
+               <a href=""> <i class="fa-solid fa-cart-shopping"></i></a>
+              <a href="" > <i class="fa-regular fa-user"></i></a>
+    </header>
+
+    <main class="profile-container">
+        <h1>Address</h1>
+        
+        <div class="content-wrapper">
+            <aside class="sidebar">
+                <h3>My Account</h3>
+                <ul>
+                   <a href="/profile"><li>Profile</li></a>
+                   <a href="/address"> <li class="active">Address</li> </a>
+                   <a href="/order"><li>Order</li> </a>
+                   <a href="/wallet"><li>Wallet</li> </a>
+                   <a href="/coupon"> <li>Coupon</li> </a>
+                   <a href="/refer" ><li>Refer & Earn</li> </a>
+                   <a href="/change-password"><li>Change Password</li> </a>
+                   <a href="/Contact"><li>Contact us</li> </a>
+                   <a href="/logout"><li>Log out</li> </a>
+                </ul>
+            </aside>
+            <section class="address-content">
+                <%if(userAddress){%>
+                    <%userAddress.address.forEach((address)=>{%>
+                  <div class="address-card">
+                <div class="address-details">
+                 <p><strong>House:</strong> <%= address.houseName %></p>
+                 <p><strong>Street:</strong> <%= address.street %></p>
+                 <p><strong>Landmark:</strong> <%= address.landmark %></p>
+                 <p><strong>City:</strong> <%= address.city %> - <%= address.zipCode %></p>
+                 <p><strong>Country:</strong> <%= address.country %></p>
+                </div>
+                <div class="actions">
+               <a href="/editAddress?id=<%=address._id%>"><button class="btn edit">Edit</button></a>
+                <a href="/deleteAddress?id=<%=address._id%>"><button class="btn delete" onclick="return confirm('Are Your sure want to delete this Address?')">Delete</button></a>
+            </div>
+              </div>
+                  <%})%><%}%>
+                <div class="add-address-card">
+                    <p>Save multiple addresses to speed up your checkout process</p>
+                   <a href="/addAddress"> <button class="btn-add">Add new Address -></button></a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-columns">
+            <div class="col">
+                <h4>About Us:</h4>
+                <p>Our Story</p><p>Privacy Policy</p><p>Terms</p><p>FAQ</p>
+            </div>
+            <div class="col">
+                <h4>Support:</h4>
+                <p>Shipping Policy</p><p>Returns</p><p>Order Tracking</p><p>Help</p>
+            </div>
+            <div class="col">
+                <h4>My Account:</h4>
+                <p>Profile</p><p>My Orders</p><p>Wishlist</p><p>Refer & Earn</p>
+            </div>
+            <div class="col">
+                <h4>Contact:</h4>
+                <p>Email: visionvogue@gmail.com</p>
+                <p>Phone: 8923457190</p>
+            </div>
+        </div>
+        <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
