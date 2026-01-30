@@ -11,7 +11,7 @@
 
     <header class="navbar">
         <nav class="nav-links">
-            <a href="#">Home</a>
+            <a href="/home">Home</a>
             <a href="#">shop</a>
             <a href="#">About</a>
             <a href="#">Contact us</a>
@@ -73,6 +73,19 @@
         </div>
         <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
     </footer>
-
+ <script>
+    window.addEventListener("pageshow", function (event) {
+        var historyTraversal = event.persisted || 
+                               (typeof window.performance != "undefined" && 
+                                window.performance.navigation.type === 2);
+        if (historyTraversal) {
+            window.location.reload();
+        }
+    });
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+        window.history.go(1);
+    };
+</script>
 </body>
 </html>

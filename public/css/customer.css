@@ -12,6 +12,7 @@ body {
 .dashboard-container {
     display: flex;
     height: 100vh;
+    overflow: hidden;
 }
 
 /* Sidebar Styles */
@@ -21,7 +22,7 @@ body {
     color: white;
     display: flex;
     flex-direction: column;
-    padding-top: 20px;
+    padding-top: 37px;
 }
 
 .nav-item a {

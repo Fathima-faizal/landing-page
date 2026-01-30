@@ -46,6 +46,7 @@
                     <%userAddress.address.forEach((address)=>{%>
                   <div class="address-card">
                 <div class="address-details">
+                <p><strong>Address:</strong><%=address.address%></p>
                  <p><strong>House:</strong> <%= address.houseName %></p>
                  <p><strong>Street:</strong> <%= address.street %></p>
                  <p><strong>Landmark:</strong> <%= address.landmark %></p>
@@ -88,6 +89,19 @@
         </div>
         <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
     </footer>
-
+  <script>
+    window.addEventListener( "pageshow", function ( event ) {
+        var historyTraversal = event.persisted || 
+                               ( typeof window.performance != "undefined" && 
+                                 window.performance.navigation.type === 2 );
+        if ( historyTraversal ) {
+            window.location.reload();
+        }
+    });
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+        window.history.go(1);
+    };
+  </script>
 </body>
 </html>

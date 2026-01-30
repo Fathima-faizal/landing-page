@@ -32,7 +32,14 @@
             <h1>Sign in</h1>
             <form action="/login" method="post" id="loginForm" autocomplete="off">
                 <input type="email" name="email" placeholder="email@mail.com" required autocomplete="off">
+                 <div id="error1" class="error-message"></div>
                 <input type="password" name="password" placeholder="••••••••••••••••" required autocomplete="new-password">
+                   <div id="error2" class="error-message"></div>
+                    <% if (locals.message) { %>
+             <div id="msg" style="color: #d9534f; background-color: #f2dede; border: 1px solid #ebccd1; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center; font-weight: bold;">
+             <%= message %>
+             </div>
+           <% } %>
                 <button type="submit" class="btn-signin">Sign in</button>
                 
             </form>
@@ -83,16 +90,49 @@
     </footer>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-  
-  const email = this.querySelector('input[name="email"]').value.trim();
-  const password = this.querySelector('input[name="password"]').value.trim();
-  if (!email || !password) {
-    e.preventDefault(); 
-    Swal.fire("Please fill in all fields");
-    return;
-  }
-});
+    const emailid = document.getElementsByName("email")[0];
+    const passid = document.getElementsByName("password")[0];
+    const error1 = document.getElementById("error1");
+    const error2 = document.getElementById("error2");
+    const loginform = document.getElementById("loginForm"); 
+
+    function emailValidateChecking() {
+        const emailval = emailid.value;
+        const emailpattern = /^[a-zA-Z0-9._-]+@([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})$/;
+
+        if (!emailpattern.test(emailval)) {
+            error1.style.display = "block";
+            error1.innerHTML = "Invalid Email Format";
+            return false;
+        } else {
+            error1.style.display = "none";
+            error1.innerHTML = "";
+            return true;
+        }
+    }
+
+    function passValidateChecking() {
+        const passval = passid.value;
+        if (passval.length < 8) {
+            error2.style.display = "block";
+            error2.innerHTML = "Password must be at least 8 characters";
+            return false;
+        } else {
+            error2.style.display = "none";
+            error2.innerHTML = "";
+            return true;
+        }
+    }
+
+    loginform.addEventListener("submit", function (e) {
+        const isEmailValid = emailValidateChecking();
+        const isPassValid = passValidateChecking();
+        if (!isEmailValid || !isPassValid) {
+            e.preventDefault();
+        }
+    });
+
+
 
     </script>
 </body>

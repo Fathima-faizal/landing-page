@@ -74,7 +74,7 @@
                 </a>
             </header>
 
-            <div class="content-wrapper">
+            <!-- <div class="content-wrapper">
                 <div class="stats-grid">
                     <div class="stat-card">
                         <p>Total Sales</p>
@@ -115,9 +115,22 @@
                         <button class="download-btn">download</button>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </main>
     </div>
-
+     <script>
+    window.addEventListener("pageshow", function (event) {
+        var historyTraversal = event.persisted || 
+                               (typeof window.performance != "undefined" && 
+                                window.performance.navigation.type === 2);
+        if (historyTraversal) {
+            window.location.reload();
+        }
+    });
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+        window.history.go(1);
+    };
+</script>
 </body>
 </html>
