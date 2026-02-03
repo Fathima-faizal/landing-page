@@ -123,7 +123,7 @@ resetBtn.addEventListener('click', (e) => {
 
     $.ajax({
         type: 'POST',
-        url: '/resend_otp',
+        url: '/resendOTP',
         success: function(response) {
             if (response.success) {
                 timeInSeconds = 56; 
@@ -168,7 +168,7 @@ function validateOTPform() {
 
     $.ajax({
         type: 'POST',
-        url: '/verify_otp', 
+        url: '/verifyOTP', 
         data: { otp: otpinput },
         success: function(response) {
             if (response.success) {

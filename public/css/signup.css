@@ -72,7 +72,24 @@ body {
     font-size: 1.1rem;
     color: #666;
 }
+.social-login {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
 
+.icon-circle {
+    width: 50px;
+    height: 50px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
 /* Specific styling for the black button */
 .btn-primary {
     width: 100%;

@@ -65,10 +65,13 @@ async function sendVerificationEmail(email,otp){
 }
 const signup=async(req,res)=>{
     try{
-      const {name,email,password}=req.body;
+      const {name,email,password,ConformPassword}=req.body;
       const findUser=await User.findOne({email});
       if(findUser){
         return res.render('signup',{message:'User with this email alreday exists'})
+      }
+      if(password!=ConformPassword){
+        return res.render('signup',{message:'Password do not matching'})
       }
       const otp=generateOtp();
       const emailSent=await sendVerificationEmail(email,otp);
@@ -76,7 +79,7 @@ const signup=async(req,res)=>{
         return res.json('Email error')
       }
       req.session.userOtp=otp;
-      req.session.userData={name,email,password};
+      req.session.userData={name,email,password,ConformPassword};
 
       res.render('verify_otp');
       console.log('OTP sent',otp)

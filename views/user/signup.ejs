@@ -30,18 +30,29 @@
         <section class="form-box">
             <h1>Sign Up</h1>
             <form id="signform" class="signform" method="post" action="/signup" id="signUpForm" autocomplete="off">
+
                 <div class="form-group">
-  <input type="text" id="name" name="name" placeholder="name" required >
+  <input type="text" id="name" name="name" placeholder="name">
   <div id="error1" class="error-message"></div>
   </div>
   <div class="form-group">
-  <input type="email"id='email' name="email" placeholder="Email" required autocomplete="off">
+  <input type="email"id='email' name="email" placeholder="Email"  autocomplete="off">
   <div id="error2" class="error-message"></div>
   </div>
   <div calss="form-group">
-  <input type="password" id="password" name="password" placeholder="Password" required autocomplete="new-password">
+  <input type="password" id="password" name="password" placeholder="Password"  autocomplete="new-password">
   <div id="error3" class="error-message"></div>
   </div>
+  <div class="form-group">
+    <input type="password" id="ConformPassword" name="ConformPassword" placeholder="ConformPassword" autocomplete="new-password">
+     <div id="error4" class="error-message"></div>
+</div>
+    <div class="social-login">
+                <a href="/auth/google">
+                <div class="icon-circle"><i class="fa-brands fa-google"></i></div>
+                </a>
+            </div>   
+<div id="main-error" class="error-message" style="text-align: center; margin-bottom: 10px;"></div>
   <button type="submit" class="btn-primary">Sign up</button>
 </form>
 
@@ -83,11 +94,14 @@
     <script >
         const nameid=document.getElementById('name');
         const emailid=document.getElementById('email');
-        const passwordid=document.getElementById('password')
+        const passwordid=document.getElementById('password');
+        const ConformPasswordid=document.getElementById('ConformPassword');
         const error1=document.getElementById('error1');
         const error2=document.getElementById('error2');
-        const error3=document.getElementById('error3')
-        const signform=document.getElementById('signform')
+        const error3=document.getElementById('error3');
+        const error4=document.getElementById('error4');
+        const signform=document.getElementById('signform');
+        const mainError = document.getElementById('main-error');
         
 
         function nameValidateChacking(e){
@@ -107,7 +121,10 @@
         function emailValidateChacking(e){
             const emailval=emailid.value;
             const emailpattern=/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
-            if(!emailpattern.test(emailval)){
+            if(emailval.trim()===''){
+                error2.style.display='block';
+                error2.innerHTML='Please Invalid format'
+            }else if(!emailpattern.test(emailval)){
                error2.style.display='block';
                error2.innerHTML='Invalid format'
             }else{
@@ -120,25 +137,41 @@
             const passwordval=passwordid.value;
             const alpha=/[a-zA-Z]/;
             const digit=/\d/;
-            if(passwordval.length<8){
+             if(passwordval.trim()===''){
+                error3.style.display='block',
+                error3.innerHTML='Please enter the Password'
+             }else if(passwordval.length<8){
                 error3.style.display='block';
                 error3.innerHTML='should contain atleast 8 characters'
             }else if(!alpha.test(passwordval)||!digit.test(passwordval)){
                 error3.style.display='block',
                 error3.innerHTML='should contain numbers and alphabets'
             }else{
-                error3.style.display='none',
+              error3.style.display='none',
                 error3.innerHTML=''
+            }
+        }
+        function ConfromPasswordChacking(e){
+            const passwordval=passwordid.value;
+            const ConformPasswordval=ConformPasswordid.value;
+            if(ConformPasswordval.trim()===''){
+                error4.style.display='block',
+                error4.innerHTML='Please enter the Conform Password'
+            }else if(passwordval!=ConformPasswordval){
+                error4.style.display='block',
+                error4.innerHTML='Password do not matching'
+            }else{
+                error4.style.display='none',
+                error4.innerHTML=''
             }
         }
 
         document.addEventListener('DOMContentLoaded',function(){
             signform.addEventListener('submit',function(e){
-              
                 nameValidateChacking()
                 emailValidateChacking();
                 passwordValidateChacking();
-
+                ConfromPasswordChacking();
                 if(
                     !nameid||
                     !emailid||
@@ -146,16 +179,18 @@
                     !error1||
                     !error2||
                     !error3||
+                    !error4||
                     !signform
 
                  ){
-                    console.error('one or more element not found')
+                 console.error('one or more element not found')
                  }
 
                  if(
                     error1.innerHTML || 
                     error2.innerHTML||
-                    error3.innerHTML
+                    error3.innerHTML||
+                    error4.innerHTML
                  ){
                     e.preventDefault()
                  }
