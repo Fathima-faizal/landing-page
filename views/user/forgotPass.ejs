@@ -82,28 +82,23 @@
         <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
     </footer>
   <script>
-    // Set the starting time in seconds (56 seconds)
 let timeInSeconds = 56;
 const timerElement = document.getElementById('timer');
 const resetBtn = document.getElementById('resetBtn');
+let countdown;
 
 function startTimer() {
-    const countdown = setInterval(() => {
-        // Calculate minutes and seconds
+    clearInterval(countdown);
+    countdown = setInterval(() => {
         let minutes = Math.floor(timeInSeconds / 60);
         let seconds = timeInSeconds % 60;
-
-        // Add leading zeros if number is less than 10
         minutes = minutes < 10 ? '0' + minutes : minutes;
         seconds = seconds < 10 ? '0' + seconds : seconds;
 
-        // Update the HTML text
         timerElement.innerHTML = `${minutes}:${seconds}`;
-
-        // Stop the timer when it hits 0
         if (timeInSeconds <= 0) {
             clearInterval(countdown);
-            timerElement.style.color = "red"; // Optional: turn red when expired
+            timerElement.style.color = "red";
             Swal.fire({
                icon: 'error',
                title: 'Oops...',
@@ -112,10 +107,9 @@ function startTimer() {
         } else {
             timeInSeconds--;
         }
-    }, 1000); // Runs every 1 second (1000ms)
+    }, 1000); 
 }
 
-// Start the timer when the page loads
 window.onload = startTimer;
 
 resetBtn.addEventListener('click', (e) => {
@@ -123,12 +117,13 @@ resetBtn.addEventListener('click', (e) => {
 
     $.ajax({
         type: 'POST',
-        url: '/resendForgotOTP',
+        url:'/resendForgotOTP',
         success: function(response) {
             if (response.success) {
                 timeInSeconds = 56; 
                 timerElement.style.color = "black"; 
                 
+                startTimer()
                 
                 document.querySelectorAll('.otps').forEach(input => input.value = "");
 
@@ -168,7 +163,7 @@ function validateOTPform() {
 
     $.ajax({
         type: 'POST',
-        url: '/verifyPassForgotOTP', 
+        url:'/verifyPassForgotOTP',
         data: { otp: otpinput },
         success: function(response) {
             if (response.success) {

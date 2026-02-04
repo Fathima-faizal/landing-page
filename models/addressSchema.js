@@ -10,7 +10,7 @@ const addressSchema=new Schema({
         required:true,
     },
     address:[{
-        address:{
+        addressType:{
             type:String,
             required:true,
         },
@@ -31,7 +31,7 @@ const addressSchema=new Schema({
             required:true,
         },
         zipCode:{
-            type:Number,
+            type:String,
             required:true
         },
         country:{

@@ -46,8 +46,8 @@ body {
     color: white;
 }
 
-.profile-container h1 {
-    font-size: 32px;
+.profile-container p {
+    font-size: 12px;
     margin-bottom: 30px;
 }
 

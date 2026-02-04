@@ -93,7 +93,7 @@ const verifyForgotPassOtp=async(req,res)=>{
     try {
          const enterdOTP=req.body.otp;
          if(enterdOTP===req.session.userOtp){
-            res.json({success:true,redirectUrl:'/resend-password'});
+            res.json({success:true,redirectUrl:'/resendPassword'});
          }else{
             res.json({success:false,message:'OTP matching'});
          }
@@ -139,7 +139,7 @@ const postNewPassword=async(req,res)=>{
         res.redirect('login')
 
        }else{
-        res.render('reset-password',{message:'Passwords do not match'})
+        res.render('resetPassword',{message:'Passwords do not match'})
        }
     } catch (error) {
       console.log('error',error);
@@ -216,7 +216,7 @@ const postNewPassword=async(req,res)=>{
       const Enterotp=req.body.otp;
       if(Enterotp===req.session.userOtp){
         req.session.userData=req.body.userData;
-        return res.json({success:true,redirectUrl:'/new-email'})
+        return res.json({success:true,redirectUrl:'/newEmail'})
       }else{
         res.render('change-email-otp',{
         message:'OTP not matching',
@@ -229,7 +229,7 @@ const postNewPassword=async(req,res)=>{
  }
  const newEmail=async(req,res)=>{
    try {
-       res.render('new-email')
+       res.render('newEmail')
    } catch (error) {
       res.status(500).send('Internal server error')
    }
@@ -267,7 +267,7 @@ const resetEmail=async(req,res)=>{
 }
 const changePassword=async(req,res)=>{
   try {
-     res.render('change-password')
+     res.render('changePassword')
   } catch (error) {
      res.status(500).send('Internal server error')
   }
@@ -301,7 +301,7 @@ const changePasswordValid=async(req,res)=>{
      const Enterotp=req.body.otp;
     if(Enterotp===req.session.userOtp){
       req.session.userData=req.body.userData;
-      return res.json({success:true,redirectUrl:'/resend-password'})
+      return res.json({success:true,redirectUrl:'/resendPassword'})
 
     }else{
       res.render('change-password-otp',{
@@ -335,19 +335,22 @@ const changePasswordValid=async(req,res)=>{
   try {
     const userId=req.session.user;
     const userData=await User.findOne({_id:userId})
-    const {address,houseName,street,landmark,city,zipCode,country}=req.body;
+    const {addressType,houseName,street,landmark,city,zipCode,country}=req.body;
+     if(!addressType || !houseName || !street || !landmark || !city || !zipCode || !country){
+      return res.redirect('/addAddress');
+    }
     const userAddress=await Address.findOne({userId:userData._id});
     if(!userAddress){
       const newAddress=new Address({
         userId:userData._id,
-        address:[{address,houseName,street,landmark,city,zipCode,country}]
+        address:[{addressType,houseName,street,landmark,city,zipCode,country}]
       })
       await newAddress.save()
     }else{
-      userAddress.address.push({address,houseName,street,landmark,city,zipCode,country})
+      userAddress.address.push({addressType,houseName,street,landmark,city,zipCode,country})
       await userAddress.save()
     }
-    res.redirect('profile')
+    res.redirect('address')
   } catch (error) {
     console.log('Address error',error);
     res.status(500).send('Internal server error')
@@ -389,7 +392,7 @@ const changePasswordValid=async(req,res)=>{
           {$set:{
             "address.$":{
              _id: addressId,
-             address:data.address,
+             address:data.addressType,
              houseName:data.houseName,
              street:data.street,
              landmark:data.landmark,

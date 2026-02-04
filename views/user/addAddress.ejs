@@ -24,7 +24,7 @@
     </header>
 
     <main class="profile-container">
-        <h1>Address -> New Address</h1>
+        <p>Address -> New Address</p>
         
         <div class="content-wrapper">
             <aside class="sidebar">
@@ -45,16 +45,18 @@
                 <div class="form-card">
                     <form method="post" action="/addAddress">
                         <div class="form-grid">
-                            <input type="text" name="address" placeholder="Address" class="full-width" autocomplete="off">
-                            <input type="text" name="houseName" placeholder="House Name" autocomplete="off">
-                            <input type="text" name="street" placeholder="Street" autocomplete="off">
-                            <input type="text" name="landmark" placeholder="Landmark" class="full-width" autocomplete="off">
-                            <input type="text" name="city" placeholder="City" autocomplete="off">
-                            <input type="text" name="zipCode" placeholder="Zip code" autocomplete="off">
-                            <input type="text" name="country" placeholder="country" class="full-width" autocomplete="off">
-                        </div>
+                            <input type="text" id="addressType" name="addressType" placeholder="addressType" class="full-width" autocomplete="off">
+                            <input type="text" id="houseName" name="houseName" placeholder="House Name" autocomplete="off">
+                            <input type="text" id="street" name="street" placeholder="Street" autocomplete="off">
+                            <input type="text" id="landmark" name="landmark" placeholder="Landmark" class="full-width" autocomplete="off">
+                            <input type="text" id="city" name="city" placeholder="City" autocomplete="off">
+                            <input type="text" id="zipCode" name="zipCode" placeholder="Zip code" autocomplete="off">
+                              <input type="text" id="country" name="country" placeholder="country" class="full-width" autocomplete="off">
+                            
+                            </div>
+                            <div id="formError" class="error-message full-width"></div>
                         <div class="form-actions">
-                            <button type="submit" class="btn-update">Update</button>
+                            <button type="submit" id="btn-update" class="btn-update">Update</button>
                         </div>
                     </form>
                 </div>
@@ -84,6 +86,39 @@
         </div>
         <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
     </footer>
+<script>
+const addressForm = document.querySelector('form');
+
+const addressid = document.getElementById('addressType');
+const houseNameid = document.getElementById('houseName');
+const streetid = document.getElementById('street');
+const landmarkid = document.getElementById('landmark');
+const cityid = document.getElementById('city');
+const zipCodeid = document.getElementById('zipCode');
+const countryid = document.getElementById('country');
+
+const formError = document.getElementById('formError');
+
+addressForm.addEventListener('submit', function(e){
+  if (
+    addressid.value.trim() === '' ||
+    houseNameid.value.trim() === '' ||
+    streetid.value.trim() === '' ||
+    landmarkid.value.trim() === '' ||
+    cityid.value.trim() === '' ||
+    zipCodeid.value.trim() === '' ||
+    countryid.value.trim() === ''
+  ) {
+    e.preventDefault();
+    formError.innerText = "Please fill the form";
+    formError.style.display = "block";
+  } else {
+    formError.innerText = "";
+    formError.style.display = "none";
+  }
+});
+</script>
+
 
 </body>
 </html>
