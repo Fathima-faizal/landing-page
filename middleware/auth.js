@@ -7,6 +7,7 @@ const userAuth=(req,res,next)=>{
             if(data && !data.isBlocked){
                 next();
             }else{
+                req.session.user = null;
                 res.redirect('/login')
             }
         })
@@ -18,20 +19,13 @@ const userAuth=(req,res,next)=>{
         res.redirect('/login')
     }
 }
- const adminAuth=(req,res,next)=>{
-    User.findOne({isAdmin:true})
-    .then(data=>{
-        if(data){
-            next()
-        }else{
-            res.redirect('admin/login')
-        }
-    })
-    .catch(error=>{
-        console.log('Error in admin Auth middleware');
-        res.status(500).send('Internal server error')
-    })
- }
+ const adminAuth = (req, res, next) => {
+    if (req.session.admin) { 
+        next();
+    } else {
+        res.redirect('/admin/login'); 
+    }
+}
 
  module.exports={
     userAuth,
