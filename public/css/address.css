@@ -135,6 +135,18 @@ body {
 .edit { background-color: #0b1f0d; }
 .delete { background-color: #8b0000; }
 
+.default-box {
+  display: inline-block;      
+  background-color: #889d89; 
+  text-align: justify;
+  justify-content: center;
+  margin-top: 50px;
+  color: white;               
+  padding: 10px 24px;         
+  border-radius: 6px;        
+  font-size: 14px;
+  font-weight: 600;
+}
 .add-address-card {
     text-align: center;
 }
@@ -158,6 +170,8 @@ body {
     text-decoration: none;
     color:white
 }
+
+
 /* Footer */
 .footer {
     background: #558b2f; /* Muted olive green */

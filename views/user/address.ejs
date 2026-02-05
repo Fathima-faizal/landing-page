@@ -41,29 +41,46 @@
                    <a href="/logout"><li>Log out</li> </a>
                 </ul>
             </aside>
-            <section class="address-content">
-                <%if(userAddress){%>
-                    <%userAddress.address.forEach((address)=>{%>
-                  <div class="address-card">
-                <div class="address-details">
-                <p><strong>AddressType:</strong><%=address.addressType%></p>
-                 <p><strong>House:</strong> <%= address.houseName %></p>
-                 <p><strong>Street:</strong> <%= address.street %></p>
-                 <p><strong>Landmark:</strong> <%= address.landmark %></p>
-                 <p><strong>City:</strong> <%= address.city %> - <%= address.zipCode %></p>
-                 <p><strong>Country:</strong> <%= address.country %></p>
-                </div>
-                <div class="actions">
-               <a href="/editAddress?id=<%=address._id%>"><button class="btn edit">Edit</button></a>
-                <a href="/deleteAddress?id=<%=address._id%>"><button class="btn delete" onclick="return confirm('Are Your sure want to delete this Address?')">Delete</button></a>
+            <% if(userAddress && userAddress.address.length > 0){ %>
+            <% userAddress.address.forEach((address)=>{ %>
+            <div class="address-card">
+            <div class="address-details">
+             <p><strong>AddressType:</strong> <%=address.addressType%></p>
+             <p><strong>House:</strong> <%= address.houseName %></p>
+             <p><strong>Street:</strong> <%= address.street %></p>
+             <p><strong>Landmark:</strong> <%= address.landmark %></p>
+            <p><strong>City:</strong> <%= address.city %> - <%= address.zipCode %></p>
+            <p><strong>Country:</strong> <%= address.country %></p>
             </div>
-              </div>
-                  <%})%><%}%>
-                <div class="add-address-card">
-                    <p>Save multiple addresses to speed up your checkout process</p>
-                   <a href="/addAddress"> <button class="btn-add">Add new Address -></button></a>
-                </div>
-            </section>
+            <div class="actions">
+            <a href="/editAddress?id=<%=address._id%>">
+             <button class="btn edit">Edit</button>
+            </a>
+            <a href="/deleteAddress?id=<%=address._id%>">
+             <button class="btn delete"
+            onclick="return confirm('Are you sure you want to delete this Address?')">
+            Delete
+          </button>
+        </a>
+      </div>
+    </div>
+  <% }) %>
+ 
+
+<% } else { %>
+
+<div calss="box">
+<div class="default-box">
+<p>Deault address</p>
+ </div>
+</div>
+<% } %>
+<div class="add-address-card">
+    <p>Save multiple addresses to speed up your checkout process</p>
+    <a href="/addAddress">
+      <button class="btn-add">Add new Address -></button>
+    </a>
+  </div>
         </div>
     </main>
 
