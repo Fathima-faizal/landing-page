@@ -15,15 +15,16 @@ router.post('/verifyOTP',userControllers.verifyOtp)
 router.post('/resendOTP',userControllers.resendOtp)
 router.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}))
 router.get('/auth/google/callback',passport.authenticate('google',{failureRedirect:'/signup'}),(req,res)=>{
+    req.session.user = req.user._id;
     res.redirect('/home')
 })
 router.get('/home',userAuth,userControllers.homepage);
-router.get('/forgotPassword',userAuth,profileControllers.getforgotpasspage);
-router.post('/forgotEmailvalid',userAuth,profileControllers.forgotEmailValid);
-router.post('/verifyPassForgotOTP',userAuth,profileControllers.verifyForgotPassOtp)
-router.get('/resendPassword',userAuth,profileControllers.getRestPasspage);
-router.post('/resendForgotOTP',userAuth,profileControllers.getresndOtp)
-router.post('/resetPassword',userAuth,profileControllers.postNewPassword)
+router.get('/forgotPassword',profileControllers.getforgotpasspage);
+router.post('/forgotEmailvalid',profileControllers.forgotEmailValid);
+router.post('/verifyPassForgotOTP',profileControllers.verifyForgotPassOtp)
+router.get('/resendPassword',profileControllers.getRestPasspage);
+router.post('/resendForgotOTP',profileControllers.getresndOtp)
+router.post('/resetPassword',profileControllers.postNewPassword)
 router.get('/profile',userAuth,profileControllers.userProfile)
 router.get('/logout',profileControllers.logout)
 router.get('/changeEmail',userAuth,profileControllers.changeEmail)
