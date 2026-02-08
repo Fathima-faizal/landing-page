@@ -1,0 +1,181 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+}
+
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 280px;
+    background-color: #1a4d2e; /* Dark Green */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding-top: 37px;
+}
+
+.nav-item a {
+    text-decoration: none;
+    color: inherit;        
+    display: flex;         
+    align-items: center;
+    width: 100%;           
+    gap: 15px;             
+}
+
+.nav-item.active a {
+    color: #1a4d2e;       
+}
+
+.nav-item {
+    padding: 15px 40px;
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nav-item i {
+    width: 20px;
+    font-size: 18px;
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-item.active {
+    background-color: #7cfc00; /* Bright Green */
+    color: #1a4d2e;
+    font-weight: bold;
+}
+
+.nav-divider {
+    border: 0.5px solid rgba(255, 255, 255, 0.2);
+    margin: 10px 0;
+}
+
+.logout-btn {
+    margin-top: auto;
+    color: #ff6b6b;
+    padding-bottom: 30px;
+}
+
+/* Main Content Styles */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.top-header {
+    background: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.logout-top {
+    background: #2d3436;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.logout-top a {
+  text-decoration: none;
+  color:white
+}
+.content-body {
+    padding: 40px;
+    background-color: #cccccc; /* Greyish background from image */
+    height: calc(130vh - 70px);
+
+
+}
+
+/* Search and Add Button */
+.action-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.search-box {
+    background: white;
+    padding: 10px 15px;
+    width: 400px;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    margin-left: 10px;
+    width: 100%;
+}
+
+.btn-add {
+    background-color: #243b31;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Table Styling */
+.product-table {
+    width: 100%;
+    background: white;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.product-table th, .product-table td {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.product-table th {
+    font-weight: 600;
+}
+
+/* Action Column buttons/icons */
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.btn-status {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    min-width: 80px;
+}
+
+.unblock { background-color: #243b31; }
+.block { background-color: #ff3b3b; }
+
+.edit-icon { color: #333; cursor: pointer; font-size: 1.2rem; }
+.delete-icon { color: red; cursor: pointer; font-size: 1.2rem; }

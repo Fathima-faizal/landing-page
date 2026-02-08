@@ -8,7 +8,7 @@ const brandSchema=new Schema({
         required:true,
     },
     brandimage:{
-        type:[string],
+        type:[String],
         required:true,
     },
     isBlocked:{

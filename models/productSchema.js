@@ -37,11 +37,11 @@ const productSchema=new Schema({
     default:true,
    },
    color:{
-    type:string,
+    type:String,
     required:true,
    },
    productimage:{
-    type:[string],
+    type:[String],
     required:true,
    },
    isBlocked:{

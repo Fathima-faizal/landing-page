@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/product.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="nav-item ">
+                <a href="/admin/dashboard">
+                <i class="fas fa-th-large"></i> <span>Dashboard</span>
+                </a>
+            </div>
+            <div class="nav-item active">
+                <a href="/admin/product">
+                <i class="fas fa-box"></i> <span>Product Management</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#">
+                <i class="fas fa-shopping-cart"></i> <span>Order Management</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/admin/customer">
+                <i class="fas fa-user"></i> <span>User Management</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#">
+                <i class="fas fa-comment-alt"></i> <span>Review</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#">
+                <i class="fas fa-truck"></i> <span>Order</span>
+                </a>
+            </div>
+            
+            <hr class="nav-divider">
+
+            <div class="nav-item">
+                <a href="#">
+                <i class="fas fa-ticket-alt"></i> <span>Coupon</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#">
+                <i class="fas fa-layer-group"></i> <span>Category Management</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#">
+                <i class="fas fa-image"></i> <span>Banner Management</span>
+                </a>
+            </div>
+            <div class="nav-item logout-btn">
+                <a href="/admin/logout">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <h2>Product Management</h2>
+                <a href="/admin/logout">
+                <button class="logout-top">Log out</button>
+                </a>
+            </header>
+
+           <section class="content-body">
+                <div class="action-row">
+                    <div class="search-box">
+                        <i class="fa fa-search"></i>
+                        <input type="text" placeholder="Search">
+                    </div>
+                   <a href="/admin/addProduct"><button class="btn-add">Add new Product</button></a>
+                </div>
+
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product name</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><img src="https://via.placeholder.com/60x30" alt="glasses"></td>
+                            <td>Designer Frames</td>
+                            <td>$200</td>
+                            <td>20</td>
+                            <td class="actions">
+                                <button class="btn-status unblock">Unblock</button>
+                                <i class="fa-regular fa-pen-to-square edit-icon"></i>
+                                <i class="fa-regular fa-trash-can delete-icon"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><img src="https://via.placeholder.com/60x30" alt="glasses"></td>
+                            <td>Reading Glasses</td>
+                            <td>$150</td>
+                            <td>40</td>
+                            <td class="actions">
+                                <button class="btn-status unblock">Unblock</button>
+                                <i class="fa-regular fa-pen-to-square edit-icon"></i>
+                                <i class="fa-regular fa-trash-can delete-icon"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><img src="https://via.placeholder.com/60x30" alt="glasses"></td>
+                            <td>Blue light Glasses</td>
+                            <td>$100</td>
+                            <td>35</td>
+                            <td class="actions">
+                                <button class="btn-status block">Block</button>
+                                <i class="fa-regular fa-pen-to-square edit-icon"></i>
+                                <i class="fa-regular fa-trash-can delete-icon"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
