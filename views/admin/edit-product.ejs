@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional Admin Dashboard</title>
-    <link rel="stylesheet" href="/css/addProduct.css">
+    <link rel="stylesheet" href="/css/edit-product.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
 </head>
@@ -75,61 +75,78 @@
                 </a>
             </header>
             <section class="content-body">
-                <h3>Add Product</h3>
-       <form id="productForm" method="post" action="/admin/product" enctype="multipart/form-data">
+                <h3>Edit Product</h3>
+      <form id="productForm" method="post" action="/admin/editProduct/<%= product._id %>" enctype="multipart/form-data">
     <div class="form-row">
         <div>
             <label>Product Name</label>
-            <input type="text" name="productName" placeholder="Enter product name">
+            <input type="text" name="productName" value="<%= product.productName %>" placeholder="Enter product name" >
         </div>
         <div>
             <label>Category</label>
-            <input type="text" name="category" placeholder="Enter category">
+            <input type="text" name="category" value="<%= product.category %>" placeholder="Enter category" required>
         </div>
     </div>
 
     <div class="form-row full-width">
         <div>
             <label>Description</label>
-            <textarea name="description" placeholder="Enter product description"></textarea>
+           <textarea name="description"><%= product.description %></textarea>
         </div>
     </div>
 
     <div class="form-row">
         <div>
             <label>Regular Price</label>
-            <input type="number" name="regularPrice" placeholder="0.00">
+            <input type="number" name="regularPrice" value="<%= product.regularPrice %>" placeholder="0.00" required>
         </div>
         <div>
             <label>Sale Price</label>
-            <input type="number" name="salesPrice" placeholder="0.00">
+            <input type="number" name="salesPrice" value="<%= product.salesPrice %>" placeholder="0.00" required>
         </div>
     </div>
 
     <div class="form-row">
         <div>
             <label>Quantity</label>
-            <input type="number" name="quantity" placeholder="Enter quantity">
+            <input type="number" name="quantity" value="<%= product.quantity %>" placeholder="Enter quantity" required>
         </div>
     </div>
 
     <div class="image-upload-section">
+        <h3>Current Images</h3>
+       <div class="current-images-container" style="display: flex; gap: 15px; margin-bottom: 20px;">
+    <% if (product.productimage && product.productimage.length > 0) { %>
+        <% product.productimage.forEach((img, index) => { %>
+            <div class="image-preview" id="image-container-<%= index %>" style="position: relative; text-align: center;">
+                <img src="/uploads/<%= img %>" alt="<%= img %>" style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd;">
+                <br>
+                <button type="button" onclick="removeCurrentImage('<%= img %>', '<%= index %>')" style="color: white; background-color: red; border: none; padding: 5px 10px; cursor: pointer;">Remove</button>
+            </div>
+        <% }) %>
+    <% } else { %>
+        <p>No images found for this product.</p>
+    <% } %>
+</div>
+        
+       <input type="hidden" name="removedImages" id="removedImages" value="[]">
+       <hr>
         <h3>Product Images</h3>
         <div class="upload-group" style="border: 1px solid #ccc; padding: 15px;">
             <label>Product Image 1:</label>
-            <input type="file" name="productimage" class="imageInput" data-index="0" accept="image/*">
+            <input type="file" name="productimage" class="imageInput" data-index="0" accept="image/*" required>
             <div class="crop-wrapper" id="wrapper-0" style="display: flex; gap: 20px; margin-top: 10px;"></div>
         </div>
 
         <div class="upload-group" style="border: 1px solid #ccc; padding: 15px;">
             <label>Product Image 2:</label>
-            <input type="file" name="productimage" class="imageInput" data-index="1" accept="image/*">
+            <input type="file" name="productimage" class="imageInput" data-index="1" accept="image/*" required>
             <div class="crop-wrapper" id="wrapper-1" style="display: flex; gap: 20px; margin-top: 10px;"></div>
         </div>
 
-        <div class="upload-group"  style="border: 1px solid #ccc; padding: 15px;">
+        <div class="upload-group" style="border: 1px solid #ccc; padding: 15px;">
             <label>Product Image 3:</label>
-            <input type="file"name="productimage" class="imageInput" data-index="2" accept="image/*">
+            <input type="file" name="productimage" class="imageInput" data-index="2" accept="image/*" required>
             <div class="crop-wrapper" id="wrapper-2" style="display: flex; gap: 20px; margin-top: 10px;"></div>
         </div>
     </div>
@@ -141,7 +158,7 @@
     </section>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 <script>
-    const form = document.getElementById("productForm");
+   const form = document.getElementById("productForm");
     const imageInputs = document.querySelectorAll(".imageInput");
     
     let finalBlobs = [null, null, null]; 
@@ -204,15 +221,11 @@
         // 1. Show the cropped result
         previewImg.src = canvas.toDataURL("image/jpeg");
         previewImg.style.display = "block";
-
-        // 2. Destroy the cropper interface (removes the blue box and handles)
         croppers[index].destroy();
         croppers[index] = null;
 
-        // 3. Keep the original image visible but make it look like a static preview
-        // We do NOT use imgDiv.style.display = "none" anymore.
         imgDiv.style.border = "1px solid #ccc"; 
-        imgDiv.style.opacity = "0.8"; // Optional: slightly fade it to show it's "finished"
+        imgDiv.style.opacity = "0.8"; 
 
         canvas.toBlob((blob) => {
             finalBlobs[index] = blob;
@@ -227,7 +240,45 @@
             reader.readAsDataURL(file);
         });
     });
+
+       let removedImagesArray = [];
+
+function removeCurrentImage(imageName, index) {
+    if (confirm("'Are you sure you want to delete this image?'")) {
+        removedImagesArray.push(imageName);
     
+        document.getElementById('removedImages').value = JSON.stringify(removedImagesArray);
+       
+        document.getElementById(`image-container-${index}`).style.display = 'none';
+    }
+}
+form.addEventListener("submit", async (e) => {
+    e.preventDefault(); 
+
+    const formData = new FormData(form);
+    formData.delete('productimage');
+    finalBlobs.forEach((blob, index) => {
+        if (blob) {
+            formData.append('productimage', blob, `image-${index}.jpg`);
+        }
+    });
+
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.redirected) {
+            window.location.href = response.url; 
+        } else {
+            const result = await response.json();
+            alert(result.message || "Error updating product");
+        }
+    } catch (error) {
+        console.error("Submission error:", error);
+    }
+});
 
 </script>
 </body>

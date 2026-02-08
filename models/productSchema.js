@@ -11,34 +11,22 @@ const productSchema=new Schema({
     type:String,
     required:true,
    },
-   brand:{
-    type:String,
-    required:true,
-   },
    category:{
-    type:Schema.Types.ObjectId,
-    ref:'category',
+    type:String,                   //Schema.Types.ObjectId,
+   // ref:'category',
     required:true,
    },
-   regularprice:{
+   regularPrice:{
     type:Number,
     required:true,
    },
-   saleprice:{
+   salesPrice:{
     type:Number,
     required:true,
-   },
-   productoffer:{
-    type:Number,
-    default:0
    },
    quantity:{
     type:Number,
     default:true,
-   },
-   color:{
-    type:String,
-    required:true,
    },
    productimage:{
     type:[String],

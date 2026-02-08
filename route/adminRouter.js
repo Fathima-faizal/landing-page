@@ -19,7 +19,13 @@ router.get('/blockCustomer',adminAuth,customerController.bolckCustomer);
 router.get('/unblockCustomer',adminAuth,customerController.unblockCustomer);
 router.get('/product',adminAuth,productController.loadproduct)
 router.get('/addProduct',adminAuth,productController.getaddProduct)
-router.post('/addProducts',adminAuth,uploads.array('images',3),productController.addproducts)
+router.post('/product',adminAuth,uploads.array('productimage',3),productController.addproducts);
+router.get('/blockProduct',adminAuth,productController.blockProduct);
+router.get('/unblockProduct',adminAuth,productController.unblockProduct)
+router.get('/editProduct/:id',adminAuth,productController.editProduct);
+router.post('/editProduct/:id',adminAuth,uploads.array('productimage',3),productController.posteditProduct);
+router.get('/deleteProduct',adminAuth,productController.deleteProduct)
+
 
 
 module.exports=router;

@@ -73,64 +73,93 @@
                 <button class="logout-top">Log out</button>
                 </a>
             </header>
-
-           <section class="content-body">
-                <div class="action-row">
+            <section class="content-body">
+                <div class="toolbar">
+                    <form action="/admin/product" method="get">
                     <div class="search-box">
-                        <i class="fa fa-search"></i>
-                        <input type="text" placeholder="Search">
+                        <input type="text" name="search" placeholder="Search">
+                        <button class="btn-clear">Clear</button>
+                        </form>
+                       
                     </div>
-                   <a href="/admin/addProduct"><button class="btn-add">Add new Product</button></a>
+                     <a href="/admin/addProduct"><button class="btn-add">Add new Product</button></a>
                 </div>
 
-                <table class="product-table">
+                <table class="user-table">
                     <thead>
                         <tr>
-                            <th>Image</th>
-                            <th>Product name</th>
-                            <th>Price</th>
-                            <th>Stock</th>
+                            <th>ProductName</th>
+                            
+                            <th>Category</th>
+                            <th>Regular Price</th>
+                            <th>Sales Price</th>
+                            <th>Quantity</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td><img src="https://via.placeholder.com/60x30" alt="glasses"></td>
-                            <td>Designer Frames</td>
-                            <td>$200</td>
-                            <td>20</td>
-                            <td class="actions">
-                                <button class="btn-status unblock">Unblock</button>
-                                <i class="fa-regular fa-pen-to-square edit-icon"></i>
-                                <i class="fa-regular fa-trash-can delete-icon"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><img src="https://via.placeholder.com/60x30" alt="glasses"></td>
-                            <td>Reading Glasses</td>
-                            <td>$150</td>
-                            <td>40</td>
-                            <td class="actions">
-                                <button class="btn-status unblock">Unblock</button>
-                                <i class="fa-regular fa-pen-to-square edit-icon"></i>
-                                <i class="fa-regular fa-trash-can delete-icon"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><img src="https://via.placeholder.com/60x30" alt="glasses"></td>
-                            <td>Blue light Glasses</td>
-                            <td>$100</td>
-                            <td>35</td>
-                            <td class="actions">
-                                <button class="btn-status block">Block</button>
-                                <i class="fa-regular fa-pen-to-square edit-icon"></i>
-                                <i class="fa-regular fa-trash-can delete-icon"></i>
-                            </td>
-                        </tr>
-                    </tbody>
+                   <tbody>
+    <% for(let i=0; i < data.length; i++) { %> <tr>
+        <td><%= data[i].productName %></td>
+        <td><%= data[i].category  %></td>
+        <td><%= data[i].regularPrice %></td> <td><%= data[i].salesPrice %></td>   <td><%= data[i].quantity %></td>
+        <td class="actions">
+            <% if(data[i].isBlocked === false) { %>
+                <a href="/admin/blockProduct?id=<%=data[i]._id%>">
+                    <button class="btn-block">Block</button>
+                </a>
+            <% } else { %>
+                <a href="/admin/unblockProduct?id=<%=data[i]._id%>">
+                    <button class="btn-unblock">Unblock</button>
+                </a>
+            <% } %>
+            <a href="/admin/editProduct/<%= data[i]._id %>">
+    <i class="fa-regular fa-pen-to-square" style="color: black; margin-top: 5px;"></i>
+</a>
+             <a href="/admin/deleteProduct?id=<%=data[i]._id%>" onclick="return confirmDelete(event, '<%=data[i].productName%>')">
+             <i class="fa-regular fa-trash-can" style="color:red;margin-top: 5px;"></i>
+           </a>
+        </td>
+       
+    </tr>
+    <% } %>
+    
+</tbody>
                 </table>
+                <div class="container">
+                    <nav aria-label="page navigation">
+                        <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
+                            <%for(let i=1;i<=totalPages;i++){%>
+                                <li class="page-item <%=(i===currentPage)? 'active':''%>">
+                                 <a class="page-link" href="?page=<%= i %>&search=<%= search %>"><%= i %></a>
+                                </li>
+                                <%}%>
+                        </ul>
+                    </nav>
+                </div>
             </section>
         </main>
     </div>
+   <script>
+    window.addEventListener("pageshow", function (event) {
+        var historyTraversal = event.persisted || 
+                               (typeof window.performance != "undefined" && 
+                                window.performance.navigation.type === 2);
+        if (historyTraversal) {
+            window.location.reload();
+        }
+    });
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+        window.history.go(1);
+    };
+function confirmDelete(event, productName) {
+    if (!confirm(`Are you sure you want to delete "${productName}"?`)) {
+        event.preventDefault(); // Stops the link from opening
+        return false;
+    }
+    return true;
+}
+
+</script>
 </body>
 </html>
