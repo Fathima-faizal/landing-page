@@ -71,7 +71,10 @@ const editpostCategory=async(req,res)=>{
     try {
         const id=req.params.id;
         const {name,description}=req.body;
-        const existingCategory=await Category.findOne({name:name});
+        const existingCategory=await Category.findOne({
+                name:name,
+                 _id: { $ne: id },
+            });
         if(existingCategory){
             return res.status(500).json({message:`Category exists, please choose another name`})
         }

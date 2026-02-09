@@ -6,6 +6,7 @@
     <title>Professional Admin Dashboard</title>
      <link rel="stylesheet" href="/css/addCategory.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="dashboard-container">
@@ -78,11 +79,13 @@
     <div class="form-row">
         <div>
             <label>Category Name</label>
-            <input type="text" name="name" placeholder="Enter Category name">
+            <input type="text"id=name name="name" placeholder="Enter Category name">
+            <small id="name-error" class="error-message" style="color: red;"></small>
         </div>
         <div>
             <label>Description</label>
-            <textarea type="text" name="description" placeholder="Enter Description" rows="3"></textarea>
+            <textarea type="text" id="description" name="description" placeholder="Enter Description" rows="3"></textarea>
+            <small id="description-error" class="error-message" style="color: red;"></small>
         </div>
     </div>
     <div class="submit-container">
@@ -90,7 +93,7 @@
     </div>
 </form>
 </section>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     function handleFormsubmit(event){
     event.preventDefault();
@@ -137,9 +140,9 @@
 function validataForm(){
     clearErrorMessages();
     const name=document.getElementById('name').value.trim();
-    const description=document.getElementById('description')[0].value.trim()
-    isValid=true
-}
+    const description=document.getElementById('description').value.trim()
+    let isValid=true
+
 if(name==''){
     displayErrorMessage('name-error','Please enter a name');
     isValid=false
@@ -148,18 +151,21 @@ if(name==''){
       isValid=false
 }
 if(description==''){
-    displayErrorMessage('descripiton-error','Please enter a description');
-    isvalid=false
+    displayErrorMessage('description-error','Please enter a description');
+    isValid=false
 }
 return isValid;
+}
 function displayErrorMessage(elementId,message){
      var errorElement=document.getElementById(elementId);
+     if(errorElement){
      errorElement.innerHTML=message;
-     errorElement.style.displey='black';
+     errorElement.style.display='block';
+     }
 }
 function clearErrorMessages(){
     const errorElements=document.getElementsByClassName('error-message');
-    Array.form(errorElements).forEach(element => {
+    Array.from(errorElements).forEach(element => {
         element.innerText='',
         element.style.displey='none'
     });
