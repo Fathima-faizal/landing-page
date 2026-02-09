@@ -31,9 +31,10 @@ app.use(passport.session())
 app.set('view engine','ejs')
 app.set('views',[path.join(__dirname, 'views/user'), path.join(__dirname, 'views/admin')]);
 app.use(express.static(path.join(__dirname,'public')));
-app.use((req, res, next) => {
-    res.status(404).render('404', { message: "Page Not Found" }); 
-  
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({success: false,message: err.message || "Internal Server Error"});
 });
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads'))); 
 app.use('/uploads', express.static('uploads'));
@@ -43,6 +44,10 @@ app.use('/uploads', express.static('uploads'));
 
 app.use('/',userRouter);
 app.use('/admin',adminRouter)
+app.use((req, res, next) => {
+    res.status(404).json({success:false,message: "Page Not Found" }); 
+  
+});
 app.listen(process.env.port,()=>{
     console.log('server running on port')
 })

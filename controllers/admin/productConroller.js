@@ -37,7 +37,7 @@ const loadproduct = async (req, res) => {
 
  const getaddProduct=async(req,res)=>{
    try {
-      const category=await Category.find({isListed:true})
+      const category=await Category.find({islisted:true})
       const brand=await Brand.find({isBlocked:true})
       res.render('addProduct',{
         cat:category
@@ -60,7 +60,6 @@ const addproducts=async(req,res)=>{
      if (req.files && req.files.length > 0) {
     for (let i = 0; i < req.files.length; i++) {
         const originalPath = req.files[i].path;
-        // Ensure this directory exists: public/uploads
         const filename = `resized-${Date.now()}-${req.files[i].filename}`;
         const savePath = path.join(__dirname, 'public', 'uploads', filename);
 

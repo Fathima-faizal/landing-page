@@ -59,7 +59,7 @@ body {
 .nav-item.active {
     background-color: #7cfc00; /* Bright Green */
     color: #1a4d2e;
-    font-weight: bold;
+  font-weight: 700;
 }
 
 .nav-divider {
