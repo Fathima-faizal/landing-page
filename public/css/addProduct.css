@@ -213,3 +213,20 @@ input:focus, textarea:focus {
     margin-bottom: 5px;
     display: block;
 }
+/* This targets the select dropdown to match your text inputs */
+select[name="category"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    height: 45px; 
+    appearance: none; 
+    margin-top: 4px;
+}
+.error-message {
+    color: #ee0b22; 
+    margin-top: 2px;
+    height: 15px;
+    display: none;
+}

@@ -1,7 +1,5 @@
 const Product=require('../../models/productSchema')
 const Category=require('../../models/categorySchema');
-const Brand=require('../../models/brandSchema')
-const User=require('../../models/userSchema')
 const fs=require('fs')
 const path=require('path');
 const sharp=require('sharp');
@@ -14,7 +12,7 @@ const loadproduct = async (req, res) => {
         const ProductData = await Product.find({
             productName: { $regex: search, $options: "i" }
         })
-        //.populate('category') 
+        .populate('category') 
         .sort({ createdOn: -1 })
         .limit(limit)
         .skip((page - 1) * limit);
@@ -38,9 +36,8 @@ const loadproduct = async (req, res) => {
  const getaddProduct=async(req,res)=>{
    try {
       const category=await Category.find({islisted:true})
-      const brand=await Brand.find({isBlocked:true})
       res.render('addProduct',{
-        cat:category
+        cat:category,
       })
    } catch (error) {
 
@@ -55,31 +52,36 @@ const addproducts=async(req,res)=>{
       productName:products.productName,
 
     })
+    const {productName,description,regularPrice,salesPrice,quantity}=req.body;
+    if(!productName||!description||!regularPrice||!salesPrice||!quantity){
+      res.redirect('/admin/addProduct')
+    }
     if(!productExists){
       const images=[];
      if (req.files && req.files.length > 0) {
     for (let i = 0; i < req.files.length; i++) {
         const originalPath = req.files[i].path;
         const filename = `resized-${Date.now()}-${req.files[i].filename}`;
-        const savePath = path.join(__dirname, 'public', 'uploads', filename);
+        const savePath = path.join(process.cwd(), 'public', 'uploads', filename);
 
         await sharp(originalPath)
             .resize({ width: 440, height: 440 })
             .toFile(savePath);
+            fs.unlinkSync(originalPath);
 
         images.push(filename);
     }
 }
 
-      // const categoryid=await Category.findOne({name:products.category});
-      // if(!categoryid){
-      //   return res.status(400).json('invalid category name')
-      // }
+      const categoryid=await Category.findOne({name:products.category});
+      if(!categoryid){
+        return res.status(400).json('invalid category name')
+      }
       const newProduct=new Product({
         productName:products.productName,
         description:products.description,
         brand:products.brand,
-         category:products.category,                            //categoryid._id,
+        category:categoryid._id,
         regularPrice:products.regularPrice,
         salesPrice:products.salesPrice,
         createdOn:new Date(),
@@ -130,11 +132,11 @@ const unblockProduct=async(req,res)=>{
 const editProduct=async(req,res)=>{
    try {
      const id=req.params.id;
-     const product=await Product.findOne({_id:id});
-     //const category=await Category.findOne({});
+     const product=await Product.findOne({_id:id}).populate('category');;
+     const category=await Category.find({islisted:true});
      res.render('edit-product',{
      product:product,
-     //category:Category
+     cat:category,
      })
    } catch (error) {
      console.log('edit error',error);

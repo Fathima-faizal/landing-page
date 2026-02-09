@@ -83,9 +83,16 @@
             <input type="text" name="productName" value="<%= product.productName %>" placeholder="Enter product name" >
         </div>
         <div>
-            <label>Category</label>
-            <input type="text" name="category" value="<%= product.category %>" placeholder="Enter category" required>
-        </div>
+    <label>Category</label>
+    <select name="category" required>
+        <% for(let i=0; i < cat.length; i++) { %>
+            <option value="<%= cat[i]._id %>" 
+                <%= product.category && product.category._id.toString() === cat[i]._id.toString() ? 'selected' : '' %>>
+                <%= cat[i].name %>
+            </option>
+        <% } %>
+    </select>
+</div>
     </div>
 
     <div class="form-row full-width">
@@ -217,8 +224,6 @@
                saveBtn.addEventListener("click", () => {
     if (croppers[index]) {
         const canvas = croppers[index].getCroppedCanvas({ width: 440, height: 440 });
-        
-        // 1. Show the cropped result
         previewImg.src = canvas.toDataURL("image/jpeg");
         previewImg.style.display = "block";
         croppers[index].destroy();

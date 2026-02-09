@@ -12,8 +12,8 @@ const productSchema=new Schema({
     required:true,
    },
    category:{
-    type:String,                   //Schema.Types.ObjectId,
-   // ref:'category',
+    type:Schema.Types.ObjectId,
+   ref:'category',
     required:true,
    },
    regularPrice:{

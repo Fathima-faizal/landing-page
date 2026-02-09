@@ -213,3 +213,13 @@ input:focus, textarea:focus {
     margin-bottom: 5px;
     display: block;
 }
+select[name="category"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    height: 45px; 
+    appearance: none; 
+    margin-top: 4px;
+}
