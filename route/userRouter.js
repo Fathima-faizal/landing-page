@@ -42,6 +42,6 @@ router.post('/addAddress',userAuth,profileControllers.postaddAddress)
 router.get('/editAddress',userAuth,profileControllers.editAddress)
 router.post('/editAddress',userAuth,profileControllers.postEditAddress)
 router.get('/deleteAddress',userAuth,profileControllers.deleteAddress)
-
+router.get('/shop',userAuth,userControllers.loadshoppingpage)
 
 module.exports=router

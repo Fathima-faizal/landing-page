@@ -10,7 +10,7 @@ const loadcategory=async(req,res)=>{
         const categoryData=await Category.find({
             name:{$regex:search,$options:"i"}
         })
-        .sort({createAt:-1})
+        .sort({createdAt:-1})
         .skip(skip)
         .limit(limit)
  

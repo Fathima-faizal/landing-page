@@ -51,6 +51,11 @@
                 </a>
             </div>
             <div class="nav-item">
+                <a href="/admin/brand">
+                 <i class="fa-solid fa-tags"></i><span>Brand</span>
+                </a>
+            </div>
+            <div class="nav-item">
                 <a href="/admin/category">
                 <i class="fas fa-layer-group"></i> <span>Category Management</span>
                 </a>
@@ -58,11 +63,6 @@
             <div class="nav-item">
                 <a href="#">
                 <i class="fas fa-image"></i> <span>Banner Management</span>
-                </a>
-            </div>
-            <div class="nav-item logout-btn">
-                <a href="/admin/logout">
-                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
                 </a>
             </div>
         </aside>
@@ -84,13 +84,14 @@
         </div>
         <div>
             <label>Category</label>
-             <select name="category" id="category">
+             <select name="category">
                 <%for(let i=0;i<cat.length;i++){%>
                     <option value="<%=cat[i].name%>"><%=cat[i].name%></option>
                     <%=cat[i].name%>
                     <%}%>
              </select>
         </div>
+        
     </div>
 
     <div class="form-row full-width">
@@ -99,25 +100,33 @@
             <textarea name="description" id="description" placeholder="Enter product description"></textarea>
         </div>
     </div>
-
     <div class="form-row">
         <div>
             <label>Regular Price</label>
             <input type="number" id="regularPrice" name="regularPrice" placeholder="0.00">
         </div>
         <div>
-            <label>Sale Price</label>
-            <input type="number" id="salesPrice" name="salesPrice" placeholder="0.00">
+            <label>Brand</label>
+             <select name="brand" id="category">
+                <%for(let i=0;i<brand.length;i++){%>
+                    <option value="<%=brand[i].name%>"><%=brand[i].name%></option>
+                    <%=brand[i].name%>
+                    <%}%>
+             </select>
         </div>
     </div>
 
     <div class="form-row">
+        
+        <div>
+            <label>Sale Price</label>
+            <input type="number" id="salesPrice" name="salesPrice" placeholder="0.00">
+        </div>
         <div>
             <label>Quantity</label>
             <input type="number" id="quantity" name="quantity" placeholder="Enter quantity">
         </div>
     </div>
-
     <div class="image-upload-section">
         <h3>Product Images</h3>
         <div class="upload-group" style="border: 1px solid #ccc; padding: 15px;">

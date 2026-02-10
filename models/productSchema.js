@@ -28,6 +28,14 @@ const productSchema=new Schema({
     type:Number,
     default:true,
    },
+   brand:{
+      type:String,
+      default:true,
+   },
+   color:{
+      type:String,
+      default:true
+   },
    productimage:{
     type:[String],
     required:true,

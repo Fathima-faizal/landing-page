@@ -1,4 +1,7 @@
 const User=require('../../models/userSchema');
+const Category=require('../../models/categorySchema');
+const Product=require('../../models/productSchema');
+const Brand=require('../../models/brandSchema')
 const env=require('dotenv').config
 const nodemailer=require('nodemailer');
 const bcrypt=require('bcrypt');
@@ -175,6 +178,49 @@ const homepage=async(req,res)=>{
     res.render('login',{message:'login failed'});
   }
 }
+const loadshoppingpage=async(req,res)=>{
+  try {
+    const user=req.session.user;
+    const userData=await User.findOne({_id:user});
+    const category=await Category.find({islisted:true});
+    const categoryIds=category.map((Category)=>Category._id.toString());
+    let search = req.query.search || '';
+    const page=parseInt(req.query.page)||1;
+    const limit=5;
+    const skip=(page-1)*limit;
+    const product=await Product.find({
+      isBlocked:false,
+      category:{$in:categoryIds},
+      quantity:{$gt:0}
+
+    }).sort({CreatedOn:-1})
+    .skip(skip)
+    .limit(limit);
+    const totalproducts=await Product.countDocuments({
+      isBlocked:false,
+      category:{$in:categoryIds},
+      quantity:{$gt:0}
+    })
+    const currentpage=Math.ceil(totalproducts/limit);
+    const brand=await Brand.find({isBlocked:false});
+  
+    const categoryWithIds=category.map(category=>({_id:category.id,name:category.name}));
+
+    res.render('shop',{
+      user:userData,
+      products:product,
+      category:categoryWithIds,
+      brand:brand,
+      totalproducts:totalproducts,
+      totalpages: currentpage,  
+      currentPage: page,      
+       search:search
+    })
+  } catch (error) {
+    console.log('error',error);
+    res.status(500).send('Internal server error')
+  }
+}
 
 module.exports={
     loadLandingpage,
@@ -185,4 +231,5 @@ module.exports={
     resendOtp,
     homepage,
     login,
+    loadshoppingpage,
 }

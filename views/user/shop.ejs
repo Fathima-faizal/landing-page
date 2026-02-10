@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionVogue - Home</title>
+    <link rel="stylesheet" href="/css/shop.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    
+    <header>
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="/home">Home</a></li>
+                <li><a href="/shop">shop</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact us</a></li>
+            </ul>
+            <div class="logo">VisionVogue</div>
+            <div class="nav-icons">
+               <a href="" ><i class="fa-regular fa-heart"></i></a>
+               <a href=""> <i class="fa-solid fa-cart-shopping"></i></a>
+              <a href="/profile" > <i class="fa-regular fa-user"></i></a>
+            </div>
+        </nav>
+    </header>
+     <main class="container">
+        <aside class="sidebar">
+            <div class="filter-group">
+    <h3>Category</h3>
+    <ul>
+        <% for(let i=0; i < category.length; i++) { %>
+            <li>
+                <label>
+                    <input type="checkbox" name="category" value="<%= category[i]._id %>" class="category-checkbox">
+                    <%= category[i].name %>
+                </label>
+            </li>
+        <% } %>
+    </ul>
+</div>
+            <hr>
+           <div class="filter-group">
+    <h3>brand</h3>
+    <ul>
+        <% for(let i=0; i < brand.length; i++) { %>
+            <li>
+                <label>
+                    <input type="checkbox" name="brand" value="<%= brand[i]._id %>" class="category-checkbox">
+                    <%= brand[i].name %>
+                </label>
+            </li>
+        <% } %>
+    </ul>
+</div>
+            <hr>
+            <div class="filter-group">
+                <h3>Price</h3>
+                <div class="price-input">
+                    <input type="text" placeholder="Min">
+                    <span>—</span>
+                    <input type="text" placeholder="Max">
+                </div>
+                <button class="filter-btn">Filter</button>
+            </div>
+        </aside>
+     
+        <section class="content">
+            <div class="content-header">
+                <h1>Collections</h1>
+                <div class="search-box">
+                        <input type="text" name="search" placeholder="Search">
+                        <button class="btn-clear">Clear</button>
+            </div> 
+            <div class="sort-container">
+  <label for="sort-select" class="visually-hidden">Sort products</label>
+  <select id="sort-select" class="sort-dropdown">
+    <option value="default" selected disabled> Sort </option>
+    <option value="az"> A to Z</option>
+    <option value="za"> Z to A</option>
+    <option value="low-high"> Low to High</option>
+    <option value="high-low"> High to Low</option>
+  </select>
+</div>
+
+    <div class="product-grid">
+    <% for(let i=0; i < products.length; i++){ %>
+        <div class="product-card">
+            <div class="product-image-container">
+                <span class="wishlist"><i class="fa-regular fa-heart"></i></span>
+                <img src="/uploads/<%= products[i].productimage[0] %>" alt="<%= products[i].productName %>">
+            </div>
+            
+            <div class="product-info">
+                <h4 class="product-title"><%= category[i].name %></h4>
+                <p class="product-brand">Product Name: <%= products[i].productName %></p>
+                <p class="product-brand">Brand: <%= products[i].brand %></p>
+                <div class="price-section">
+                    <span class="sales-price">₹<%= products[i].salesPrice.toLocaleString('en-IN') %></span>
+                    <span class="regular-price"><strike>₹<%= products[i].regularPrice.toLocaleString('en-IN') %></strike></span>
+                </div>
+                <button class="add-to-cart-btn">View Details</button>
+            </div>
+        </div>
+    <% } %>
+</div>
+    <div class="container">
+                    <nav aria-label="page navigation">
+                        <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
+                            <%for(let i=1;i<=totalpages;i++){%>
+                                <li class="page-item <%=(i===currentPage)? 'active':''%>">
+                                 <a class="page-link" href="?page=<%= i %>&search=<%= search %>"><%= i %></a>
+                                </li>
+                                <%}%>
+                        </ul>
+                    </nav>
+                </div>
+        </section>
+     </main>
+     
+     <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>About Us:</h4>
+                <a href="#">Our Story</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms</a>
+                <a href="#">FAQ</a>
+            </div>
+            <div class="footer-column">
+                <h4>Support:</h4>
+                <a href="#">Shipping Policy</a>
+                <a href="#">Returns</a>
+                <a href="#">Order Tracking</a>
+                <a href="#">Help</a>
+            </div>
+            <div class="footer-column">
+                <h4>My Account:</h4>
+                <a href="#">Profile</a>
+                <a href="#">My Orders</a>
+                <a href="#">Wishlist</a>
+                <a href="#">Refer & Earn</a>
+            </div>
+            <div class="footer-column">
+                <h4>Contact:</h4>
+                <p>Email: visionvogue@gmail.com</p>
+                <p>Phone: 8923457190</p>
+            </div>
+        </div>
+        <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
+    </footer>
+    
+   <script>
+    function moveSlide(index) {
+    const wrapper = document.getElementById('offerWrapper');
+    const dots = document.querySelectorAll('.dot');
+    
+    // Move the wrapper by 100% (which is 2 cards)
+    wrapper.style.transform = `translateX(-${index * 50}%)`;
+    
+    // Update active dot
+    dots.forEach(dot => dot.classList.remove('active'));
+    dots[index].classList.add('active');
+}
+    window.addEventListener( "pageshow", function ( event ) {
+        var historyTraversal = event.persisted || 
+                               ( typeof window.performance != "undefined" && 
+                                 window.performance.navigation.type === 2 );
+        if ( historyTraversal ) {
+            window.location.reload();
+        }
+    });
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+        window.history.go(1);
+    };
+
+</script>
+</body>
+</html>

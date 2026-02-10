@@ -1,5 +1,6 @@
 const Product=require('../../models/productSchema')
 const Category=require('../../models/categorySchema');
+const Brand=require('../../models/brandSchema')
 const fs=require('fs')
 const path=require('path');
 const sharp=require('sharp');
@@ -36,8 +37,10 @@ const loadproduct = async (req, res) => {
  const getaddProduct=async(req,res)=>{
    try {
       const category=await Category.find({islisted:true})
+      const brand=await Brand.find({isBlocked:false})
       res.render('addProduct',{
         cat:category,
+        brand:brand,
       })
    } catch (error) {
 
@@ -86,6 +89,7 @@ const addproducts=async(req,res)=>{
         salesPrice:products.salesPrice,
         createdOn:new Date(),
         quantity:products.quantity,
+        color:products.color,
         size:products.size,
         productimage:images,
         status:'Available',
@@ -134,9 +138,11 @@ const editProduct=async(req,res)=>{
      const id=req.params.id;
      const product=await Product.findOne({_id:id}).populate('category');;
      const category=await Category.find({islisted:true});
+     const brand=await Brand.find({isBlocked:false})
      res.render('edit-product',{
      product:product,
      cat:category,
+     brand:brand,
      })
    } catch (error) {
      console.log('edit error',error);
@@ -171,9 +177,11 @@ const posteditProduct = async (req, res) => {
             productName: data.productName,
             description: data.description,
             category: data.category,
+            brand:data.brand,
             regularPrice: data.regularPrice,
             salesPrice: data.salesPrice,
             quantity: data.quantity,
+            color:data.color,
             productimage: images,
         };
 

@@ -41,7 +41,6 @@ app.use('/uploads', express.static('uploads'));
 
 
 
-
 app.use('/',userRouter);
 app.use('/admin',adminRouter)
 app.use((req, res, next) => {

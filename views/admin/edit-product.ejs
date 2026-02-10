@@ -60,11 +60,6 @@
                 <i class="fas fa-image"></i> <span>Banner Management</span>
                 </a>
             </div>
-            <div class="nav-item logout-btn">
-                <a href="/admin/logout">
-                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
-                </a>
-            </div>
         </aside>
 
         <main class="main-content">
@@ -92,6 +87,7 @@
             </option>
         <% } %>
     </select>
+    
 </div>
     </div>
 
@@ -104,16 +100,28 @@
 
     <div class="form-row">
         <div>
+            <label>Brand</label>
+    <select name="brand" required>
+    <%for(let i=0;i<brand.length;i++){%>
+    <option value="<%=brand[i].name%>">
+        
+         <%=brand[i].name%>
+    </option>
+    <%}%>
+    </select>
+        </div>
+        <div>
             <label>Regular Price</label>
             <input type="number" name="regularPrice" value="<%= product.regularPrice %>" placeholder="0.00" required>
         </div>
+        
+    </div>
+
+    <div class="form-row">
         <div>
             <label>Sale Price</label>
             <input type="number" name="salesPrice" value="<%= product.salesPrice %>" placeholder="0.00" required>
         </div>
-    </div>
-
-    <div class="form-row">
         <div>
             <label>Quantity</label>
             <input type="number" name="quantity" value="<%= product.quantity %>" placeholder="Enter quantity" required>

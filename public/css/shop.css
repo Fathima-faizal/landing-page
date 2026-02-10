@@ -1,0 +1,432 @@
+/* Global Reset and Colors */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #2d6a3e;
+    height: 100vh;
+    
+  
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 15px 50px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 1.4rem;
+}
+
+.nav-icons {
+    display: flex;
+    gap: 20px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+.nav-icons a{
+    color: #0a140d;
+    text-decoration: none;
+}
+.container {
+    display: flex;
+  
+    gap: 20px;
+   
+}
+
+.sidebar {
+    width: 280px;
+    background: #ffffff; 
+    padding: 25px;
+   border-radius: 12px;  
+     height: 100%; 
+    margin: 20px;
+   margin-top: 70px;
+}
+
+.filter-group {
+    margin-bottom: 30px; /* ഓരോ ഗ്രൂപ്പിനും ഇടയിൽ ഗ്യാപ്പ് നൽകുന്നു */
+}
+
+.filter-group h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 15px;
+    text-transform: uppercase; /* ഹെഡിംഗ് കൂടുതൽ വ്യക്തമാകാൻ */
+    letter-spacing: 0.5px;
+}
+
+.filter-group ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.filter-group li {
+    margin-bottom: 12px;
+}
+
+.filter-group label {
+    display: flex; 
+    align-items: center; 
+    cursor: pointer;
+    font-size: 14px;
+    color: #444;
+    transition: color 0.2s ease;
+}
+
+.filter-group label:hover {
+    color: #2d6a3e;
+}
+
+.filter-group input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin-right: 12px; 
+    cursor: pointer;
+    accent-color: #2d6a3e; 
+}
+
+/* Price Input Section */
+.price-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.price-input input {
+    width: 70px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    outline: none;
+}
+
+.price-input span {
+    color: #888;
+}
+
+.filter-btn {
+    width: 100%; 
+    background: #0a1f0a;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-top: 15px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background 0.3s;
+}
+
+.filter-btn:hover {
+    background: #1b5135;
+}
+
+/* Divider Line */
+hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 20px 0;
+}
+
+/* Main Content Area */
+.content {
+    flex-grow: 1;
+    background-color: var(--main-green);
+    padding: 40px;
+    color: white;
+   align-self: flex-start; 
+}
+
+
+.content-header h1 {
+    margin-top: 0;
+}
+
+
+
+.search-box {
+    display: flex;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+    width: 50%;
+    margin-top: 10px;
+}
+
+.search-box input {
+    border: none;
+    padding: 10px;
+    width: 280px;
+    outline: none;
+}
+
+.btn-clear {
+    background-color: #1b5135;
+    color: white;
+    border: none;
+    padding: 0 15px;
+    cursor: pointer;
+    margin-left: 135px;
+}
+/* Container for positioning */
+.sort-container {
+  position: relative;
+  display: inline-block;
+  margin-left: 84%;
+}
+
+/* The actual dropdown styling */
+.sort-dropdown {
+  background-color: #0d1b0a; /* Dark green/black to match your buttons */
+  color: white;
+  padding: 8px 0px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  appearance: none; /* Removes default browser arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 35px; /* Space for custom arrow */
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.sort-dropdown:hover {
+  background-color: #1a2e16;
+}
+
+.sort-dropdown:focus {
+  outline: 2px solid #ffffff50;
+}
+
+/* Default: left align all options */
+.sort-dropdown option {
+  text-align: left;
+}
+
+/* Center only first 3 options */
+.sort-dropdown option:nth-child(1),
+.sort-dropdown option:nth-child(2),
+.sort-dropdown option:nth-child(3),
+.sort-dropdown option:nth-child(4),
+.sort-dropdown option:nth-child(5) {
+  text-align: center;
+} 
+
+/* Custom Arrow Icon */
+.sort-container::after {
+  content: '▼';
+  font-size: 10px;
+  color: white;
+  position: absolute;
+  left: 89px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* Makes sure clicking the arrow still opens the menu */
+}
+
+/* For accessibility: hides label but keeps it for screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* Product Grid Setup */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 20px;
+    padding: 20px 0;
+      max-height: calc(2 * 410px); /* height of 2 cards */
+    overflow: hidden;
+}
+
+/* Individual Product Card */
+.product-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    color: #333; /* ടെക്സ്റ്റ് കളർ കറുപ്പാക്കുന്നു */
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Image Container */
+.product-image-container {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    background: #f5f5f5;
+}
+
+.product-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}
+
+.wishlist {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    z-index: 2;
+}
+
+/* Product Info Section */
+.product-info {
+    padding: 15px;
+    text-align: left;
+}
+
+.product-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-brand {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.price-section {
+    margin-bottom: 15px;
+}
+
+.sales-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #2d6a3e;
+    margin-right: 10px;
+}
+
+.regular-price {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.add-to-cart-btn {
+    width: 100%;
+    padding: 10px;
+    background: #2d6a3e;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.add-to-cart-btn:hover {
+    background: #1b5135;
+}
+
+/* Mobile Responsive */
+
+footer {
+    background-color: #6b8e61;
+    color: #f1f1f1;
+    padding: 40px 50px;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 30px;
+}
+
+.footer-column a {
+    display: block;
+    color: #f1f1f1;
+    text-decoration: none;
+    margin-bottom: 5px;
+    font-size: 0.85rem;
+}
+
+.copyright {
+    text-align: center;
+    margin-top: 100px;
+    font-size: 0.75rem;
+}
+.pagination {
+    display: flex;             
+    list-style-type: none;     
+    padding: 0;
+    justify-content: center;   
+    gap: 10px;   
+    margin-top: 40px;   
+    margin-left: 764%;           
+}
+
+
+.page-link {
+    text-decoration: none;     
+    color: #333;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s;
+}
+
+.page-item.active .page-link {
+    background-color: #49ad65;
+    color: white;
+    border-color: #49ad65;
+  
+}
+
+.page-link:hover {
+    background-color: #e2e6ea;
+}
+@media (max-width: 600px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+}

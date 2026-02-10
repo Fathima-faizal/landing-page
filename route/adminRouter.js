@@ -2,14 +2,13 @@ const express=require('express');
 const router=express.Router();
 const adminController=require('../controllers/admin/adminController');
 const customerController=require('../controllers/admin/customerController')
+const brandController=require('../controllers/admin/brandController');
 const productController=require('../controllers/admin/productConroller')
 const categoryController=require('../controllers/admin/categoryController')
 const {userAuth,adminAuth}=require('../middleware/auth')
 const multer=require('multer');
 const storage=require('../helpers/multer');
 const uploads=multer({storage:storage})
-
-
 
 router.get('/login',adminController.adminLoginloaded);
 router.post('/login',adminController.adminlogin);
@@ -34,6 +33,13 @@ router.post('/editCategory/:id',adminAuth,categoryController.editpostCategory)
 router.get('/deleteCategory',adminAuth,categoryController.deleteCategory)
 router.get('/listCategory',adminAuth,categoryController.listCategory);
 router.get('/unlistCategory',adminAuth,categoryController.unlistCategory);
-
+router.get('/brand',adminAuth,brandController.getbrand);
+router.get('/addbrand',adminAuth,brandController.getaddbrand);
+router.post('/brand',adminAuth,brandController.postaddbrand);
+router.get('/editBrand/:id',adminAuth,brandController.geteditbrand);
+router.post('/editBrand/:id',adminAuth,brandController.posteditbrand);
+router.get('/deleteBrand',adminAuth,brandController.deletebrand);
+router.get('/blockBrand',adminAuth,brandController.blockbrand);
+router.get('/unblockBrand',adminAuth,brandController.unblockbrand)
 
 module.exports=router;
