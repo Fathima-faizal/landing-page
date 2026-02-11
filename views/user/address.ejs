@@ -41,10 +41,15 @@
                    <a href="/logout"><li>Log out</li> </a>
                 </ul>
             </aside>
-            <% if(userAddress && userAddress.address.length > 0){ %>
+            <div class="address-content">
+                <% if (userAddress && userAddress.address.length > 0) { %>
             <% userAddress.address.forEach((address)=>{ %>
             <div class="address-card">
+                <div class="address-card">
             <div class="address-details">
+                <% if (address.isDefault) { %>
+        <span class="default-badge">Default Address</span>
+    <% } %>
              <p><strong>AddressType:</strong> <%=address.addressType%></p>
              <p><strong>House:</strong> <%= address.houseName %></p>
              <p><strong>Street:</strong> <%= address.street %></p>
@@ -53,6 +58,7 @@
             <p><strong>Country:</strong> <%= address.country %></p>
             </div>
             <div class="actions">
+                 
             <a href="/editAddress?id=<%=address._id%>">
              <button class="btn edit">Edit</button>
             </a>
@@ -62,27 +68,35 @@
             Delete
           </button>
         </a>
+        <%if(address.isDefault===false){%>
+                <a href="/defaultAddress?id=<%=address._id%>"><button class="btn-block">Deafault Address</button></a>
+                 <%}%>
       </div>
+                </div>
     </div>
   <% }) %>
- 
-
-<% } else { %>
-
-<div calss="box">
-<div class="default-box">
-<p>Deault address</p>
- </div>
-</div>
-<% } %>
+ <%}%>
 <div class="add-address-card">
     <p>Save multiple addresses to speed up your checkout process</p>
     <a href="/addAddress">
       <button class="btn-add">Add new Address -></button>
     </a>
   </div>
+    </div>
         </div>
+      <div class="container">
+                    <nav aria-label="page navigation">
+                        <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
+                            <%for(let i=1;i<=totalPages;i++){%>
+                                <li class="page-item <%=(i===currentPage)? 'active':''%>">
+                                 <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                                </li>
+                                <%}%>
+                        </ul>
+                    </nav>
+                </div>
     </main>
+
 
     <footer class="footer">
         <div class="footer-columns">

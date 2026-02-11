@@ -62,6 +62,8 @@ body {
     background: white;
     color: #333;
     width: 200px;
+    min-width: 200px;
+    flex-shrink: 0;
     padding: 30px 0;
 }
 
@@ -89,39 +91,46 @@ body {
     background: #f0f0f0;
 }
 .address-content {
-    display: flex;
-    flex-wrap: wrap; 
-    gap: 20px;      
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
     flex-grow: 1;
 }
 .address-card {
-    background: white;
+   background: white;
     border-radius: 8px;
-    padding: 20px;      
-    margin-bottom: 0;  
+    padding: 25px;
     color: black;
-    width: calc(50% - 10px); 
-    min-width: 300px;       
-    height: auto;            
     display: flex;
-    flex-direction: column;  
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: space-between; /* Keeps buttons at the bottom */
+    min-height: 250px; /* Ensures all cards are equal height */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 
 .add-address-card {
-    width: calc(50% - 10px);
-    min-width: 300px;
-    background: white;
-    border-radius: 8px;
-    padding: 30px;
-    text-align: center;
+  background: white; 
     color: black;
+    border-radius: 8px; /* Matched to address-card */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centers content vertically */
+    align-items: center;    /* Centers content horizontally */
+    padding: 25px;
+   
 }
-.address-details {
-    margin-bottom: 30px;
+.address-details p {
+    margin-bottom: 8px;
+    font-size: 14px;
 }
-
+.actions{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
 .btn {
     padding: 8px 25px;
     border: none;
@@ -132,21 +141,11 @@ body {
     margin-right: 10px;
 }
 
+
 .edit { background-color: #0b1f0d; }
 .delete { background-color: #8b0000; }
 
-.default-box {
-  display: inline-block;      
-  background-color: #889d89; 
-  text-align: justify;
-  justify-content: center;
-  margin-top: 50px;
-  color: white;               
-  padding: 10px 24px;         
-  border-radius: 6px;        
-  font-size: 14px;
-  font-weight: 600;
-}
+
 .add-address-card {
     text-align: center;
 }
@@ -170,11 +169,47 @@ body {
     text-decoration: none;
     color:white
 }
+.btn-block {
+background-color: #ff3b30;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 4px;
+    
+}
+.pagination {
+    display: flex;             
+    list-style-type: none;     
+    padding: 0;
+    justify-content: center;   
+    gap: 10px;   
+    margin-top: 40px;              
+}
 
+
+.page-link {
+    text-decoration: none;     
+    color: #333;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s;
+}
+
+.page-item.active .page-link {
+    background-color: #17ce17;
+    color: white;
+    border-color: #17ce17;
+}
+
+.page-link:hover {
+    background-color: #e2e6ea;
+}
 
 /* Footer */
 .footer {
-    background: #558b2f; /* Muted olive green */
+    background: #6b8e61;; /* Muted olive green */
     color: white;
     padding: 40px 10% 20px;
     margin-top: 50px;

@@ -316,8 +316,19 @@ const changePasswordValid=async(req,res)=>{
  const address=async(req,res)=>{
   try {
     const userId=req.session.user;
-     const userAddress = await Address.findOne({ userId: userId }); 
-     res.render('address',{ userAddress: userAddress })
+    const page = parseInt(req.query.page) || 1;
+    const limit = 2;
+    const skip = (page - 1) * limit;
+    const userAddress = await Address.findOne({ userId: userId }); 
+    const totalAddresses = userAddress.address.length;
+    const totalPages = Math.ceil(totalAddresses / limit);
+    const paginatedAddresses =userAddress.address.slice(skip, skip + limit);
+     
+     res.render('address',{ 
+      userAddress: { address: paginatedAddresses },
+      currentPage: page,
+       totalPages: totalPages
+     })
   } catch (error) {
     res.status(500).send('Inernal server error')
   }
@@ -430,9 +441,24 @@ const changePasswordValid=async(req,res)=>{
       res.status(500).send('Internal server error')
     }
   }
-
-
-
+ const defaultAddress=async(req,res)=>{
+  try {
+    let id=req.query.id;
+    const userId = req.session.user;
+    await Address.updateOne(
+      {userId:userId},
+      {$set:{"address.$[].isDefault":false}}
+    )
+    await Address.updateOne(
+      {userId:userId},
+      {$set:{"address.0.isDefault":true}}
+    )
+    res.redirect('address')
+  } catch (error) {
+    console.log('error',error);
+    res.status(500).send('Internal server error')
+  }
+ }
 
 
 
@@ -460,4 +486,5 @@ module.exports={
     editAddress,
     postEditAddress,
     deleteAddress,
+    defaultAddress,
 }

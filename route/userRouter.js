@@ -41,7 +41,8 @@ router.get('/addAddress',userAuth,profileControllers.addAddress);
 router.post('/addAddress',userAuth,profileControllers.postaddAddress)
 router.get('/editAddress',userAuth,profileControllers.editAddress)
 router.post('/editAddress',userAuth,profileControllers.postEditAddress)
-router.get('/deleteAddress',userAuth,profileControllers.deleteAddress)
+router.get('/deleteAddress',userAuth,profileControllers.deleteAddress);
+router.get('/defaultAddress',userAuth,profileControllers.defaultAddress);
 router.get('/shop',userAuth,userControllers.loadshoppingpage)
 router.get('/filter',userAuth,userControllers.filterproduct);
 router.get('/search',userAuth,userControllers.searchproducts);
