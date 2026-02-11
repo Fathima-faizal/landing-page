@@ -43,5 +43,7 @@ router.get('/editAddress',userAuth,profileControllers.editAddress)
 router.post('/editAddress',userAuth,profileControllers.postEditAddress)
 router.get('/deleteAddress',userAuth,profileControllers.deleteAddress)
 router.get('/shop',userAuth,userControllers.loadshoppingpage)
-
+router.get('/filter',userAuth,userControllers.filterproduct);
+router.get('/search',userAuth,userControllers.searchproducts);
+router.post('/sort',userAuth,userControllers.sortproducts)
 module.exports=router

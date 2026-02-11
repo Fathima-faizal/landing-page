@@ -109,7 +109,10 @@ body {
     cursor: pointer;
     accent-color: #2d6a3e; 
 }
-
+.filter-group a{
+    color:black;
+    text-decoration: none;
+}
 /* Price Input Section */
 .price-input {
     display: flex;
@@ -154,7 +157,6 @@ hr {
     border-top: 1px solid #eee;
     margin: 20px 0;
 }
-
 /* Main Content Area */
 .content {
     flex-grow: 1;

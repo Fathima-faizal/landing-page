@@ -5,6 +5,9 @@ const Brand=require('../../models/brandSchema')
 const env=require('dotenv').config
 const nodemailer=require('nodemailer');
 const bcrypt=require('bcrypt');
+const user = require('../../models/userSchema');
+const product = require('../../models/productSchema');
+// const { search } = require('../../route/userRouter');
 // const user = require('../../models/userSchema');
 
 
@@ -193,7 +196,7 @@ const loadshoppingpage=async(req,res)=>{
       category:{$in:categoryIds},
       quantity:{$gt:0}
 
-    }).sort({CreatedOn:-1})
+    }).populate('category').sort({CreatedOn:-1})
     .skip(skip)
     .limit(limit);
     const totalproducts=await Product.countDocuments({
@@ -221,6 +224,160 @@ const loadshoppingpage=async(req,res)=>{
     res.status(500).send('Internal server error')
   }
 }
+const filterproduct=async(req,res)=>{
+  try {
+       const user=req.session.user;
+       const category=req.query.category;
+       const brand=req.query.brand;
+       const minPrice=parseFloat(req.query.minPrice);
+       const maxPrice=parseFloat(req.query.maxPrice);
+        let search = req.query.search || '';
+       const findcategory=category? await Category.findOne({_id:category}):null;
+       const findbrand=brand? await Brand.findOne({_id:brand}):null;
+       const brands=await Brand.find({}).lean();
+       const query={
+        isBlocked:false,
+        quantity:{$gt:0}
+       }
+          if(findcategory){
+            query.category=findcategory._id;
+          }
+          if(findbrand){
+            query.brand=findbrand.name;
+          }
+          if(!isNaN(minPrice)||!isNaN(maxPrice)){
+            query.salesPrice={};
+            if(!isNaN(minPrice)){
+              query.salesPrice.$gte=minPrice;
+            };
+            if(!isNaN(maxPrice)){
+              query.salesPrice.$lte=maxPrice;
+            }
+          }
+          let findproduct=await Product.find(query).populate('category').lean();
+          findproduct.sort((a,b)=>new Date(b.CreatedOn)-new Date(a.CreatedOn))
+          const categorires=await Category.find({islisted:true});
+          let itemspage=6;
+          let currentPage=parseInt(req.query.page)||1;
+          let startIndex=(currentPage-1)*itemspage;
+          let endIndex=startIndex+itemspage;
+          let totalpages=Math.ceil(findproduct.length/itemspage)
+          let currentproduct=findproduct.slice(startIndex,endIndex);
+          let userData=null;
+          if(user){
+            userData=await User.findOne({_id:user});
+            if(userData){
+              const searchentry={
+                category:findcategory?findcategory._id:null,
+                brand:findbrand?findbrand.name:null,
+                searchOn:new Date()
+              }
+              userData.searchHistory.push(searchentry);
+              await userData.save()
+            }
+          }
+          req.session.filteredProduct=currentproduct;
+          res.render('shop',{
+            user:userData,
+            products:currentproduct,
+            category:categorires,
+            brand:brands,
+            totalpages,
+            currentPage,
+            selectedcategory:category||null,
+            selectedbrand:brand||null,
+            search:search,
+            minPrice:minPrice||'',
+            maxPrice:maxPrice||''
+          })
+  } catch (error) {
+    console.log('error',error);
+    res.status(500).send('Internal server error')
+  }
+}
+const searchproducts=async(req,res)=>{
+  try {
+    const user=req.session.user;
+    const userData=await User.findOne({_id:user});
+    let search=req.query.search;
+    const brand=await Brand.find({}).lean();
+    const category=await Category.find({islisted:true}).lean();
+    const categorires=category.map((category=>category._id.toString()));
+    let searchresult=[];
+    if(req.session.filteredProduct&&req.session.filteredProduct.length>0){
+      searchresult=req.session.filteredProduct.filter((product)=>product.productName.toLowerCase().includes(search.toLowerCase()));
+      
+    }else{
+      searchresult=await Product.find({
+        productName:{$regex:search , $options:'i'},
+        isBlocked:false,
+        quantity:{$gt:0},
+        category:{$in:categorires},
+      })
+    }
+      searchresult.sort((a,b)=>new Date(b.createOn)-new Date(a.createOn));
+      let itemsPage=6;
+      let currentPage=parseInt(req.query.page)||1;
+      let startIndex=(currentPage-1)*itemsPage;
+      let endIndex=startIndex+itemsPage;
+      let totalpages=Math.ceil(searchresult.length/itemsPage);
+      const currentproduct=searchresult.slice(startIndex,endIndex);
+      res.render('shop',{
+        user:userData,
+        products:currentproduct,
+        category:category,
+        brand:brand,
+        totalpages,
+        currentPage,
+        count:searchresult.length,
+        search:search
+      })
+  } catch (error) {
+    console.log('error',error);
+    res.status(500).send('Internal server error')
+  }
+}
+const sortproducts=async(req,res)=>{
+  try {
+    const user=req.session.user;
+    const userData=user?await User.findOne({_id:user}):null;
+    const option=req.body.sortOption;
+    const brand=await Brand.find({}).lean();
+    const category=await Category.find({islisted:true}).lean();
+    let products=req.session.filteredProduct||await Product.find({
+      isBlocked:false,
+      quantity:{$gt:0}
+    }).populate('category').lean();
+    if(option==='az'){
+      products.sort((a,b)=>a.productName.localeCompare(b.productName))
+    }else if(option==='za'){
+      products.sort((a,b)=>b.productName.localeCompare(a.productName));
+    }else if(option==='low-high'){
+      products.sort((a,b)=>a.salesPrice-b.salesPrice);
+    }else if(option=='high-low'){
+      products.sort((a,b)=>b.salesPrice-a.salesPrice)
+    }
+    let itemsPage=6;
+    let currentPage=parseInt(req.query.page)||1;
+    let totalpages=Math.ceil(products.length/itemsPage);
+    let startIndex=(currentPage-1)*itemsPage;
+    let endIndex=startIndex+itemsPage;
+    const currentproducts=products.slice(startIndex,endIndex);
+   res.render('shop',{
+    user:userData,
+    category:category,
+    products:currentproducts,
+    brand:brand,
+    totalpages,
+    currentPage,
+    search:'',
+    selectedSort:option
+   })
+  } catch (error) {
+    console.log('error',error);
+    res.status(500).send('Internal server error')
+  }
+}
 
 module.exports={
     loadLandingpage,
@@ -232,4 +389,7 @@ module.exports={
     homepage,
     login,
     loadshoppingpage,
+    filterproduct,
+    searchproducts,
+    sortproducts,
 }

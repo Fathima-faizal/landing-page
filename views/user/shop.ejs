@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VisionVogue - Home</title>
+    <title>VisionVogue - Shop</title>
     <link rel="stylesheet" href="/css/shop.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -27,6 +27,7 @@
     </header>
      <main class="container">
         <aside class="sidebar">
+            <form action="/filter" method="get">
             <div class="filter-group">
     <h3>Category</h3>
     <ul>
@@ -34,7 +35,7 @@
             <li>
                 <label>
                     <input type="checkbox" name="category" value="<%= category[i]._id %>" class="category-checkbox">
-                    <%= category[i].name %>
+                   <a href="/filter?category=<%=category[i]._id%>"><%= category[i].name %></a>
                 </label>
             </li>
         <% } %>
@@ -48,7 +49,7 @@
             <li>
                 <label>
                     <input type="checkbox" name="brand" value="<%= brand[i]._id %>" class="category-checkbox">
-                    <%= brand[i].name %>
+                  <a href="/filter?brand=<%=brand[i]._id%>"><%= brand[i].name %></a>
                 </label>
             </li>
         <% } %>
@@ -58,31 +59,36 @@
             <div class="filter-group">
                 <h3>Price</h3>
                 <div class="price-input">
-                    <input type="text" placeholder="Min">
+                    <input type="text" name="minPrice" placeholder="Min" vlaue="<%=locals.minPrice||''%>">
                     <span>—</span>
-                    <input type="text" placeholder="Max">
+                    <input type="text" name="maxPrice" placeholder="Max" value="<%=locals.maxPrice||''%>">
                 </div>
-                <button class="filter-btn">Filter</button>
+                <button type="submit" class="filter-btn">Filter</button>
             </div>
+            </form>
         </aside>
      
         <section class="content">
             <div class="content-header">
                 <h1>Collections</h1>
+                 <form action="/search" method="get">
                 <div class="search-box">
                         <input type="text" name="search" placeholder="Search">
                         <button class="btn-clear">Clear</button>
+                    </form>
             </div> 
+            <form action="/sort" method="post">
             <div class="sort-container">
   <label for="sort-select" class="visually-hidden">Sort products</label>
-  <select id="sort-select" class="sort-dropdown">
+  <select id="sort-select" name="sortOption" class="sort-dropdown" onchange="this.form.submit()">
     <option value="default" selected disabled> Sort </option>
-    <option value="az"> A to Z</option>
-    <option value="za"> Z to A</option>
-    <option value="low-high"> Low to High</option>
-    <option value="high-low"> High to Low</option>
+    <option value="az" <%= locals.selectedSort === 'az' ? 'selected' : '' %>> A to Z</option>
+    <option value="za" <%= locals.selectedSort === 'za' ? 'selected' : '' %>> Z to A</option>
+    <option value="low-high"<%= locals.selectedSort === 'low-high' ? 'selected' : '' %>> Low to High</option>
+    <option value="high-low"<%= locals.selectedSort === 'high-low' ? 'selected' : '' %>> High to Low</option>
   </select>
 </div>
+            </form>
 
     <div class="product-grid">
     <% for(let i=0; i < products.length; i++){ %>
@@ -93,7 +99,7 @@
             </div>
             
             <div class="product-info">
-                <h4 class="product-title"><%= category[i].name %></h4>
+                <h4 class="product-title"><%= products[i].category.name %></h4>
                 <p class="product-brand">Product Name: <%= products[i].productName %></p>
                 <p class="product-brand">Brand: <%= products[i].brand %></p>
                 <div class="price-section">
