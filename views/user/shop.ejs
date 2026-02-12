@@ -106,7 +106,9 @@
                     <span class="sales-price">₹<%= products[i].salesPrice.toLocaleString('en-IN') %></span>
                     <span class="regular-price"><strike>₹<%= products[i].regularPrice.toLocaleString('en-IN') %></strike></span>
                 </div>
+                <a href="/productDetails?id=<%=products[i]._id%>">
                 <button class="add-to-cart-btn">View Details</button>
+                </a>
             </div>
         </div>
     <% } %>

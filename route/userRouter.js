@@ -2,7 +2,8 @@ const express=require('express');
 const router=express.Router();
 const userControllers=require('../controllers/user/userController');
 const passport = require('passport');
-const profileControllers=require('../controllers/user/profileControllers')
+const profileControllers=require('../controllers/user/profileControllers');
+const productController=require('../controllers/user/productController')
 const {userAuth,adminAuth}=require('../middleware/auth')
 
 
@@ -46,5 +47,6 @@ router.get('/defaultAddress',userAuth,profileControllers.defaultAddress);
 router.get('/shop',userAuth,userControllers.loadshoppingpage)
 router.get('/filter',userAuth,userControllers.filterproduct);
 router.get('/search',userAuth,userControllers.searchproducts);
-router.post('/sort',userAuth,userControllers.sortproducts)
+router.post('/sort',userAuth,userControllers.sortproducts);
+router.get('/productDetails',userAuth,productController.productdetails)
 module.exports=router

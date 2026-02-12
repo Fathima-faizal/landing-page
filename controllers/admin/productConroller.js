@@ -64,7 +64,7 @@ const addproducts=async(req,res)=>{
      if (req.files && req.files.length > 0) {
     for (let i = 0; i < req.files.length; i++) {
         const originalPath = req.files[i].path;
-        const filename = `resized-${Date.now()}-${req.files[i].filename}`;
+        const filename = `resized-${req.files[i].filename}`;
         const savePath = path.join(process.cwd(), 'public', 'uploads', filename);
 
         await sharp(originalPath)

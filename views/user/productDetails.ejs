@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionVogue - ProductDetails</title>
+    <link rel="stylesheet" href="/css/productDetails.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    
+    <header>
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="/home">Home</a></li>
+                <li><a href="/shop">shop</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact us</a></li>
+            </ul>
+            <div class="logo">VisionVogue</div>
+            <div class="nav-icons">
+               <a href="" ><i class="fa-regular fa-heart"></i></a>
+               <a href=""> <i class="fa-solid fa-cart-shopping"></i></a>
+              <a href="/profile" > <i class="fa-regular fa-user"></i></a>
+            </div>
+        </nav>
+    </header>
+     <main class="container">
+        <section class="product-hero">
+            <div class="product-image">
+                <img id="mainProductImage" src="/uploads/<%=product.productimage[0]%>" alt="<%= product.ProductName %>">
+            </div>
+            <div class="product-details">
+                <h1><%=product.category.name%></h1>
+                <p><strong>Brand Name:</strong><%=product.brand%></p>
+                <p><strong>Product Name:</strong><%=product.productName%></p>
+               <ul class="features">
+    <li class="category-desc"><strong>Category Info:</strong> <%= category.description %></li>
+    <li class="product-desc"><strong>Product Details:</strong> <%= product.description %></li>
+</ul>
+                <div class="price">
+                    <p>Price:
+                    <span class="current-price"><%=product.salesPrice%></span>
+                    <span class="old-price"><%=product.regularPrice%></span>
+                    </p>
+                </div>
+                <div class="quantity-container">
+    <label for="quantity">Quantity:</label>
+    <input type="number" id="quantity" name="quantity" value="1" min="1" max="<%= product.quantity %>">
+    
+</div>
+                <button class="try-on-btn">Add to Cart</button>
+            </div>
+        </section>
+
+        <section class="similar-collections">
+    <h2>Similar Collections</h2>
+    <div class="product-grid" style="display: flex; gap: 10px; overflow-x: auto;">
+        <% product.productimage.forEach((img, index) => { %>
+            <% if(index!==0){%>
+            <div class="card" style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px;">
+                <img src="/uploads/<%= img %>" 
+                     alt="Similar Product" 
+                     onclick="changeImage('/uploads/<%= img %>')"
+                     style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;">
+            </div>
+            <%}%>
+        <% }) %>
+    </div>
+</section>
+
+        <section class="info-section">
+            <h3>Shopping and Return</h3>
+            <ul>
+                <li>Free shipping for orders over $200</li>
+                <li>30-day return policy</li>
+                <li>Comfortable fit and stylish design</li>
+            </ul>
+        </section>
+    </main>
+     
+     <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>About Us:</h4>
+                <a href="#">Our Story</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms</a>
+                <a href="#">FAQ</a>
+            </div>
+            <div class="footer-column">
+                <h4>Support:</h4>
+                <a href="#">Shipping Policy</a>
+                <a href="#">Returns</a>
+                <a href="#">Order Tracking</a>
+                <a href="#">Help</a>
+            </div>
+            <div class="footer-column">
+                <h4>My Account:</h4>
+                <a href="#">Profile</a>
+                <a href="#">My Orders</a>
+                <a href="#">Wishlist</a>
+                <a href="#">Refer & Earn</a>
+            </div>
+            <div class="footer-column">
+                <h4>Contact:</h4>
+                <p>Email: visionvogue@gmail.com</p>
+                <p>Phone: 8923457190</p>
+            </div>
+        </div>
+        <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
+    </footer>
+    
+   <script>
+    function changeImage(imagePath) {
+    const mainImg = document.getElementById('mainProductImage');
+    mainImg.src = imagePath;
+
+   
+    setTimeout(() => {
+        mainImg.style.opacity = "1";
+    }, 100);
+}
+const container = document.querySelector('.product-image');
+const img = document.querySelector('#mainProductImage');
+    container.addEventListener('mousemove', (e) => {
+        const x = e.clientX - e.target.offsetLeft;
+        const y = e.clientY - e.target.offsetTop;
+
+        img.style.transformOrigin = `${x}px ${y}px`;
+        img.style.transform = "scale(2.5)";
+    });
+
+    container.addEventListener('mouseleave', () => {
+        img.style.transformOrigin = "center";
+        img.style.transform = "scale(1)";
+    });
+
+    function moveSlide(index) {
+    const wrapper = document.getElementById('offerWrapper');
+    const dots = document.querySelectorAll('.dot');
+    
+    // Move the wrapper by 100% (which is 2 cards)
+    wrapper.style.transform = `translateX(-${index * 50}%)`;
+    
+    // Update active dot
+    dots.forEach(dot => dot.classList.remove('active'));
+    dots[index].classList.add('active');
+}
+    window.addEventListener( "pageshow", function ( event ) {
+        var historyTraversal = event.persisted || 
+                               ( typeof window.performance != "undefined" && 
+                                 window.performance.navigation.type === 2 );
+        if ( historyTraversal ) {
+            window.location.reload();
+        }
+    });
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+        window.history.go(1);
+    };
+
+</script>
+</body>
+</html>

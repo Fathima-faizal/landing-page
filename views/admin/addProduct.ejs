@@ -146,6 +146,11 @@
             <input type="file"name="productimage" class="imageInput" data-index="2" accept="image/*">
             <div class="crop-wrapper" id="wrapper-2" style="display: flex; gap: 20px; margin-top: 10px;"></div>
         </div>
+        <div class="upload-group"  style="border: 1px solid #ccc; padding: 15px;">
+            <label>Product Image 4:</label>
+            <input type="file"name="productimage" class="imageInput" data-index="3" accept="image/*">
+            <div class="crop-wrapper" id="wrapper-3" style="display: flex; gap: 20px; margin-top: 10px;"></div>
+        </div>
     </div>
      <div id="formError" class="error-message full-width"></div>
     <div class="submit-container">
@@ -158,8 +163,8 @@
     const form = document.getElementById("productForm");
     const imageInputs = document.querySelectorAll(".imageInput");
     
-    let finalBlobs = [null, null, null]; 
-    let croppers = [null, null, null];
+    let finalBlobs = [null, null, null,null]; 
+    let croppers = [null, null, null,null];
 
     imageInputs.forEach(input => {
         input.addEventListener("change", (e) => {
