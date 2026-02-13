@@ -40,6 +40,9 @@ const getaddbrand=async(req,res)=>{
 const postaddbrand=async(req,res)=>{
     try {
         const {name}=req.body;
+        if(!name){
+            res.redirect('/admin/brand')
+        }
         const brandExisit=await Brand.findOne({name});
         if(brandExisit){
             return res.status(400).json({message:`Brand already Exisit`})

@@ -75,19 +75,37 @@
             </header>
             <section class="content-body">
                 <h3>Add Brand</h3>
-                <form id="productForm" action="/admin/brand" method="post" onsubmit="return handleFormsubmit(event)">
+                <form id="productForm" action="/admin/brand" method="post">
     <div class="form-row">
         <div>
             <label>Brand Name</label>
-            <input type="text"id=name name="name" placeholder="Enter Brand name">
-            <small id="name-error" class="error-message" style="color: red;"></small>
+            <input type="text"id=nameinput name="name" placeholder="Enter Brand name">
+            <div id="formError" class="error-message full-width"></div>
         </div>
+        
     </div>
     <div class="submit-container">
         <button type="submit" class="btn-save">Save Product</button>
     </div>
 </form>
 </section>
-
+<script>
+    const addBrand=document.querySelector('form')
+    const name=document.getElementById('nameinput');
+    const formError = document.getElementById('formError');
+     addBrand.addEventListener('submit',function(e){
+       if(
+        name.value.trim()==''
+       ){
+         e.preventDefault();
+    formError.innerText = "Please fill the Brand name";
+    formError.style.display = "block";
+       }else{
+        formError.innerText = "";
+    formError.style.display = "none";
+       }
+          
+     })
+</script>
 </body>
 </html>
