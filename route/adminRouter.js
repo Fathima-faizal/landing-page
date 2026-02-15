@@ -10,29 +10,21 @@ const multer=require('multer');
 const storage=require('../helpers/multer');
 const uploads=multer({storage:storage})
 
+               //Admin login//
+
 router.get('/login',adminController.adminLoginloaded);
 router.post('/login',adminController.adminlogin);
 router.get('/dashboard',adminAuth,adminController.loaddashboard);
 router.get('/logout',adminController.admilogout)
+
+              //customer Management//
+
 router.get('/customer',adminAuth,customerController.customerinfo);
 router.get('/blockCustomer',adminAuth,customerController.bolckCustomer);
 router.get('/unblockCustomer',adminAuth,customerController.unblockCustomer);
-router.get('/product',adminAuth,productController.loadproduct)
-router.get('/addProduct',adminAuth,productController.getaddProduct)
-router.post('/product',adminAuth,uploads.array('productimage',4),productController.addproducts);
-router.get('/blockProduct',adminAuth,productController.blockProduct);
-router.get('/unblockProduct',adminAuth,productController.unblockProduct)
-router.get('/editProduct/:id',adminAuth,productController.editProduct);
-router.post('/editProduct/:id',adminAuth,uploads.array('productimage',4),productController.posteditProduct);
-router.get('/deleteProduct',adminAuth,productController.deleteProduct)
-router.get('/category',adminAuth,categoryController.loadcategory);
-router.get('/addCategory',adminAuth,categoryController.getaddCategory)
-router.post('/category',adminAuth,categoryController.addCategory);
-router.get('/editCategory/:id',adminAuth,categoryController.editCategory);
-router.post('/editCategory/:id',adminAuth,categoryController.editpostCategory)
-router.get('/deleteCategory',adminAuth,categoryController.deleteCategory)
-router.get('/listCategory',adminAuth,categoryController.listCategory);
-router.get('/unlistCategory',adminAuth,categoryController.unlistCategory);
+
+               //brand Management//
+
 router.get('/brand',adminAuth,brandController.getbrand);
 router.get('/addbrand',adminAuth,brandController.getaddbrand);
 router.post('/brand',adminAuth,brandController.postaddbrand);
@@ -40,6 +32,30 @@ router.get('/editBrand/:id',adminAuth,brandController.geteditbrand);
 router.post('/editBrand/:id',adminAuth,brandController.posteditbrand);
 router.get('/deleteBrand',adminAuth,brandController.deletebrand);
 router.get('/blockBrand',adminAuth,brandController.blockbrand);
-router.get('/unblockBrand',adminAuth,brandController.unblockbrand)
+router.get('/unblockBrand',adminAuth,brandController.unblockbrand);
+
+        //   Category Management  //
+
+router.get('/category',adminAuth,categoryController.loadcategory);
+router.get('/addCategory',adminAuth,categoryController.getaddCategory)
+router.post('/category',adminAuth,categoryController.addCategory);
+router.get('/editCategory/:id',adminAuth,categoryController.editCategory);
+router.post('/editCategory/:id',adminAuth,categoryController.editpostCategory);
+router.get('/deleteCategory',adminAuth,categoryController.deleteCategory)
+router.get('/listCategory',adminAuth,categoryController.listCategory);
+router.get('/unlistCategory',adminAuth,categoryController.unlistCategory);
+
+             //product Management//
+
+router.get('/product',adminAuth,productController.loadproduct)
+router.get('/addProduct',adminAuth,productController.getaddProduct)
+router.post('/product',adminAuth,uploads.array('productimage',4),productController.addproducts);
+router.get('/blockProduct',adminAuth,productController.blockProduct);
+router.get('/unblockProduct',adminAuth,productController.unblockProduct)
+router.get('/editProduct/:id',adminAuth,productController.editProduct);
+router.post('/editProduct/:id',adminAuth,uploads.array('productimage',4),productController.posteditProduct);
+router.get('/deleteProduct',adminAuth,productController.deleteProduct);
+
+
 
 module.exports=router;

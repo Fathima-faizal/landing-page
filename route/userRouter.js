@@ -6,7 +6,7 @@ const profileControllers=require('../controllers/user/profileControllers');
 const productController=require('../controllers/user/productController')
 const {userAuth,adminAuth}=require('../middleware/auth')
 
-
+      // user Authentication//
 router.get('/landing',userControllers. loadLandingpage)
 router.get('/login',userControllers.loginPage)
 router.post('/login',userControllers.login)
@@ -28,15 +28,24 @@ router.post('/resendForgotOTP',profileControllers.getresndOtp)
 router.post('/resetPassword',profileControllers.postNewPassword)
 router.get('/profile',userAuth,profileControllers.userProfile)
 router.get('/logout',profileControllers.logout)
+   
+             //Email Change//
+
 router.get('/changeEmail',userAuth,profileControllers.changeEmail)
 router.post('/changeEmail',userAuth,profileControllers.changeEmailValid)
 router.post('/verifyEmailOTP',userAuth,profileControllers.verifyEmailotp)
 router.get('/newEmail',userAuth,profileControllers.newEmail)
-router.post('/updateEmail',userAuth,profileControllers.updateEmail)
+router.post('/updateEmail',userAuth,profileControllers.updateEmail);
+         
+                //Password Change//
+
 router.post('/resendEmailOTP',userAuth,profileControllers.resetEmail)
 router.get('/changePassword',userAuth,profileControllers.changePassword)
 router.post('/changePassword',userAuth,profileControllers.changePasswordValid)
 router.post('/verifyChangePasswordOTP',userAuth,profileControllers.verifyChangePasswordOtp);
+
+                 //Address Management//
+
 router.get('/address',userAuth,profileControllers.address)
 router.get('/addAddress',userAuth,profileControllers.addAddress);
 router.post('/addAddress',userAuth,profileControllers.postaddAddress)
@@ -44,9 +53,21 @@ router.get('/editAddress',userAuth,profileControllers.editAddress)
 router.post('/editAddress',userAuth,profileControllers.postEditAddress)
 router.get('/deleteAddress',userAuth,profileControllers.deleteAddress);
 router.get('/defaultAddress',userAuth,profileControllers.defaultAddress);
+
+                      //Shop Page//
+
 router.get('/shop',userAuth,userControllers.loadshoppingpage)
 router.get('/filter',userAuth,userControllers.filterproduct);
 router.get('/search',userAuth,userControllers.searchproducts);
 router.post('/sort',userAuth,userControllers.sortproducts);
-router.get('/productDetails',userAuth,productController.productdetails)
+router.get('/productDetails',userAuth,productController.productdetails);
+
+
+
+
+
+
+
+
+
 module.exports=router
