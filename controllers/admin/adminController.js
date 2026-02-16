@@ -6,7 +6,7 @@ const bcrypt=require('bcrypt');
 
 const adminLoginloaded=async(req,res)=>{
     if(req.session.admin){
-        return res.redirect('admin/dashboard')
+        return res.redirect('/admin/dashboard')
     }
     res.render('admin-login',{message:null});
 }
@@ -20,7 +20,7 @@ const adminlogin=async(req,res)=>{
         const passwordMatch=bcrypt.compare(password,admin.password);
           if(passwordMatch){
             req.session.admin=true;
-            return res.redirect('dashboard')
+            return res.redirect('/admin/dashboard')
           }else{
             return res.redirect('login');
           }
