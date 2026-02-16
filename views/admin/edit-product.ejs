@@ -84,7 +84,7 @@
         </div>
         <div>
     <label>Category</label>
-    <select name="category" required>
+    <select name="category" >
         <% for(let i=0; i < cat.length; i++) { %>
             <option value="<%= cat[i]._id %>" 
                 <%= product.category && product.category._id.toString() === cat[i]._id.toString() ? 'selected' : '' %>>
@@ -106,7 +106,7 @@
     <div class="form-row">
         <div>
             <label>Brand</label>
-    <select name="brand" required>
+    <select name="brand" >
     <%for(let i=0;i<brand.length;i++){%>
     <option value="<%=brand[i].name%>">
         
@@ -117,7 +117,7 @@
         </div>
         <div>
             <label>Regular Price</label>
-            <input type="number" name="regularPrice" value="<%= product.regularPrice %>" placeholder="0.00" required>
+            <input type="number" name="regularPrice" value="<%= product.regularPrice %>" placeholder="0.00" >
         </div>
         
     </div>
@@ -125,11 +125,11 @@
     <div class="form-row">
         <div>
             <label>Sale Price</label>
-            <input type="number" name="salesPrice" value="<%= product.salesPrice %>" placeholder="0.00" required>
+            <input type="number" name="salesPrice" value="<%= product.salesPrice %>" placeholder="0.00" >
         </div>
         <div>
             <label>Quantity</label>
-            <input type="number" name="quantity" value="<%= product.quantity %>" placeholder="Enter quantity" required>
+            <input type="number" name="quantity" value="<%= product.quantity %>" placeholder="Enter quantity" >
         </div>
     </div>
 
@@ -154,25 +154,25 @@
         <h3>Product Images</h3>
         <div class="upload-group" style="border: 1px solid #ccc; padding: 15px;">
             <label>Product Image 1:</label>
-            <input type="file" name="productimage" class="imageInput" data-index="0" accept="image/*" required>
+            <input type="file" name="productimage" class="imageInput" data-index="0" accept="image/*" >
             <div class="crop-wrapper" id="wrapper-0" style="display: flex; gap: 20px; margin-top: 10px;"></div>
         </div>
 
         <div class="upload-group" style="border: 1px solid #ccc; padding: 15px;">
             <label>Product Image 2:</label>
-            <input type="file" name="productimage" class="imageInput" data-index="1" accept="image/*" required>
+            <input type="file" name="productimage" class="imageInput" data-index="1" accept="image/*" >
             <div class="crop-wrapper" id="wrapper-1" style="display: flex; gap: 20px; margin-top: 10px;"></div>
         </div>
 
         <div class="upload-group" style="border: 1px solid #ccc; padding: 15px;">
             <label>Product Image 3:</label>
-            <input type="file" name="productimage" class="imageInput" data-index="2" accept="image/*" required>
+            <input type="file" name="productimage" class="imageInput" data-index="2" accept="image/*">
             <div class="crop-wrapper" id="wrapper-2" style="display: flex; gap: 20px; margin-top: 10px;"></div>
         </div>
 
          <div class="upload-group" style="border: 1px solid #ccc; padding: 15px;">
             <label>Product Image 4:</label>
-            <input type="file" name="productimage" class="imageInput" data-index="3" accept="image/*" required>
+            <input type="file" name="productimage" class="imageInput" data-index="3" accept="image/*" >
             <div class="crop-wrapper" id="wrapper-3" style="display: flex; gap: 20px; margin-top: 10px;"></div>
         </div>
     </div>

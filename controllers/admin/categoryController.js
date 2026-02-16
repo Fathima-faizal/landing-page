@@ -43,7 +43,7 @@ const addCategory=async(req,res)=>{
     try {
         const existingCategory=await Category.findOne({name});
         if(existingCategory){
-           return res.status(400).json({message:`Category already Exists`})
+           return res.status(400).json({error:`Category already Exists`})
         }
         const newCategory=new Category({
             name,

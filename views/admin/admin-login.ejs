@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
     <link rel="stylesheet" href="/css/adminLogin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
     <div class="container">
@@ -12,16 +13,36 @@
             <h2>Welcome Admin</h2>
             <form action="/admin/login" method="POST" autocomplete="off">
                 <div class="input-group">
-                    <input type="email" name="email" placeholder="Email" required autocomplete="none">
+                    <input type="email" id="email" name="email" placeholder="Email" autocomplete="none">
                 </div>
-                <div class="input-group">
-                    <input type="password" name="password" placeholder="Password" required autocomplete="new-password">
+                <div class="input-group" style="position: relative;">
+                    <input type="password" id="password" name="password" placeholder="Password"  autocomplete="new-password">
+                 <i class="fa-solid fa-eye" id="togglePassword" style="position: absolute; right: 10px; top: 15px; cursor: pointer; color: #777;"></i>
                 </div>
+                <div id="formError" class="error-message full-width" style="color:red"></div>
                 <button type="submit" class="login-btn">Log in</button>
             </form>
         </div>
     </div>
     <script>
+        addlogin=document.querySelector('form')
+        const email=document.getElementById('email');
+        const password=document.getElementById('password');
+         const formError = document.getElementById('formError');
+     addlogin.addEventListener('submit',function(e){
+       if(
+        email.value.trim()===''||
+        password.value.trim()===''
+       ){
+         e.preventDefault();
+    formError.innerText = "Please fill the details";
+    formError.style.display = "block";
+       }else{
+        formError.innerText = "";
+    formError.style.display = "none";
+       }
+          
+     })
     window.addEventListener("pageshow", function (event) {
         var historyTraversal = event.persisted || 
                                (typeof window.performance != "undefined" && 

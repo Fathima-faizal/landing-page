@@ -96,7 +96,7 @@
     const formError = document.getElementById('formError');
      addBrand.addEventListener('submit',function(e){
        if(
-        name.value.trim()==''
+        name.value.trim()===''
        ){
          e.preventDefault();
     formError.innerText = "Please fill the Brand name";

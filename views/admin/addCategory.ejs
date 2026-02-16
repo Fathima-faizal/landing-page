@@ -96,46 +96,43 @@
 </section>
 
 <script>
-    function handleFormsubmit(event){
+    function handleFormsubmit(event) {
     event.preventDefault();
-    if(!validataForm()){
-        return 
+    if (!validataForm()) {
+        return;
     }
-    const name=document.getElementsByName('name')[0].value;
-    const description=document.getElementsByName('description')[0].value
-    fetch('/admin/category',{
-        method:'POST',
-        headers:{
-            'content-type':`application/json`
+    const name = document.getElementsByName('name')[0].value;
+    const description = document.getElementsByName('description')[0].value;
+
+    fetch('/admin/category', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json'
         },
-        body:JSON.stringify({name,description})
+        body: JSON.stringify({ name, description })
     })
-    .then(response=>{
-        if(!response.ok){
-            return response.json().then(err=>{
-                throw new Error(err.error);
-            })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(err.error || err.message || "Something went wrong");
+            });
         }
         return response.json();
     })
-    .then(data=>{
-        location.reload();
+    .then(data => {
+        window.location.href = '/admin/category';
     })
-    .catch(error=>{
-        if(error.message==='Category already Exists'){
-            swal.fire({
-                icon:'error',
-                title:'Oops',
-                text:'Category already Exists'
-            })
-        }else{
-            swal.fire({
-                icon:'error',
-                title:'Oops',
-                text:'An error occured while adding the category',
-            })
+    .catch(error => {
+        if (error.message === 'Category already Exists') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops',
+                text: 'Category already Exists'
+            });
+        } else {
+            window.location.href = '/admin/category';
         }
-    })
+    });
 }
 
 function validataForm(){

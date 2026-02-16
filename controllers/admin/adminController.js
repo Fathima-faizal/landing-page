@@ -15,6 +15,9 @@ const adminlogin=async(req,res)=>{
     
      try{
       const {email,password}=req.body;
+      if(!email||!password){
+        res.redirect('/admin/login')
+      }
       const admin=await User.findOne({email,isAdmin:true})
       if(admin){
         const passwordMatch=bcrypt.compare(password,admin.password);
