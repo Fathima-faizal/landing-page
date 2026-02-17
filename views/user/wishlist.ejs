@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VisionVogue - Home</title>
-    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/wishlist.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -25,62 +25,69 @@
             </div>
         </nav>
     </header>
-
-    <main class="home-content">
-        <section class="categories">
-            <h2>Categories</h2>
-            <div class="tag-container">
-                <span class="tag">Sunglasses</span>
-                <span class="tag">Prescription Glasses</span>
-                <span class="tag">Reading Glasses</span>
-                <span class="tag">Computer Glasses</span>
-                <span class="tag">Blue Light Glasses</span>
-                <span class="tag">sports Glasses</span>
-                <span class="tag">Kids Glasses</span>
-                 <span class="tag">Men's Glasses</span>
-                 <span class="tag">Women's Glasses</span>
-                <span class="tag">Designer Frames</span>
-                <span class="tag">Transparent Frame Glasses</span>
-                <span class="tag">Safety Glasses</span>
-                <span class="tag">Fashion Glasses</span>
-                <span class="tag">More...</span>
-            </div>
-        </section>
-
-        <section class="offers-grid">
-            <div class="offer-card special">
-                <div class="offer-text">
-                    <h3>Special offer</h3>
-                    <p>Flat 20% off on your first purchase. Limited time only.</p>
+     <div class="wishlist-container">
+    <h2>Your Wishlist</h2>
+    
+    <table class="wishlist-table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Product Details</th>
+                <th>Price</th>
+                <th>Action</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%if(wishlist.length>0){%>
+                <%for(let product of wishlist){%>
+            <tr>
+                <td>
+                    <img src="/uploads/<%=product.productimage[0]%>"  class="product-img">
+                </td>
+                <td class="details">
+                    <span class="brand"><%=product.brand%></span>
+                    <span class="product-name"><%=product.category.name%></span>
+                    <span class="category"><%=product.productName%></span>
+                </td>
+                <td class="price"><%=product.salesPrice%></td>
+                <td>
+                    <button class="add-btn">Add to Cart</button>
+                </td>
+                <td>
+                    <button class="remove-btn">
+    <a href="/wishlist/delete?id=<%=product._id%>" 
+       onclick="return confirmDelete(event, '<%=product.category.name%>')" >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+    </a>
+</button>
+                </td>
+            </tr>
+            <%}%>
+            <%}else{%>
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px 0;">
+                        <p style="margin: 0; font-size: 18px; color: #666;">No items found in wishlist</p>
+                    </td>
+                </tr>
+                <%}%>
+            </tbody>
+    </table>
+    <div class="container">
+                    <nav aria-label="page navigation">
+                        <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
+                            <%for(let i=1;i<=totalPages;i++){%>
+                                <li class="page-item <%=(i===currentPage)? 'active':''%>">
+                                 <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                                </li>
+                                <%}%>
+                        </ul>
+                    </nav>
                 </div>
-                <img src="/image/offer image.png" alt="Special Offer">
-            </div>
-            <div class="offer-card limited">
-                <div class="offer-text">
-                    <h3>Limited Time Offer</h3>
-                    <p>Flat 20% off on your first purchase. Start your journey with us today.</p>
-                </div>
-                <img src="/image/offer image1.png" alt="Limited Offer">
-            </div>
-
-        </section>
-
-        <div class="carousel-dots">
-            <span class="dot active"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-        </div>
-
-        <section class="product-grid">
-            <div class="product-item"><img src="/image/group1.png" alt="Product"></div>
-            <div class="product-item"><img src="/image/group2.png" alt="Product"></div>
-            <div class="product-item"><img src="/image/Group3.png" alt="Product"></div>
-            <div class="product-item"><img src="/image/Group4.png" alt="Product"></div>
-            <div class="product-item"><img src="/image/group5.png" alt="Product"></div>
-            <div class="product-item"><img src="/image/Group6.png" alt="Product"></div>
-        </section>
-    </main>
-
+</div>
     <footer>
         <div class="footer-content">
             <div class="footer-column">
@@ -136,7 +143,13 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-
+ function confirmDelete(event, name) {
+    if (!confirm(`Are you sure you want to delete "${name}"?`)) {
+        event.preventDefault(); 
+        return false;
+    }
+    return true;
+}
 </script>
 </body>
 </html>

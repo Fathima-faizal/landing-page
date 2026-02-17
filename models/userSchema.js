@@ -38,13 +38,17 @@ const userSchema=new Schema({
         default:false,
     },
     cart:[{
-        type:Schema.Types.ObjectId,
-          ref:'cart'
+       type : Array
+
     }],
     wallet:[{
-        type:Schema.Types.ObjectId,
-        ref:'wishlist'
+        type:Number,
+       default:0,
     }],
+    wishlist:[{
+       type:Schema.Types.ObjectId,
+       ref:'product'
+   }],
     orderHistory:[{
         type:Schema.Types.ObjectId,
         ref:'order'

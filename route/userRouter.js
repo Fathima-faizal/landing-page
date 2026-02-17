@@ -3,7 +3,8 @@ const router=express.Router();
 const userControllers=require('../controllers/user/userController');
 const passport = require('passport');
 const profileControllers=require('../controllers/user/profileControllers');
-const productController=require('../controllers/user/productController')
+const productController=require('../controllers/user/productController');
+const wishlistController=require('../controllers/user/wishlistController');
 const {userAuth,adminAuth}=require('../middleware/auth')
 
       // user Authentication//
@@ -62,7 +63,11 @@ router.get('/search',userAuth,userControllers.searchproducts);
 router.post('/sort',userAuth,userControllers.sortproducts);
 router.get('/productDetails',userAuth,productController.productdetails);
 
+                       //wishlist//
 
+router.get('/wishlist',userAuth,wishlistController.getwishlist);                     
+router.post('/addtoWishlist',userAuth,wishlistController.addwishlist)
+router.get('/wishlist/delete',userAuth,wishlistController.deleteWishlist)
 
 
 
