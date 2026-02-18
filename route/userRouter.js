@@ -83,8 +83,9 @@ router.get('/checkout',userAuth,checkoutControllers.getcheckout)
 router.post('/placeOrder',userAuth,checkoutControllers.placeorder)
 router.get('/orderSuccess',userAuth,checkoutControllers.ordersuccess)
 
+                      //wallet//
 
-
-
+router.get('/wallet',userAuth,profileControllers.getwallet)
+router.post('/addMoney',userAuth,profileControllers.addmoney)
 
 module.exports=router

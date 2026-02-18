@@ -41,10 +41,18 @@ const userSchema=new Schema({
        type : Array
 
     }],
-    wallet:[{
+    wallet:{
         type:Number,
        default:0,
-    }],
+    },
+    history: [{
+    description: { type: String },
+    amount: { type: Number },
+    type: { type: String },
+    status: { type: String },
+    date: { type: Date, default: Date.now }
+  }
+],
     wishlist:[{
        type:Schema.Types.ObjectId,
        ref:'product'

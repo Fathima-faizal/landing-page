@@ -467,6 +467,54 @@ const changePasswordValid=async(req,res)=>{
     res.status(500).send('Internal server error')
   }
  }
+ const getwallet=async(req,res)=>{
+  try {
+    const userId=req.session.user;
+    const page = parseInt(req.query.page) || 1;
+        const limit = 3; 
+        const skip = (page - 1) * limit;
+    const user=await User.findById(userId);
+    const allTransactions = user.history.reverse();
+    const paginatedTransactions = allTransactions.slice(skip, skip + limit);
+    const totalTransactions = allTransactions.length;
+        const totalPages = Math.ceil(totalTransactions / limit);
+    const balance = user.wallet ? Number(user.wallet) : 0;
+    res.render('wallet',{
+      user,
+      walletBalance: user.wallet || 0,
+      transactions: paginatedTransactions, 
+      currentPage: page,
+      totalPages: totalPages
+    })
+  } catch (error) {
+    console.log('error',error);
+    res.status(500).send('Internal server error')
+  }
+ }
+ const addmoney=async(req,res)=>{
+  try {
+    const userId=req.session.user;
+    const {amount}=req.body;
+    const addAmount=Number(amount)
+    if(!addAmount||addAmount<=0){
+      return res.json({status:false,message:`Invalid Amount`})
+    }
+    const user=await User.findById(userId);
+    user.wallet = user.wallet + addAmount;
+    user.history.push({
+      description:'Money added to Wallet',
+      amount:addAmount,
+      type:'credit',
+      status:'Completed',
+      date:new Date()
+    })
+    await user.save();
+    res.json({status:true,message:user.wallet})
+  } catch (error) {
+    console.log('error',error);
+    res.status(500).send('Intenal server error')
+  }
+ }
 
 
 
@@ -495,4 +543,6 @@ module.exports={
     postEditAddress,
     deleteAddress,
     defaultAddress,
+    getwallet,
+    addmoney,
 }
