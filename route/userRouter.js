@@ -6,6 +6,7 @@ const profileControllers=require('../controllers/user/profileControllers');
 const productController=require('../controllers/user/productController');
 const wishlistController=require('../controllers/user/wishlistController');
 const cartControllers=require('../controllers/user/cartController');
+const checkoutControllers=require('../controllers/user/checkoutController')
 const {userAuth,adminAuth}=require('../middleware/auth');
 
       // user Authentication//
@@ -76,8 +77,11 @@ router.post('/cart',userAuth,cartControllers.addcart);
 router.post('/changeQuantity', userAuth,cartControllers.changeQuantity);
 router.get('/cart/delete',userAuth,cartControllers.deletecart)
                 
-
-
+                  //checkout//
+                  
+router.get('/checkout',userAuth,checkoutControllers.getcheckout)
+router.post('/placeOrder',userAuth,checkoutControllers.placeorder)
+router.get('/orderSuccess',userAuth,checkoutControllers.ordersuccess)
 
 
 

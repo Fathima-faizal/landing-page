@@ -52,6 +52,7 @@
                             <input type="text" id="city" name="city" placeholder="City" autocomplete="off">
                             <input type="text" id="zipCode" name="zipCode" placeholder="Zip code" autocomplete="off">
                               <input type="text" id="country" name="country" placeholder="country" class="full-width" autocomplete="off">
+                               <input type="text" id="phoneNumber" name="phoneNumber" placeholder="phone Number" class="full-width" autocomplete="off">
                             
                             </div>
                             <div id="formError" class="error-message full-width"></div>
@@ -96,7 +97,7 @@ const landmarkid = document.getElementById('landmark');
 const cityid = document.getElementById('city');
 const zipCodeid = document.getElementById('zipCode');
 const countryid = document.getElementById('country');
-
+const phoneNumberid=document.getElementById('phoneNumber')
 const formError = document.getElementById('formError');
 
 addressForm.addEventListener('submit', function(e){
@@ -107,6 +108,7 @@ addressForm.addEventListener('submit', function(e){
     landmarkid.value.trim() === '' ||
     cityid.value.trim() === '' ||
     zipCodeid.value.trim() === '' ||
+    phoneNumberid.value.trim()===''||
     countryid.value.trim() === ''
   ) {
     e.preventDefault();

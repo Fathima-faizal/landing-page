@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionVogue - ProductDetails</title>
+    <link rel="stylesheet" href="/css/checkout.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    
+    <header>
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="/home">Home</a></li>
+                <li><a href="/shop">shop</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact us</a></li>
+            </ul>
+            <div class="logo">VisionVogue</div>
+            <div class="nav-icons">
+               <a href="/wishlist" ><i class="fa-regular fa-heart"></i></a>
+               <a href="/cart"> <i class="fa-solid fa-cart-shopping"></i></a>
+              <a href="/profile" > <i class="fa-regular fa-user"></i></a>
+            </div>
+        </nav>
+    </header>
+     <main class="checkout-container">
+    <div class="checkout-grid">
+        <section class="address-section">
+    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h3>Select Delivery Address</h3>
+    </div>
+
+    <% if (userAddress && userAddress.length > 0) { %>
+        <% userAddress.forEach((address, i) => { %>
+            <div class="address-card" style="position: relative;">
+                <input type="radio" name="selectedAddress" value="<%= address._id %>" id="address<%= i %>" <%= i===0 ? 'checked' : '' %>>
+                
+                <label for="address<%= i %>" style="flex: 1;">
+                    <p><strong>AddressType:</strong> <%=address.addressType%></p>
+                    <p><strong>House:</strong> <%= address.houseName %></p>
+                    <p><strong>City:</strong> <%= address.city %> - <%= address.zipCode %></p>
+                    <p><strong>Country:</strong><%=address.country%></p>
+                    <p><strong>Phone:</strong> <%= address.phoneNumber %></p>
+                </label>
+
+                <button class="edit-address-btn" 
+                        onclick="window.location.href='/editAddress?id=<%=address._id%>'"
+                        style="position: absolute; right: 15px; top: 15px; background: none; border: none; color: #2d6a3e; cursor: pointer;">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
+            </div>
+        <% }) %>
+    <% } else { %>
+        <p>No addresses found. Please add one.</p>
+    <% } %>
+
+    <button class="add-address-btn" onclick="window.location.href='/addAddress'">+ Add New Address</button>
+</section>
+
+        <section class="order-summary">
+            <h3>Order Summary</h3>
+            <% if (cart && cart.items && cart.items.length > 0) { %>
+    <% cart.items.forEach(item => { %>
+        <div class="item-row">
+            <img src="/uploads/<%= item.proudctId.productimage[0] %>" width="60" height="60">
+            <div class="item-info">
+                <strong><%= item.proudctId.productName %></strong><br>
+                <small>Qty: <%= item.quantity %></small>
+            </div>
+            <span>₹<%= item.proudctId.salesPrice * item.quantity %></span>
+        </div>
+    <% }) %>
+<% } else { %>
+    <p>Your cart is empty.</p>
+<% } %>
+
+            <hr>
+            
+            <div class="total-calculation">
+                <p>Subtotal <span>₹<%= grandTotal %></span></p>
+                <p>Shipping <span class="free">FREE</span></p>
+                <p>Tax (0%) <span>₹0</span></p>
+                <hr>
+                <h4>Total Amount <span>₹<%= grandTotal %></span></h4>
+            </div>
+            
+            <button class="place-order-btn" onclick="placeOrder()">Place Order (COD)</button>
+        </section>
+    </div>
+</main>
+     <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>About Us:</h4>
+                <a href="#">Our Story</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms</a>
+                <a href="#">FAQ</a>
+            </div>
+            <div class="footer-column">
+                <h4>Support:</h4>
+                <a href="#">Shipping Policy</a>
+                <a href="#">Returns</a>
+                <a href="#">Order Tracking</a>
+                <a href="#">Help</a>
+            </div>
+            <div class="footer-column">
+                <h4>My Account:</h4>
+                <a href="#">Profile</a>
+                <a href="#">My Orders</a>
+                <a href="#">Wishlist</a>
+                <a href="#">Refer & Earn</a>
+            </div>
+            <div class="footer-column">
+                <h4>Contact:</h4>
+                <p>Email: visionvogue@gmail.com</p>
+                <p>Phone: 8923457190</p>
+            </div>
+        </div>
+        <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
+    </footer>
+    
+   <script>
+    window.addEventListener( "pageshow", function ( event ) {
+        var historyTraversal = event.persisted || 
+                               ( typeof window.performance != "undefined" && 
+                                 window.performance.navigation.type === 2 );
+        if ( historyTraversal ) {
+            window.location.reload();
+        }
+    });
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+        window.history.go(1);
+    };
+    function placeOrder() {
+    const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked').value;
+
+    $.ajax({
+        url: '/placeOrder',
+        method: 'POST',
+        data: {
+            addressId: selectedAddress,
+            paymentMethod: 'COD'
+        },
+        success: (response) => {
+            if (response.success) {
+                window.location.href = '/orderSuccess';
+            } else {
+                Swal.fire("Error", "Order failed", "error");
+            }
+        }
+    });
+}
+   </script>
+</body>
+</html>

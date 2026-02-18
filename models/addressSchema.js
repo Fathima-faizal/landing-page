@@ -38,6 +38,10 @@ const addressSchema=new Schema({
             type:String,
             required:true,
         },
+        phoneNumber:{
+            type:Number,
+            required:true,
+        },
         isDefault:{
             type:Boolean,
             default: false

@@ -5,15 +5,15 @@ const {v4:uuidv4}=require('uuid');
 const orderSchema=new Schema({
 
     orderId:{
-        type:string,
-        default:()=>uuid //random id is unique//
+        type:String,
+        default:()=>uuidv4 //random id is unique//
     },
-    orderedId:[{
-      productId:{
-        type:Schema.Types.ObjectId,
-        ref:'product',
-        required:true
-      },
+    orderedItems: [{ 
+        productId: {
+            type: Schema.Types.ObjectId,
+            ref: 'product',
+            required: true
+        },
       quantity:{
         type:Number,
         required:true,
@@ -31,12 +31,12 @@ const orderSchema=new Schema({
         type:Number,
         default:0
     },
-    finalamount:{
+    finalAmount:{
         type:Number,
         required:true,
     },
     address:{
-        type:Schema.types.ObjectId,
+        type:Schema.Types.ObjectId,
         ref:'user',
         required:true
     },

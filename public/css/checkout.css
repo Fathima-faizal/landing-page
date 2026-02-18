@@ -1,0 +1,231 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #2d6a3e;
+    height: 100vh;
+    
+  
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 15px 50px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 1.4rem;
+}
+
+.nav-icons {
+    display: flex;
+    gap: 20px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+.nav-icons a{
+    color: #0a140d;
+    text-decoration: none;
+}
+/* Layout Settings */
+.checkout-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.checkout-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr; /* 2 Column layout */
+    gap: 30px;
+    align-items: start;
+}
+
+/* Sections Styling */
+.address-section, .order-summary {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+h3 {
+    margin-bottom: 20px;
+    color: #1a4d2e;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+/* Address Cards */
+.address-card {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    transition: 0.3s;
+    cursor: pointer;
+}
+.top-checkbox {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.top-checkbox input[type="checkbox"] {
+    accent-color: #2d6a3e;
+    cursor: pointer;
+}
+.edit-address-btn {
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.edit-address-btn:hover {
+    color: #1a4d2e;
+    text-decoration: underline;
+}
+.address-card {
+    position: relative; 
+    padding-right: 60px;
+}
+.address-card:hover {
+    border-color: #2d6a3e;
+    background: #f9fffb;
+}
+
+.address-card input[type="radio"] {
+    margin-right: 15px;
+    width: 18px;
+    height: 18px;
+    accent-color: #2d6a3e;
+}
+
+/* Order Summary Items */
+.item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.item-row img {
+    border-radius: 5px;
+    object-fit: cover;
+    background: #f4f4f4;
+}
+
+.item-info {
+    flex: 1;
+    margin-left: 15px;
+    font-size: 0.9rem;
+}
+
+/* Calculation Table */
+.total-calculation {
+    margin-top: 20px;
+}
+
+.total-calculation p {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    color: #666;
+}
+
+.total-calculation h4 {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    color: #333;
+    margin-top: 15px;
+}
+
+.free {
+    color: #2d6a3e;
+    font-weight: bold;
+}
+
+/* Buttons */
+.place-order-btn {
+    width: 100%;
+    background: #2d6a3e;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: 0.3s;
+}
+
+.place-order-btn:hover {
+    background: #1a4d2e;
+}
+
+.add-address-btn {
+    background: none;
+    border: 1px dashed #2d6a3e;
+    color: #2d6a3e;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .checkout-grid {
+        grid-template-columns: 1fr;
+    }
+}
+footer {
+    background-color: #6b8e61;
+    color: #f1f1f1;
+    padding: 40px 50px;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 30px;
+}
+
+.footer-column a {
+    display: block;
+    color: #f1f1f1;
+    text-decoration: none;
+    margin-bottom: 5px;
+    font-size: 0.85rem;
+}
+
+.copyright {
+    text-align: center;
+    margin-top: 100px;
+    font-size: 0.75rem;
+}

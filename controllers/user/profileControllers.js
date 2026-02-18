@@ -353,19 +353,19 @@ const changePasswordValid=async(req,res)=>{
   try {
     const userId=req.session.user;
     const userData=await User.findOne({_id:userId})
-    const {addressType,houseName,street,landmark,city,zipCode,country}=req.body;
-     if(!addressType || !houseName || !street || !landmark || !city || !zipCode || !country){
+    const {addressType,houseName,street,landmark,city,zipCode,country,phoneNumber}=req.body;
+     if(!addressType || !houseName || !street || !landmark || !city || !zipCode || !country||!phoneNumber){
       return res.redirect('/addAddress');
     }
     const userAddress=await Address.findOne({userId:userData._id});
     if(!userAddress){
       const newAddress=new Address({
         userId:userData._id,
-        address:[{addressType,houseName,street,landmark,city,zipCode,country}]
+        address:[{addressType,houseName,street,landmark,city,zipCode,country,phoneNumber}]
       })
       await newAddress.save()
     }else{
-      userAddress.address.push({addressType,houseName,street,landmark,city,zipCode,country})
+      userAddress.address.push({addressType,houseName,street,landmark,city,zipCode,country,phoneNumber})
       await userAddress.save()
     }
     res.redirect('address')
@@ -416,7 +416,8 @@ const changePasswordValid=async(req,res)=>{
              landmark:data.landmark,
              city:data.city,
              zipCode:data.zipCode,
-             country:data.country
+             country:data.country,
+             phoneNumber:data.phoneNumber
             }
           }}
         );

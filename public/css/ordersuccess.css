@@ -1,0 +1,88 @@
+/* മധ്യഭാഗത്ത് അലൈൻ ചെയ്യാൻ */
+body {
+    background-color: #f4f7f6; /* ലളിതമായ ഒരു ബാക്ക്ഗ്രൗണ്ട് */
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Poppins', sans-serif;
+}
+
+.success-page {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+}
+
+/* ടിക് മാർക്കിനുള്ള സ്റ്റൈൽ */
+.icon {
+    font-size: 60px;
+    color: #2d6a3e;
+    margin-bottom: 20px;
+    background: #e9f5ec;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 1.8rem;
+}
+
+p {
+    color: #666;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+/* ബട്ടണുകൾക്കുള്ള സ്റ്റൈൽ */
+.buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn {
+    background: #2d6a3e;
+    color: white;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #1a4d2e;
+}
+
+.btn-outline {
+    border: 2px solid #2d6a3e;
+    color: #2d6a3e;
+    padding: 10px 25px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.btn-outline:hover {
+    background: #2d6a3e;
+    color: white;
+}
+
+
+@media (max-width: 480px) {
+    .buttons {
+        flex-direction: column;
+    }
+}
