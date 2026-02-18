@@ -6,6 +6,8 @@
     <title>VisionVogue - ProductDetails</title>
     <link rel="stylesheet" href="/css/productDetails.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     
@@ -20,7 +22,7 @@
             <div class="logo">VisionVogue</div>
             <div class="nav-icons">
                <a href="/wishlist" ><i class="fa-regular fa-heart"></i></a>
-               <a href=""> <i class="fa-solid fa-cart-shopping"></i></a>
+               <a href="/cart"> <i class="fa-solid fa-cart-shopping"></i></a>
               <a href="/profile" > <i class="fa-regular fa-user"></i></a>
             </div>
         </nav>
@@ -49,7 +51,7 @@
     <input type="number" id="quantity" name="quantity" value="1" min="1" max="<%= product.quantity %>">
     
 </div>
-                <button class="try-on-btn">Add to Cart</button>
+            <button class="try-on-btn" onclick="addToCart('<%=product._id%>')">Add to Cart</button></a>
             </div>
         </section>
 
@@ -159,6 +161,39 @@ const img = document.querySelector('#mainProductImage');
     window.onpopstate = function () {
         window.history.go(1);
     };
+
+    function addToCart(productId){
+        $.ajax({
+            url:'/cart',
+            method:'POST',
+            data:{productId:productId},
+            success:(response)=>{
+                if(response.status){
+                    swal.fire({
+                        icon:'success',
+                        title:'Added to cart',
+                        text:'The product has been added to your Cart',
+                        timer:2000
+                    })
+                }else{
+                    swal.fire({
+                        icon:'info',
+                        title:'Already in Cart',
+                        text:response.message,
+                        timer:2000
+                    })
+                }
+            },
+            error:(error)=>{
+                swal.fire({
+                    icon:'error',
+                    title:'Error',
+                    text:'There are was error adding the product to your cart',
+                    timer:2000
+                })
+            }
+        })
+    }
 
 </script>
 </body>

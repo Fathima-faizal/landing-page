@@ -47,9 +47,13 @@ const deleteWishlist=async(req,res)=>{
  try {
        const productId = req.query.id;
         const userId = req.session.user;
+        const redirectPath = req.query.redirect; 
        await User.findByIdAndUpdate(userId, {
             $pull: { wishlist: productId }
         });
+        if (redirectPath === 'cart') {
+            return res.redirect('/cart');
+        }
        res.redirect('/wishlist') 
     } catch (error) {
         console.log('error',error);

@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VisionVogue - Home</title>
+    <title>VisionVogue - Wishlist</title>
     <link rel="stylesheet" href="/css/wishlist.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -20,7 +22,7 @@
             <div class="logo">VisionVogue</div>
             <div class="nav-icons">
                <a href="/wishlist" ><i class="fa-regular fa-heart"></i></a>
-               <a href=""> <i class="fa-solid fa-cart-shopping"></i></a>
+               <a href="/cart"> <i class="fa-solid fa-cart-shopping"></i></a>
               <a href="/profile" > <i class="fa-regular fa-user"></i></a>
             </div>
         </nav>
@@ -52,7 +54,7 @@
                 </td>
                 <td class="price"><%=product.salesPrice%></td>
                 <td>
-                    <button class="add-btn">Add to Cart</button>
+                  <button class="add-btn" onclick="addToCart('<%=product._id%>')">Add to Cart</button></a>
                 </td>
                 <td>
                     <button class="remove-btn">
@@ -143,7 +145,21 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
- function confirmDelete(event, name) {
+    function addToCart(productId) {
+    $.ajax({
+        url: '/cart',
+        method: 'POST',
+        data: { productId: productId },
+        success: (response) => {
+            if (response.status === true) {
+                window.location.href = `/wishlist/delete?id=${productId}&redirect=cart`;
+            } else {
+                swal.fire({ icon: 'error', title: 'Error', text: response.message || 'Already  add to cart' });
+            }
+        }
+    });
+}
+    function confirmDelete(event, name) {
     if (!confirm(`Are you sure you want to delete "${name}"?`)) {
         event.preventDefault(); 
         return false;

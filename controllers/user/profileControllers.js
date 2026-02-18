@@ -320,16 +320,23 @@ const changePasswordValid=async(req,res)=>{
     const limit = 2;
     const skip = (page - 1) * limit;
     const userAddress = await Address.findOne({ userId: userId }); 
+    if (!userAddress) {
+      return res.render('address', {
+        userAddress: { address: [] },
+        currentPage: page,
+        totalPages: 0
+      });
+    }
     const totalAddresses = userAddress.address.length;
     const totalPages = Math.ceil(totalAddresses / limit);
     const paginatedAddresses =userAddress.address.slice(skip, skip + limit);
-     
      res.render('address',{ 
       userAddress: { address: paginatedAddresses },
       currentPage: page,
        totalPages: totalPages
      })
   } catch (error) {
+    console.log('error',error);
     res.status(500).send('Inernal server error')
   }
  }

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionVogue - Cart</title>
+    <link rel="stylesheet" href="/css/cart.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="/home">Home</a></li>
+                <li><a href="/shop">shop</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact us</a></li>
+            </ul>
+            <div class="logo">VisionVogue</div>
+            <div class="nav-icons">
+               <a href="/wishlist"><i class="fa-regular fa-heart"></i></a>
+               <a href="/cart"><i class="fa-solid fa-cart-shopping"></i></a>
+               <a href="/profile"><i class="fa-regular fa-user"></i></a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="wishlist-container mt-50 mb-50">
+        <div class="container">
+            <h2>Your Cart</h2>
+            <div class="table-responsive">
+                <table class="table wishlist-table text-center">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product Details</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (data.length > 0) { %>
+                            <% var totalSum = 0 %>
+                          <% for (let i = 0; i < data.length; i++) { %>
+    <tr>
+        <td class="image product-thumbnail">
+            <img src="/uploads/<%= data[i].productDetails.productimage[0] %>" class="product-img">
+        </td>
+        <td class="details text-start">
+            <span class="brand"><b><%= data[i].productDetails.brand %></b></span><br>
+            <span class="product-name"><%= data[i].categoryDetails ? data[i].categoryDetails.name : 'No Category' %></span><br>
+            <small class="text-muted"><%= data[i].productDetails.productName %></small>
+        </td>
+        <td class="price">
+            ₹<span id="subTotal<%= i %>"><%= data[i].productDetails.salesPrice * data[i].items.quantity %></span>
+        </td>
+     <td class="text-center">
+    <div class="quantity-control">
+        <button class="qty-btn" onclick="changeQuantity('<%= data[i].productDetails._id %>', -1, '<%= data[i].productDetails.salesPrice %>', '<%= i %>')">−</button>
+        <input type="text" id="cartProductQuantity<%= i %>" class="qty-input" value="<%= data[i].items.quantity %>" readonly>
+        <button class="qty-btn" onclick="changeQuantity('<%= data[i].productDetails._id %>', 1, '<%= data[i].productDetails.salesPrice %>', '<%= i %>')">+</button>
+    </div>
+</td>
+        <td>
+            <button class="remove-btn" style="background: #dc3545; padding: 5px 10px; border-radius: 5px; border: none;">
+                <a href="/cart/delete?id=<%=data[i].productDetails._id%>" onclick="confirmRemove(event,'<%= data[i].categoryDetails.name %>')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                </a>
+            </button>
+        </td>
+    </tr>
+<% } %>
+ <% } else { %>
+<tr>
+<td colspan="5" style="text-align: center; padding: 40px 0;">
+ <p style="margin: 0; font-size: 18px; color: #666;">No items found in Cart</p>
+</td>
+</tr>
+ <% } %>
+</tbody>
+    </table>
+    </div>
+            <div class="price-total">
+    <div class="cart-total-wrapper">
+        <div class="cart-total-box">
+            <div class="total-row">
+                <h3>Total: <span id="grandTotalDisplay">₹<%= grandtotal %></span></h3>
+            </div>
+            <hr>
+            <div class="checkout-row">
+                <a href="/checkout" class="btn-checkout">Proceed to Checkout</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+                    <nav aria-label="page navigation">
+                        <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
+                            <%for(let i=1;i<=totalPages;i++){%>
+                                <li class="page-item <%=(i===currentPage)? 'active':''%>">
+                                 <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                                </li>
+                                <%}%>
+                        </ul>
+                    </nav>
+                </div>
+</div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>About Us:</h4>
+                <a href="#">Our Story</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms</a>
+                <a href="#">FAQ</a>
+            </div>
+            <div class="footer-column">
+                <h4>Support:</h4>
+                <a href="#">Shipping Policy</a>
+                <a href="#">Returns</a>
+                <a href="#">Order Tracking</a>
+                <a href="#">Help</a>
+            </div>
+            <div class="footer-column">
+                <h4>My Account:</h4>
+                <a href="#">Profile</a>
+                <a href="#">My Orders</a>
+                <a href="#">Wishlist</a>
+                <a href="#">Refer & Earn</a>
+            </div>
+            <div class="footer-column">
+                <h4>Contact:</h4>
+                <p>Email: visionvogue@gmail.com</p>
+                <p>Phone: 8923457190</p>
+            </div>
+        </div>
+        <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
+    </footer>
+    <script>
+    function changeQuantity(productId, count, productPrice, i) {
+    const quantityInput = document.getElementById(`cartProductQuantity${i}`);
+    const subtotalElement = document.getElementById(`subTotal${i}`);
+    
+    let currentQuantity = parseInt(quantityInput.value);
+    let newQuantity = currentQuantity + count;
+    if (newQuantity < 0) {
+        return;
+    }
+
+    if (newQuantity > 3) {
+        swal.fire({
+             icon: 'error',
+            title: 'Limit Exceeded!',
+            text: 'You can only add up to 3 items.',
+           
+        });
+        return;
+    }
+
+    $.ajax({
+        url: '/changeQuantity',
+        method: 'POST',
+        data: {
+            productId: productId,
+            quantity: newQuantity,
+            count: count
+        },
+        success: (response) => {
+            if (response.status) {
+                quantityInput.value = newQuantity;
+                subtotalElement.innerHTML = (newQuantity * productPrice);
+                document.getElementById('grandTotalDisplay').innerHTML = `₹${response.grandTotal}`;
+            } else {
+                swal.fire({ icon: 'error', title: 'Error', text: response.message || 'Could not update quantity' });
+            }
+        }
+    });
+}
+    function confirmRemove(event,name){
+ if (!confirm(`Are you sure you want to delete "${name}"?`)) {
+        event.preventDefault(); 
+        return false;
+    }
+    return true;
+    }    
+    </script>
+</body>
+</html>
