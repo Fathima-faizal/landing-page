@@ -7,6 +7,7 @@ const productController=require('../controllers/user/productController');
 const wishlistController=require('../controllers/user/wishlistController');
 const cartControllers=require('../controllers/user/cartController');
 const checkoutControllers=require('../controllers/user/checkoutController')
+const orderControllers=require('../controllers/user/orderController')
 const {userAuth,adminAuth}=require('../middleware/auth');
 
       // user Authentication//
@@ -88,4 +89,15 @@ router.get('/orderSuccess',userAuth,checkoutControllers.ordersuccess)
 router.get('/wallet',userAuth,profileControllers.getwallet)
 router.post('/addMoney',userAuth,profileControllers.addmoney)
 
+                        //order details//
+
+router.get('/order',userAuth,orderControllers.getorder)   
+router.post('/order',userAuth,orderControllers.postorder);
+router.get('/orderDetails/:id',userAuth,orderControllers.orderdetails) 
+router.post('/cancel/:id',userAuth,orderControllers.cancelproduct)  
+router.get('/return/:orderId/:productId',userAuth,orderControllers.getreturn);
+router.post('/return',userAuth,orderControllers.postreturn)
+router.get('/review/:orderId/:productId',userAuth,orderControllers.getreview);
+router.post('/review',userAuth,orderControllers.postreview)                 
+router.get('/downloadInvoice/:orderId', userAuth, orderControllers.downloadInvoice);
 module.exports=router

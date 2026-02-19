@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionVogue - Profile</title>
+    <link rel="stylesheet" href="css/order.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <header class="navbar">
+        <nav class="nav-links">
+            <a href="/home">Home</a>
+            <a href="/shop">shop</a>
+            <a href="#">About</a>
+            <a href="#">Contact us</a>
+        </nav>
+        <div class="logo">VisionVogue</div>
+        <div class="nav-icons">
+             <a href="/wishlist" ><i class="fa-regular fa-heart"></i></a>
+               <a href="/cart"> <i class="fa-solid fa-cart-shopping"></i></a>
+              <a href="/profile" > <i class="fa-regular fa-user"></i></a>
+    </header>
+
+    <main class="profile-container">
+        <h1>Order</h1>
+        
+        <div class="content-wrapper">
+            <aside class="sidebar">
+                <h3>My Account</h3>
+                <ul>
+                   <a href="/profile"><li >Profile</li></a>
+                   <a href="/address"> <li>Address</li> </a>
+                   <a href="/order"><li class="active">Order</li> </a>
+                   <a href="/wallet"><li>Wallet</li> </a>
+                   <a href="/coupon"> <li>Coupon</li> </a>
+                   <a href="/refer" ><li>Refer & Earn</li> </a>
+                   <a href="/changePassword"><li>Change Password</li> </a>
+                   <a href="/Contact"><li>Contact us</li> </a>
+                   <a href="/logout"><li>Log out</li> </a>
+                </ul>
+            </aside>
+
+            <section class="profile-card">
+              <main class="order-mgmt">
+                <form action="/order" method="GET">
+                <div class="search-box">
+                        <input type="text"  name="search" placeholder="Search">
+                        <button type="submit" class="btn-clear">Clear</button>
+                </div>
+                </form>
+
+    <table class="order-table" id="orderTable">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+    <% if (orders && orders.length > 0) { %>
+        <% orders.forEach(order => { %>
+            <tr class="order-row">
+                <td>#<%= order.orderId %></td> 
+                <td><%= order.createdOn ? new Date(order.createdOn).toLocaleDateString() : 'N/A' %></td>
+                <td>₹<%= order.finalAmount %></td>
+                <td>
+                    <span class="badge <%= order.status ? order.status.toLowerCase() : 'pending' %>">
+                        <%= order.status %>
+                    </span>
+                </td>
+                <td>
+                    
+                    <a href="/orderDetails/<%= order._id %>" class="btn-detail">View Details</a>
+                    <% if (order.status !== 'Cancelled' && order.status !== 'Delivered') { %>
+        <button onclick="confirmCancel('<%= order._id %>')" class="cancel">
+            Cancel
+        </button>
+    <% } %>
+                </td>
+            </tr>
+        <% }) %>
+    <% } else { %>
+        <tr>
+            <td colspan="5" style="text-align: center;">No orders found.</td>
+        </tr>
+    <% } %>
+</tbody>
+    </table>
+</main>
+ <div class="container">
+                    <nav aria-label="page navigation">
+                        <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
+                            <%for(let i=1;i<=totalPages;i++){%>
+                                <li class="page-item <%=(i===currentPage)? 'active':''%>">
+                                 <a class="page-link" href="?page=<%= i %>&search=<%= search %>"><%= i %></a>
+                                </li>
+                                <%}%>
+                        </ul>
+                    </nav>
+                </div>
+            </section>
+        </div>
+        
+    </main>
+
+    <footer class="footer">
+        <div class="footer-columns">
+            <div class="col">
+                <h4>About Us:</h4>
+                <p>Our Story</p><p>Privacy Policy</p><p>Terms</p><p>FAQ</p>
+            </div>
+            <div class="col">
+                <h4>Support:</h4>
+                <p>Shipping Policy</p><p>Returns</p><p>Order Tracking</p><p>Help</p>
+            </div>
+            <div class="col">
+                <h4>My Account:</h4>
+                <p>Profile</p><p>My Orders</p><p>Wishlist</p><p>Refer & Earn</p>
+            </div>
+            <div class="col">
+                <h4>Contact:</h4>
+                <p>Email: visionvogue@gmail.com</p>
+                <p>Phone: 8923457190</p>
+            </div>
+        </div>
+        <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
+    </footer>
+ <script>
+    window.addEventListener("pageshow", function (event) {
+        var historyTraversal = event.persisted || 
+                               (typeof window.performance != "undefined" && 
+                                window.performance.navigation.type === 2);
+        if (historyTraversal) {
+            window.location.reload();
+        }
+    });
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+        window.history.go(1);
+    };
+   function confirmCancel(orderId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to cancel this order?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, Cancel it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/cancel/${orderId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    Swal.fire(
+                        'Cancelled!',
+                        'Your order has been cancelled and stock updated.',
+                        'success'
+                    ).then(() => {
+                        window.location.reload(); 
+                    });
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Oops!', 'Something went wrong', 'error');
+            });
+        }
+    });
+}
+</script>
+</body>
+</html>

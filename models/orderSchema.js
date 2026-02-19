@@ -6,8 +6,13 @@ const orderSchema=new Schema({
 
     orderId:{
         type:String,
-        default:()=>uuidv4 //random id is unique//
+        default:()=> 'ORD' + uuidv4()
     },
+    userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'user',
+    required: true
+},
     orderedItems: [{ 
         productId: {
             type: Schema.Types.ObjectId,
@@ -37,7 +42,7 @@ const orderSchema=new Schema({
     },
     address:{
         type:Schema.Types.ObjectId,
-        ref:'user',
+        ref:'address',
         required:true
     },
     invoiceDate:{
@@ -56,7 +61,17 @@ const orderSchema=new Schema({
     couponapplied:{
         type:Boolean,
         default:false
-    }
+    },
+    returnReason:{
+        type:String,
+        default:null
+    },
+    review: {
+    comment: { type: String, default: null },
+    rating: { type: Number, min: 1, max: 5, default: null },
+    isReviewed: { type: Boolean, default: false }
+        }
+
 
 })
 

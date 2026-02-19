@@ -1,0 +1,246 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #2e7d32; /* Main dark green background */
+}
+
+/* Navbar */
+.navbar {
+    background: white;
+    padding: 15px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    margin-right: 20px;
+    font-size: 17px;
+   
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.nav-icons {
+    display: flex;
+    gap: 20px;
+    font-size: 1.1rem;
+}
+.nav-icons a{
+    color: #0a1f0d;
+}
+
+
+/* Main Profile Layout */
+.profile-container {
+    padding: 40px 10%;
+    color: white;
+}
+
+.profile-container h1 {
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+.content-wrapper {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+.profile-card{
+    margin-left: 40px;
+}
+.sidebar {
+    background: white;
+    color: #333;
+    width: 200px;
+    padding: 30px 0;
+}
+
+.sidebar h3 {
+    padding: 0 20px 15px;
+    border-bottom: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar li {
+    padding: 10px 20px;
+    font-size: 13px;
+    cursor: pointer;
+}
+.sidebar  a {
+  text-decoration: none;
+  color:#0a1f0d
+}
+
+.sidebar li.active {
+    background: #f0f0f0;
+}
+
+.search-box {
+    display: flex;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+    width: 300px;
+    margin-top: 20px;
+}
+
+.search-box input {
+    border: none;
+    padding: 10px;
+    width: 280px;
+    outline: none;
+}
+
+.btn-clear {
+    background-color: #1b5135;
+    color: white;
+    border: none;
+    padding: 0 15px;
+    cursor: pointer;
+}
+
+/* Table Alignment Fix */
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.order-table th, .order-table td {
+    padding: 15px;
+    text-align: left; /* എല്ലാ വിവരങ്ങളും ഇടത് വശത്തേക്ക് ചേർക്കുന്നു */
+    border-bottom: 1px solid #eee;
+}
+
+.order-table th {
+    background-color: #f9fbf9; /* ഹെഡിംഗിന് നേരിയ നിറം */
+    color: #333;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.order-table td {
+    font-size: 15px;
+    color: #555;
+    vertical-align: middle;
+}
+
+/* Status Badge Alignment */
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.pending { background-color: #fff4e5; color: #b7791f; }
+
+/* Action Button Style */
+.btn-detail {
+    padding: 8px 16px;
+    background-color: #2d6a4f;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 13px;
+    transition: 0.3s;
+}
+.cancel {
+    padding: 8px 16px;
+    background-color: red;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 13px;
+    transition: 0.3s;
+    border: none;
+}
+
+.btn-detail:hover {
+    background-color: #1b4332;
+}
+.cancel:hover {
+    background-color: red;
+}
+/* Order ID Column width */
+.order-table th:first-child, 
+.order-table td:first-child {
+    width: 30%;
+    word-break: break-all; 
+}
+.footer {
+    background: #558b2f; /* Muted olive green */
+    color: white;
+    padding: 40px 10% 20px;
+    margin-top: 50px;
+}
+
+.footer-columns {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.footer h4 {
+    margin-bottom: 15px;
+}
+
+.copyright {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 11px;
+    opacity: 0.8;
+}
+.pagination {
+    display: flex;             
+    list-style-type: none;     
+    padding: 0;
+    justify-content: center;   
+    gap: 10px;   
+    margin-top: 40px;              
+}
+
+
+.page-link {
+    text-decoration: none;     
+    color: #333;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s;
+}
+
+.page-item.active .page-link {
+    background-color: #17ce17;
+    color: white;
+    border-color: #17ce17;
+}
+
+.page-link:hover {
+    background-color: #e2e6ea;
+}

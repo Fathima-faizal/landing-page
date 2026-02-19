@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionVogue - Profile</title>
+    <link rel="stylesheet" href="/css/review.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <header class="navbar">
+        <nav class="nav-links">
+            <a href="/home">Home</a>
+            <a href="/shop">shop</a>
+            <a href="#">About</a>
+            <a href="#">Contact us</a>
+        </nav>
+        <div class="logo">VisionVogue</div>
+        <div class="nav-icons">
+             <a href="/wishlist" ><i class="fa-regular fa-heart"></i></a>
+               <a href="/cart"> <i class="fa-solid fa-cart-shopping"></i></a>
+              <a href="/profile" > <i class="fa-regular fa-user"></i></a>
+    </header>
+
+    <main class="profile-container">
+        <p>Order -> Order Details -> Return</p>
+        
+        <div class="content-wrapper">
+            <aside class="sidebar">
+                <h3>My Account</h3>
+                <ul>
+                   <a href="/profile"><li >Profile</li></a>
+                   <a href="/address"> <li>Address</li> </a>
+                   <a href="/order"><li class="active">Order</li> </a>
+                   <a href="/wallet"><li>Wallet</li> </a>
+                   <a href="/coupon"> <li>Coupon</li> </a>
+                   <a href="/refer" ><li>Refer & Earn</li> </a>
+                   <a href="/changePassword"><li>Change Password</li> </a>
+                   <a href="/Contact"><li>Contact us</li> </a>
+                   <a href="/logout"><li>Log out</li> </a>
+                </ul>
+            </aside>
+
+            <section class="profile-card">
+        <div class="review-container">
+    <h3>Write a Review</h3>
+    <form id="reviewForm" action="/review" method="post">
+        <input type="hidden" id="orderId" name="orderId" value="<%= order._id %>">
+        <input type="hidden" id="productId" name="productId" value="<%= item.productId._id %>">
+        
+        <div class="rating" id="rating">
+            <input type="radio" name="rating" value="5" id="5"><label for="5">☆</label>
+            <input type="radio" name="rating" value="4" id="4"><label for="4">☆</label>
+            <input type="radio" name="rating" value="3" id="3"><label for="3">☆</label>
+            <input type="radio" name="rating" value="2" id="2"><label for="2">☆</label>
+            <input type="radio" name="rating" value="1" id="1"><label for="1">☆</label>
+        </div>
+        
+        <textarea name="comment" id="comment" placeholder="Share your experience..."></textarea>
+        <button type="button" onclick="submitReview()" class="btn-submit">Submit Review</button>
+    </form>
+</div>
+        
+            </section>
+        </div>
+        
+    </main>
+
+    <footer class="footer">
+        <div class="footer-columns">
+            <div class="col">
+                <h4>About Us:</h4>
+                <p>Our Story</p><p>Privacy Policy</p><p>Terms</p><p>FAQ</p>
+            </div>
+            <div class="col">
+                <h4>Support:</h4>
+                <p>Shipping Policy</p><p>Returns</p><p>Order Tracking</p><p>Help</p>
+            </div>
+            <div class="col">
+                <h4>My Account:</h4>
+                <p>Profile</p><p>My Orders</p><p>Wishlist</p><p>Refer & Earn</p>
+            </div>
+            <div class="col">
+                <h4>Contact:</h4>
+                <p>Email: visionvogue@gmail.com</p>
+                <p>Phone: 8923457190</p>
+            </div>
+        </div>
+        <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
+    </footer>
+ <script>
+    window.addEventListener("pageshow", function (event) {
+        var historyTraversal = event.persisted || 
+                               (typeof window.performance != "undefined" && 
+                                window.performance.navigation.type === 2);
+        if (historyTraversal) {
+            window.location.reload();
+        }
+    });
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+        window.history.go(1);
+    };
+   function submitReview() {
+    const orderId = document.getElementById('orderId').value;
+    const productId = document.getElementById('productId').value;
+    const comment = document.getElementById('comment').value;
+    const rating = document.querySelector('input[name="rating"]:checked')?.value;
+
+    if (!rating) {
+        return Swal.fire('Error', 'Please select a rating star!', 'error');
+    }
+
+    fetch('/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId, productId, comment, rating })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status) {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Review submitted successfully!',
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href = `/orderDetails/${orderId}`;
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire('Oops!', 'Something went wrong', 'error');
+    });
+}
+</script>
+</body>
+</html>

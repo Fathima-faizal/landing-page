@@ -10,7 +10,7 @@ const cartSchema=new Schema({
     items:[{
         proudctId:{
           type:Schema.Types.ObjectId,
-          ref:'proudct',
+          ref:'product',
           required:true,
         },
         quantity:{

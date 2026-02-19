@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionVogue - Profile</title>
+    <link rel="stylesheet" href="/css/orderDetails.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <header class="navbar">
+        <nav class="nav-links">
+            <a href="/home">Home</a>
+            <a href="/shop">shop</a>
+            <a href="#">About</a>
+            <a href="#">Contact us</a>
+        </nav>
+        <div class="logo">VisionVogue</div>
+        <div class="nav-icons">
+             <a href="/wishlist" ><i class="fa-regular fa-heart"></i></a>
+               <a href="/cart"> <i class="fa-solid fa-cart-shopping"></i></a>
+              <a href="/profile" > <i class="fa-regular fa-user"></i></a>
+    </header>
+
+    <main class="profile-container">
+        <p>Order -> Order Details</p>
+        
+        <div class="content-wrapper">
+            <aside class="sidebar">
+                <h3>My Account</h3>
+                <ul>
+                   <a href="/profile"><li >Profile</li></a>
+                   <a href="/address"> <li>Address</li> </a>
+                   <a href="/order"><li class="active">Order</li> </a>
+                   <a href="/wallet"><li>Wallet</li> </a>
+                   <a href="/coupon"> <li>Coupon</li> </a>
+                   <a href="/refer" ><li>Refer & Earn</li> </a>
+                   <a href="/changePassword"><li>Change Password</li> </a>
+                   <a href="/Contact"><li>Contact us</li> </a>
+                   <a href="/logout"><li>Log out</li> </a>
+                </ul>
+            </aside>
+
+            <section class="profile-card">
+             <div class="order-detail-card">
+           <h3>Order Summary</h3>
+    <a href="/downloadInvoice/<%= order._id %>" class="btn-invoice">Download Invoice</a>
+    
+    <div class="product-list">
+    <% order.orderedItems.forEach(item => { %>
+        <div class="item-row">
+            <img src="/uploads/<%= item.productId.productimage[0] %>" alt="product" width="100">
+            <div class="item-info">
+            <p><strong>Category:</strong><%= item.productId.category ? item.productId.category.name : 'No Category' %></p>
+            <p><strong>Name:</strong> <%= item.productId.productName %></p>
+            <p><strong>Brand:</strong> <%= item.productId.brand %></p>
+            <p><strong>Qty:</strong> <%= item.quantity %></p>
+            </div>
+            <div class="item-actions">
+    <a href="/return/<%= order._id %>/<%= item.productId._id %>" class="return">Return</a>
+    <a href="/review/<%= order._id %>/<%= item.productId._id %>" class="review" >Review</a>
+   </div>
+        </div>
+    <% }) %>
+</div>
+</div>
+            </section>
+        </div>
+        
+    </main>
+
+    <footer class="footer">
+        <div class="footer-columns">
+            <div class="col">
+                <h4>About Us:</h4>
+                <p>Our Story</p><p>Privacy Policy</p><p>Terms</p><p>FAQ</p>
+            </div>
+            <div class="col">
+                <h4>Support:</h4>
+                <p>Shipping Policy</p><p>Returns</p><p>Order Tracking</p><p>Help</p>
+            </div>
+            <div class="col">
+                <h4>My Account:</h4>
+                <p>Profile</p><p>My Orders</p><p>Wishlist</p><p>Refer & Earn</p>
+            </div>
+            <div class="col">
+                <h4>Contact:</h4>
+                <p>Email: visionvogue@gmail.com</p>
+                <p>Phone: 8923457190</p>
+            </div>
+        </div>
+        <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
+    </footer>
+ <script>
+    window.addEventListener("pageshow", function (event) {
+        var historyTraversal = event.persisted || 
+                               (typeof window.performance != "undefined" && 
+                                window.performance.navigation.type === 2);
+        if (historyTraversal) {
+            window.location.reload();
+        }
+    });
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+        window.history.go(1);
+    };
+   
+</script>
+</body>
+</html>
