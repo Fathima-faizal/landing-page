@@ -26,7 +26,21 @@ const orderSchema=new Schema({
       price:{
         type:Number,
         default:0
-      }
+      },
+    returnReason:{
+        type:String,
+        default:null
+    },
+    review: {
+    comment: { type: String, default: null },
+    rating: { type: Number, min: 1, max: 5, default: null },
+    isReviewed: { type: Boolean, default: false }
+        },
+        status:{
+        type:String,
+        required:true,
+        enum:['pending','proccessing','shipped','delivered','cancelled','return request','returned','solve']
+    },
     }],
     totalPrice:{
       type:Number,
@@ -48,11 +62,6 @@ const orderSchema=new Schema({
     invoiceDate:{
         type:Date,
     },
-    status:{
-        type:String,
-        required:true,
-        enum:['pending','proccessing','shipped','delivered','cancelled','return request','returned']
-    },
     createdOn:{
         type:Date,
         default:Date.now,
@@ -62,15 +71,10 @@ const orderSchema=new Schema({
         type:Boolean,
         default:false
     },
-    returnReason:{
-        type:String,
-        default:null
-    },
-    review: {
-    comment: { type: String, default: null },
-    rating: { type: Number, min: 1, max: 5, default: null },
-    isReviewed: { type: Boolean, default: false }
-        }
+     status: { 
+        type: String, 
+        default: 'pending' 
+    }
 
 
 })

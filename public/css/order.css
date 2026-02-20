@@ -155,7 +155,9 @@ body {
 }
 
 .pending { background-color: #fff4e5; color: #b7791f; }
-
+.shipped {background-color: #d1fae5; color: #065f46;}
+.delivered {background-color: #dcfce7; color: #15803d;}
+.cancelled {background-color: #fee2e2; color: #991b1b;}
 /* Action Button Style */
 .btn-detail {
     padding: 8px 16px;

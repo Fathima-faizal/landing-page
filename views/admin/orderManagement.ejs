@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional Admin Dashboard</title>
-    <link rel="stylesheet" href="/css/customer.css">
+   <link rel="stylesheet" href="/css/orders.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -16,17 +18,17 @@
                 <i class="fas fa-th-large"></i> <span>Dashboard</span>
                 </a>
             </div>
-            <div class="nav-item">
+            <div class="nav-item ">
                 <a href="/admin/product">
                 <i class="fas fa-box"></i> <span>Product Management</span>
                 </a>
             </div>
-            <div class="nav-item">
+            <div class="nav-item active">
                 <a href="/admin/orderManagement">
                 <i class="fas fa-shopping-cart"></i> <span>Order Management</span>
                 </a>
             </div>
-            <div class="nav-item active">
+            <div class="nav-item">
                 <a href="/admin/customer">
                 <i class="fas fa-user"></i> <span>User Management</span>
                 </a>
@@ -35,79 +37,90 @@
                 <a href="/admin/category">
                 <i class="fas fa-layer-group"></i> <span>Category Management</span>
                 </a>
-            </div> 
-            <div class="nav-item">
+            </div>
+           <div class="nav-item">
                 <a href="#">
                 <i class="fas fa-image"></i> <span>Banner Management</span>
                 </a>
             </div>
-
             <hr class="nav-divider">
 
             <div class="nav-item">
                 <a href="#">
-                <i class="fas fa-ticket-alt"></i> <span>Coupon</span>
+              <i class="fas fa-ticket-alt"></i>  <span>Coupon</span>
                 </a>
             </div>
             <div class="nav-item">
                 <a href="/admin/brand">
-               <i class="fa-solid fa-tags"></i><span>Brand</span>
+              <i class="fa-solid fa-tags"></i> <span>Brand</span>
                 </a>
             </div>
-            <div class="nav-item">
+             <div class="nav-item">
                 <a href="/admin/Reviews">
                 <i class="fas fa-comment-alt"></i> <span>Review</span>
                 </a>
             </div>
             <div class="nav-item">
                 <a href="/admin/Contact">
-               <i class="fa-solid fa-envelope"></i> <span>Contact us</span>
+                 <i class="fa-solid fa-envelope"></i> <span>Contact us</span>
                 </a>
             </div>
         </aside>
 
         <main class="main-content">
             <header class="top-header">
-                <h2>User Management</h2>
+                <h2>Product Management</h2>
                 <a href="/admin/logout">
                 <button class="logout-top">Log out</button>
                 </a>
             </header>
             <section class="content-body">
                 <div class="toolbar">
-                    <form action="/admin/customer" method="get">
+                    <form action="/admin/orderManagement" method="get">
                     <div class="search-box">
                         <input type="text" name="search" placeholder="Search">
                         <button class="btn-clear">Clear</button>
-                        </form>
-                    </div>
+                </div>
+                       <select name="status" class="status" onchange="this.form.submit()">
+                <option value="">All Status</option>
+                <% ['pending', 'shipped', 'delivered', 'cancelled'].forEach(s => { %>
+                    <option value="<%= s %>" <%= statusFilter === s ? 'selected' : '' %>><%= s.toUpperCase() %></option>
+                <% }) %>
+            </select>
+                    </form>
                 </div>
 
                 <table class="user-table">
                     <thead>
                         <tr>
-                            <th>User Id</th>
-                            <th>Name</th>
-                            <th>Email</th>
+                            <th>OrderId</th>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <%for(let i=0;i<data.length;i++){%>
-                        <tr>
-                            <td><%=data[i]._id%></td>
-                            <td><%=data[i].name%></td>
-                            <td><%=data[i].email%></td>
-                            <td class="actions">
-                                <%if(data[i].isBlocked===false){%>
-                               <a href="/admin/blockCustomer?id=<%=data[i]._id%>"><button class="btn-block">block</button></a>
-                                <%}else{%>
-                               <a href="/admin/unblockCustomer?id=<%=data[i]._id%>"> <button class="btn-unblock">Unblock</button></a>
-                                <%}%>
-                            </td>
-                        </tr>
-                        <%}%>
-                    </tbody>
+                   <tbody>
+   <% orders.forEach(order => { %>
+                <tr>
+                    <td>#<%= order.orderId %></td>
+                    <td><%= new Date(order.createdOn).toLocaleDateString() %></td>
+                    <td><%= order.userId ? order.userId.name : 'Guest' %><br>
+                        <%=order.userId? order.userId.email:'Guest'%></td>
+                    <td>
+                        <select onchange="changeStatus('<%= order._id %>', this.value)" class="status-select">
+                            <% ['pending', 'shipped', 'delivered', 'cancelled'].forEach(s => { %>
+                                <option value="<%= s %>" <%= order.status === s ? 'selected' : '' %>><%= s %></option>
+                            <% }) %>
+                        </select>
+                    </td>
+                    <td>
+                        <a href="/admin/Views/<%= order._id %>" class="btn-view">View Detail</a>
+                    </td>
+                </tr>
+            <% }) %>
+    
+</tbody>
                 </table>
                 <div class="container">
                     <nav aria-label="page navigation">
@@ -136,6 +149,31 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
+function changeStatus(orderId, newStatus) {
+    Swal.fire({
+        title: 'Update Status?',
+        text: `Change order status to ${newStatus}?`,
+        icon: 'question',
+        showCancelButton: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/admin/updateStatus/${orderId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('Updated!', data.message, 'success');
+                    location.reload();
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            });
+        }
+    });
+}
 </script>
 </body>
 </html>

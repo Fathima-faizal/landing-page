@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional Admin Dashboard</title>
-    <link rel="stylesheet" href="/css/product.css">
+   <link rel="stylesheet" href="/css/reviews.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -16,7 +18,7 @@
                 <i class="fas fa-th-large"></i> <span>Dashboard</span>
                 </a>
             </div>
-            <div class="nav-item active">
+            <div class="nav-item ">
                 <a href="/admin/product">
                 <i class="fas fa-box"></i> <span>Product Management</span>
                 </a>
@@ -53,7 +55,7 @@
               <i class="fa-solid fa-tags"></i> <span>Brand</span>
                 </a>
             </div>
-             <div class="nav-item">
+             <div class="nav-item active">
                 <a href="/admin/Reviews">
                 <i class="fas fa-comment-alt"></i> <span>Review</span>
                 </a>
@@ -74,68 +76,67 @@
             </header>
             <section class="content-body">
                 <div class="toolbar">
-                    <form action="/admin/product" method="get">
+                    <form action="/admin/Reviews" method="get">
                     <div class="search-box">
                         <input type="text" name="search" placeholder="Search">
                         <button class="btn-clear">Clear</button>
-                        </form>
-                       
-                    </div>
-                     <a href="/admin/addProduct"><button class="btn-add">Add new Product</button></a>
                 </div>
-
-                <table class="user-table">
-                    <thead>
-                        <tr>
-                            <th>ProductName</th>
-                            <th>Category</th>
-                            <th>Regular Price</th>
-                            <th>Sales Price</th>
-                            <th>Quantity</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                   <tbody>
-    <% for(let i=0; i < data.length; i++) { %> <tr>
-        <td><%= data[i].productName %></td>
-        <td><%= data[i].category.name  %></td>
-        <td><%= data[i].regularPrice %></td>
-         <td><%= data[i].salesPrice %></td>
-         <td><%= data[i].quantity %></td>
-        <td class="actions">
-            <% if(data[i].isBlocked === false) { %>
-                <a href="/admin/blockProduct?id=<%=data[i]._id%>">
-                    <button class="btn-block">Block</button>
-                </a>
+                    </form>
+                </div>
+               <div class="review-container">
+    <table class="review-table">
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (reviews.length > 0) { %>
+                <% reviews.forEach(rev => { %>
+                    <% rev.orderedItems.forEach(item => { %>
+                        <% if (item.review && item.review.isReviewed) { %>
+                            <tr id="row-<%= rev._id %>">
+                                <td><%= rev.userId ? rev.userId.name : 'Unknown' %><br>
+                                    <small><%= rev.userId ? rev.userId.email : '' %></small>
+                                </td>
+                                <td>
+                                    <div class="stars">
+                                        <% for(let i=1; i<=5; i++) { %>
+                                            <i class="fa-star <%= i <= item.review.rating ? 'fas' : 'far' %>"></i>
+                                        <% } %>
+                                    </div>
+                                </td>
+                                <td><%= item.review.comment %></td>
+                                <td>
+                                <a href="/admin/deletereview?orderId=<%= rev._id %>&itemId=<%= item._id %>" 
+                                onclick="return confirmDelete(event, 'this review')">
+                           <i class="fa-regular fa-trash-can" style="color:red; margin-top: 5px;"></i>
+                              </a>
+                                </td>
+                            </tr>
+                        <% } %>
+                    <% }) %>
+                <% }) %>
             <% } else { %>
-                <a href="/admin/unblockProduct?id=<%=data[i]._id%>">
-                    <button class="btn-unblock">Unblock</button>
-                </a>
+                <tr><td colspan="5">No reviews found.</td></tr>
             <% } %>
-            <a href="/admin/editProduct/<%= data[i]._id %>">
-    <i class="fa-regular fa-pen-to-square" style="color: black; margin-top: 5px;"></i>
-</a>
-             <a href="/admin/deleteProduct?id=<%=data[i]._id%>" onclick="return confirmDelete(event, '<%=data[i].productName%>')">
-             <i class="fa-regular fa-trash-can" style="color:red;margin-top: 5px;"></i>
-           </a>
-        </td>
-       
-    </tr>
-    <% } %>
-    
-</tbody>
-                </table>
-                <div class="container">
-                    <nav aria-label="page navigation">
-                        <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
-                            <%for(let i=1;i<=totalPages;i++){%>
-                                <li class="page-item <%=(i===currentPage)? 'active':''%>">
-                                 <a class="page-link" href="?page=<%= i %>&search=<%= search %>"><%= i %></a>
-                                </li>
-                                <%}%>
-                        </ul>
-                    </nav>
-                </div>
+        </tbody>
+    </table>
+</div> <div class="pagination-container" style="margin-top: 20px;">
+    <nav aria-label="page navigation">
+        <ul class="pagination justify-content-center">
+            <% for(let i=1; i<=totalPages; i++) { %>
+                <li class="page-item <%= (i === currentPage) ? 'active' : '' %>">
+                    <a class="page-link" href="?page=<%= i %>&search=<%= search %>"><%= i %></a>
+                </li>
+            <% } %>
+        </ul>
+    </nav>
+</div>
+               
             </section>
         </main>
     </div>

@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional Admin Dashboard</title>
-    <link rel="stylesheet" href="/css/customer.css">
+   <link rel="stylesheet" href="/css/Contact.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -16,7 +18,7 @@
                 <i class="fas fa-th-large"></i> <span>Dashboard</span>
                 </a>
             </div>
-            <div class="nav-item">
+            <div class="nav-item ">
                 <a href="/admin/product">
                 <i class="fas fa-box"></i> <span>Product Management</span>
                 </a>
@@ -26,7 +28,7 @@
                 <i class="fas fa-shopping-cart"></i> <span>Order Management</span>
                 </a>
             </div>
-            <div class="nav-item active">
+            <div class="nav-item">
                 <a href="/admin/customer">
                 <i class="fas fa-user"></i> <span>User Management</span>
                 </a>
@@ -35,80 +37,89 @@
                 <a href="/admin/category">
                 <i class="fas fa-layer-group"></i> <span>Category Management</span>
                 </a>
-            </div> 
-            <div class="nav-item">
+            </div>
+           <div class="nav-item">
                 <a href="#">
                 <i class="fas fa-image"></i> <span>Banner Management</span>
                 </a>
             </div>
-
             <hr class="nav-divider">
 
             <div class="nav-item">
                 <a href="#">
-                <i class="fas fa-ticket-alt"></i> <span>Coupon</span>
+              <i class="fas fa-ticket-alt"></i>  <span>Coupon</span>
                 </a>
             </div>
             <div class="nav-item">
                 <a href="/admin/brand">
-               <i class="fa-solid fa-tags"></i><span>Brand</span>
+              <i class="fa-solid fa-tags"></i> <span>Brand</span>
                 </a>
             </div>
-            <div class="nav-item">
+             <div class="nav-item">
                 <a href="/admin/Reviews">
                 <i class="fas fa-comment-alt"></i> <span>Review</span>
                 </a>
             </div>
-            <div class="nav-item">
+            <div class="nav-item active">
                 <a href="/admin/Contact">
-               <i class="fa-solid fa-envelope"></i> <span>Contact us</span>
+                 <i class="fa-solid fa-envelope"></i> <span>Contact us</span>
                 </a>
             </div>
         </aside>
 
         <main class="main-content">
             <header class="top-header">
-                <h2>User Management</h2>
+                <h2>Product Management</h2>
                 <a href="/admin/logout">
                 <button class="logout-top">Log out</button>
                 </a>
             </header>
             <section class="content-body">
                 <div class="toolbar">
-                    <form action="/admin/customer" method="get">
+                    <form action="/admin/contact" method="get">
                     <div class="search-box">
                         <input type="text" name="search" placeholder="Search">
                         <button class="btn-clear">Clear</button>
-                        </form>
-                    </div>
                 </div>
-
-                <table class="user-table">
-                    <thead>
-                        <tr>
-                            <th>User Id</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <%for(let i=0;i<data.length;i++){%>
-                        <tr>
-                            <td><%=data[i]._id%></td>
-                            <td><%=data[i].name%></td>
-                            <td><%=data[i].email%></td>
-                            <td class="actions">
-                                <%if(data[i].isBlocked===false){%>
-                               <a href="/admin/blockCustomer?id=<%=data[i]._id%>"><button class="btn-block">block</button></a>
-                                <%}else{%>
-                               <a href="/admin/unblockCustomer?id=<%=data[i]._id%>"> <button class="btn-unblock">Unblock</button></a>
-                                <%}%>
-                            </td>
-                        </tr>
-                        <%}%>
-                    </tbody>
-                </table>
+                    </form>
+                </div>
+                <div class="content-container">
+    <table class="return-table">
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Product</th>
+                <th>Return Reason</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (returns.length > 0) { %>
+                <% returns.forEach(order => { %>
+                    <% order.orderedItems.forEach(item => { %>
+                        <% if (item.returnReason) { %>
+                            <tr>
+                                <td><%= order.userId.name %><br><small><%= order.userId.email %></small></td>
+                                <td><%= item.productId.category.name %>  <br>
+                                    <%= item.productId.productName %></td>
+                                <td class="reason-cell"><%= item.returnReason %></td>
+                                <td><span class="status-badge"><%= item.status || 'Pending' %></span></td>
+                                <td>
+                                    <button class="btn-approve" onclick="updateReturnStatus('<%= order._id %>', '<%= item._id %>', 'Slove')">Solve</button>
+                                    <button class="btn-reject" onclick="updateReturnStatus('<%= order._id %>', '<%= item._id %>', 'Pending')">Pending</button>
+                                </td>
+                            </tr>
+                        <% } %>
+                    <% }) %>
+                <% }) %>
+            <% } else { %>
+                <tr><td colspan="6">No return requests found.</td></tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+                
                 <div class="container">
                     <nav aria-label="page navigation">
                         <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
@@ -136,6 +147,29 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
+   function updateReturnStatus(orderId, itemId, status) {
+    Swal.fire({
+        title: `Confirm ${status}?`,
+        text: `Are you sure you want to ${status.toLowerCase()} this return request?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, proceed'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('/admin/updateReturnStatus', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId, itemId, status })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        }
+    });
+}
 </script>
 </body>
 </html>

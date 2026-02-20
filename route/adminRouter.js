@@ -4,7 +4,8 @@ const adminController=require('../controllers/admin/adminController');
 const customerController=require('../controllers/admin/customerController')
 const brandController=require('../controllers/admin/brandController');
 const productController=require('../controllers/admin/productConroller')
-const categoryController=require('../controllers/admin/categoryController')
+const categoryController=require('../controllers/admin/categoryController');
+const orderController=require('../controllers/admin/orderController')
 const {userAuth,adminAuth}=require('../middleware/auth')
 const multer=require('multer');
 const storage=require('../helpers/multer');
@@ -56,6 +57,21 @@ router.get('/editProduct/:id',adminAuth,productController.editProduct);
 router.post('/editProduct/:id',adminAuth,uploads.array('productimage',4),productController.posteditProduct);
 router.get('/deleteProduct',adminAuth,productController.deleteProduct);
 
+                      //order Management//
 
+ router.get('/orderManagement',adminAuth,orderController.getorders)                     
+ router.patch('/updateStatus/:id',adminAuth,orderController.updatestatus)
+ router.get('/Views/:orderId',adminAuth,orderController.viewdetails)
 
+                     //review Management//
+
+ router.get('/Reviews',adminAuth,orderController.getReview);
+ router.get('/deletereview',adminAuth,orderController.deleteReview)
+         
+                       //contact //
+
+ router.get('/Contact',adminAuth,orderController.getcontact)                      
+ router.post('/updateReturnStatus',adminAuth,orderController.updatereturn)
+
+ 
 module.exports=router;

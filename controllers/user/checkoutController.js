@@ -46,7 +46,8 @@ const placeorder=async(req,res)=>{
             return {
                 productId: item.proudctId._id,
                 quantity: item.quantity,
-                price: item.proudctId.salesPrice
+                price: item.proudctId.salesPrice,
+                status:'pending'
             };
         });
         const newOrder=new Order({

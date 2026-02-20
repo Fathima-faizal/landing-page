@@ -150,10 +150,10 @@ const postreturn=async(req,res)=>{
         res.status(500).send('Internal server erro')
     }
 }
-const getreview=async(req,res)=>{
-   try {
-       const {orderId,productId}=req.params;
-        const order=await Order.findById(orderId).populate({
+const getreview = async (req, res) => {
+    try {
+         const {orderId,productId}=req.params;
+    const order=await Order.findById(orderId).populate({
             path:'orderedItems.productId',
             populate: {
                 path: 'category' 
@@ -161,11 +161,10 @@ const getreview=async(req,res)=>{
         });
      const item = order.orderedItems.find(i => i.productId._id.toString() === productId);
      res.render('review', { order, item });
-
-   } catch (error) {
+  } catch (error) {
     console.log('error',error);
-    res.status(500).send('Intenal server error')
-   }
+    res.status(500).send('Internal server error')
+  }
 }
 const postreview=async(req,res)=>{
     try {
@@ -175,7 +174,8 @@ const postreview=async(req,res)=>{
              "orderedItems.productId": productId,
             },
             {
-                 $set: {"orderedItems.$. review":{
+                 $set: {
+                    "orderedItems.$.review":{
                         comment: comment,
                         rating: Number(rating),
                         isReviewed: true
