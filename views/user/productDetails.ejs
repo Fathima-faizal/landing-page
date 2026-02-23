@@ -51,7 +51,12 @@
     <input type="number" id="quantity" name="quantity" value="1" min="1" max="<%= product.quantity %>">
     
 </div>
-            <button class="try-on-btn" onclick="addToCart('<%=product._id%>')">Add to Cart</button></a>
+<% if (product.quantity > 0) { %>
+    <button class="try-on-btn"  onclick="addToCart('<%=product._id%>')">Add to Cart</button>
+<% } else { %>
+    <button class="btn-out-of-stock" disabled>Out of Stock</button>
+    <p style="color: red;">This item is currently unavailable</p>
+<% } %>
             </div>
         </section>
 
@@ -161,40 +166,52 @@ const img = document.querySelector('#mainProductImage');
     window.onpopstate = function () {
         window.history.go(1);
     };
-
-    function addToCart(productId){
-        $.ajax({
-            url:'/cart',
-            method:'POST',
-            data:{productId:productId},
-            success:(response)=>{
-                if(response.status){
-                    swal.fire({
-                        icon:'success',
-                        title:'Added to cart',
-                        text:'The product has been added to your Cart',
-                        timer:2000
-                    })
-                }else{
-                    swal.fire({
-                        icon:'info',
-                        title:'Already in Cart',
-                        text:response.message,
-                        timer:2000
-                    })
-                }
-            },
-            error:(error)=>{
-                swal.fire({
-                    icon:'error',
-                    title:'Error',
-                    text:'There are was error adding the product to your cart',
-                    timer:2000
-                })
-            }
-        })
+     function addToCart(productId) {
+    const quantityInput = document.getElementById('quantity');
+    const quantity = parseInt(quantityInput.value);
+    if (quantity > 3) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Limit Exceeded',
+            text: 'You can only add a maximum of 3 units per product.',
+            confirmButtonColor: '#cf2b2b'
+        });
+        return; 
     }
-
+    $.ajax({
+        url: '/cart',
+        method: 'POST',
+        data: { 
+            productId: productId,
+            quantity: quantity 
+        },
+        success: (response) => {
+            if (response.status) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to cart',
+                    text: 'The product has been added to your Cart',
+                    timer: 2000
+                });
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Already in Cart',
+                    text: response.message,
+                    timer: 2000
+                });
+            }
+        },
+        error: (error) => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'There was an error adding the product to your cart',
+                timer: 2000
+            });
+        }
+    });
+}
 </script>
 </body>
 </html>

@@ -5,7 +5,7 @@ const Address=require('../../models/addressSchema')
 const getorders=async(req,res)=>{
     try {
         const page=parseInt(req.query.page)||1;
-        const limit=5;
+        const limit=3;
         const skip=(page-1)*limit;
         let search=req.query.search||'';
         let statusFilter=req.query.status||'';
@@ -63,7 +63,8 @@ const viewdetails = async (req, res) => {
                 }
             })
             .lean();
-        res.render('Views', { order });
+            const addressData = await Address.findOne({ "address._id": order.address });
+        res.render('Views', { order,addressData});
     } catch (error) {
         console.error('error', error);
         res.status(500).send('Internal server error');

@@ -69,7 +69,8 @@ const getcartpage = async (req, res) => {
 }
 const addcart = async (req, res) => {
     try {
-        const productId = req.body.productId;
+        const { productId, quantity } = req.body;
+        const qty = parseInt(quantity) || 1;
         const userId = req.session.user;
         const product = await Product.findById(productId).lean();
        if (!product || product.isBlocked === true) {
@@ -102,7 +103,7 @@ const addcart = async (req, res) => {
             } else {
                 userCart.items.push({
                     proudctId: productId,
-                    quantity: 1,
+                    quantity: qty,
                     price: product.salesPrice,
                     totalprice: product.salesPrice
                 });
@@ -119,19 +120,22 @@ const changeQuantity = async (req, res) => {
     try {
         const { productId, count } = req.body;
         const userId = req.session.user;
-
+        const changeCount = parseInt(count);
         const product = await Product.findById(productId);
         const cart = await Cart.findOne({ userId: userId });
-
-        if (!cart) return res.json({ status: false, message: "Cart not found" });
-
+        if (!cart){
+             return res.json({ status: false, message: "Cart not found" });
+        }
         const itemIndex = cart.items.findIndex(item => item.proudctId.toString() === productId);
 
         if (itemIndex > -1) {
             let item = cart.items[itemIndex];
-            let newQuantity = item.quantity + parseInt(count);
+            let newQuantity = item.quantity + changeCount;
             if (newQuantity < 1) {
                 return res.json({ status: false, message: "Quantity cannot be less than 1" });
+            }
+            if(newQuantity>3){
+              return res.json({status:false,message:"Maximum limit is 3 items"})
             }
             if (newQuantity > product.quantity) {
                 return res.json({ status: false, message: "Stock limit reached" });

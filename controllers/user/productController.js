@@ -2,6 +2,7 @@ const Product=require('../../models/productSchema');
 const Category=require('../../models/categorySchema');
 const  User=require('../../models/userSchema');
 const product = require('../../models/productSchema');
+const Order=require('../../models/orderSchema')
 
 const productdetails=async(req,res)=>{
     try {

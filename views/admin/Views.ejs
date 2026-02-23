@@ -84,10 +84,23 @@
             <p><strong>Name:</strong> <%= order.userId ? order.userId.name : 'N/A' %></p>
             <p><strong>Email:</strong> <%= order.userId ? order.userId.email : 'N/A' %></p>
         </div>
-
         <div class="info-card">
-            <h3>Shipping Address</h3>
-        </div>
+    <h3>Shipping Address</h3>
+    <% if (addressData && addressData.address) { %>
+        <% const shippingAddress = addressData.address.find(addr => addr._id.toString() === order.address.toString());%>
+        
+        <% if (shippingAddress) { %>
+            <p><strong>Name:</strong> <%= shippingAddress.houseName %></p>
+            <p><strong>City:</strong> <%= shippingAddress.city %> - <%= shippingAddress.zipCode %> </p>
+            <p><strong>Landmark:</strong> <%= shippingAddress.landmark %></p>
+            <p><strong>Phone:</strong> <%= shippingAddress.phoneNumber %></p>
+        <% } else { %>
+            <p>Address details not found.</p>
+        <% } %>
+    <% } else { %>
+        <p>No address associated with this order.</p>
+    <% } %>
+</div>
     </div>
 
     <table class="items-table">

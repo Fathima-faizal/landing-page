@@ -88,6 +88,7 @@
         <thead>
             <tr>
                 <th>Customer</th>
+                <th>Category</th>
                 <th>Rating</th>
                 <th>Comment</th>
                 <th>Action</th>
@@ -101,6 +102,9 @@
                             <tr id="row-<%= rev._id %>">
                                 <td><%= rev.userId ? rev.userId.name : 'Unknown' %><br>
                                     <small><%= rev.userId ? rev.userId.email : '' %></small>
+                                </td>
+                                <td>
+                                     <%= item.productId.category.name %> 
                                 </td>
                                 <td>
                                     <div class="stars">
