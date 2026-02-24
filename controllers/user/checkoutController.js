@@ -12,7 +12,11 @@ const getcheckout=async(req,res)=>{
         const addressData = await Address.findOne({ userId: userId });
         const cart=await Cart.findOne({userId}).populate({
             path:'items.proudctId',
-            model:'product'
+            model:'product',
+            populate: {
+        path: 'category', 
+        model: 'category' 
+    }
         })
         let grandTotal = 0;
         if (cart && cart.items && cart.items.length > 0) {

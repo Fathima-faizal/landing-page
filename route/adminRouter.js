@@ -74,4 +74,10 @@ router.get('/deleteProduct',adminAuth,productController.deleteProduct);
  router.post('/updateReturnStatus',adminAuth,orderController.updatereturn)
 
  
+
+
+
+
+
+ 
 module.exports=router;

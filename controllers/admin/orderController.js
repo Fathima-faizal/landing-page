@@ -42,7 +42,7 @@ const updatestatus=async(req,res)=>{
         const {id}=req.params;
         const {status}=req.body;
         const order=await Order.findById(id);
-        order.status=status;
+        order.status=status.toLowerCase();
         await order.save();
         res.json({success:true,message:'Status updated successfully'})
     } catch (error) {
@@ -178,12 +178,13 @@ const deleteReview=async(req,res)=>{
 const updatereturn=async(req,res)=>{
     try {
         const { orderId, itemId, status } = req.body;
+        const normalizedStatus = status.toLowerCase();
         const updatedOrder = await Order.findOneAndUpdate(
             {_id: orderId,"orderedItems._id": itemId},
             {
-                $set:{ "orderedItems.$.status": status } 
+                $set:{ "orderedItems.$.status": normalizedStatus } 
             },
-            { new: true }
+            { new:true,runValidators: true }
         );
         if (!updatedOrder) {
             return res.status(404).json({ 

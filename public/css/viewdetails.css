@@ -181,8 +181,10 @@ flex-direction: column;
     color: #fff;
     padding: 20px;
     border-radius: 8px;
-    width: 200px;
-    margin-left: auto; /* Align to the right */
+    width: 250px;       
+    min-width: 250px;   
+    height: fit-content; 
+    align-self: flex-start;
     text-align: right;
 }
 
@@ -199,5 +201,5 @@ flex-direction: column;
 .status-text {
     font-weight: bold;
     text-transform: capitalize;
-    color: #28a745; /* Delivered പച്ച നിറത്തിൽ കാണാൻ */
+    color: #28a745; 
 }

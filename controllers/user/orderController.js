@@ -78,13 +78,24 @@ const postorder = async (req, res) => {
 const orderdetails=async(req,res)=>{
     try {
         const orderId=req.params.id;
+        const page = parseInt(req.query.page) || 1; 
+        const limit = 2; 
+        const skip = (page - 1) * limit;
         const order=await Order.findById(orderId).populate({
             path:'orderedItems.productId',
             populate: {
                 path: 'category' 
             }
-        });
-        res.render('orderDetails',{order})
+        }).lean();
+        const totalItems = order.orderedItems.length;
+        const totalPages = Math.ceil(totalItems / limit);
+        const paginatedItems = order.orderedItems.slice(skip, skip + limit);
+        order.orderedItems = paginatedItems;
+        res.render('orderDetails',{
+            order,
+            currentPage: page,
+            totalPages: totalPages
+        })
     } catch (error) {
         console.log('error',error);
         res.status(500).send('Internal server errror')

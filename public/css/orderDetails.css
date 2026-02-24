@@ -211,3 +211,32 @@ body {
     font-size: 11px;
     opacity: 0.8;
 }
+.pagination {
+    display: flex;             
+    list-style-type: none;     
+    padding: 0;
+    justify-content: center;   
+    gap: 10px;   
+    margin-top: 40px;              
+}
+
+
+.page-link {
+    text-decoration: none;     
+    color: #333;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s;
+}
+
+.page-item.active .page-link {
+    background-color: #17ce17;
+    color: white;
+    border-color: #17ce17;
+}
+
+.page-link:hover {
+    background-color: #e2e6ea;
+}

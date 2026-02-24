@@ -65,8 +65,20 @@
    </div>
         </div>
     <% }) %>
+     
 </div>
-</div>
+</div> 
+           <div class="container">
+                    <nav aria-label="page navigation">
+                        <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
+                            <%for(let i=1;i<=totalPages;i++){%>
+                                <li class="page-item <%=(i===currentPage)? 'active':''%>">
+                                 <a class="page-link" href="/orderDetails/<%= order._id %>?page=<%= i %>"><%= i %></a>
+                                </li>
+                                <%}%>
+                        </ul>
+                    </nav>
+                </div>
             </section>
         </div>
         

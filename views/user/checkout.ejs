@@ -68,7 +68,8 @@
         <div class="item-row">
             <img src="/uploads/<%= item.proudctId.productimage[0] %>" width="60" height="60">
             <div class="item-info">
-                <strong><%= item.proudctId.productName %></strong><br>
+                <strong><%= item.proudctId.category? item.proudctId.category.name: 'No Category' %></strong><br>
+                 <small> Product Name: <%= item.proudctId.productName %></small><br>
                 <small>Qty: <%= item.quantity %></small>
             </div>
             <span>₹<%= item.proudctId.salesPrice * item.quantity %></span>
