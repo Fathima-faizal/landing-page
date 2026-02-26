@@ -6,14 +6,16 @@ const mongoose = require('mongoose');
 const getcartpage = async (req, res) => {
     try {
         const userId = req.session.user;
-        const page = parseInt(req.query.page) || 1; 
+        let cartCount=0
         const limit = 2; 
-        const skip = (page - 1) * limit;
         const user = await User.findById(userId);
     const fullCart = await Cart.findOne({ userId: userId }).populate({
         path:'items.proudctId',
         model:'product'
     })
+      if(fullCart){
+        cartCount = fullCart.items.length;
+      }
        let grandtotal = 0;
        if (fullCart && fullCart.items) {
             fullCart.items.forEach(item => {
@@ -23,13 +25,9 @@ const getcartpage = async (req, res) => {
             });
         }
         const cartCountDoc = await Cart.findOne({ userId: userId });
-        const totalItems = cartCountDoc ? cartCountDoc.items.length : 0;
-        const totalPages = Math.ceil(totalItems / limit);
         const data = await Cart.aggregate([
             { $match: { userId: new mongoose.Types.ObjectId(userId) } },
             { $unwind: '$items' },
-            { $skip: skip }, 
-            { $limit: limit },
             {
                 $lookup: {
                     from: 'products',
@@ -49,17 +47,14 @@ const getcartpage = async (req, res) => {
             },
             { $unwind: { path: '$categoryDetails', preserveNullAndEmptyArrays: true } }
         ]);
-
-        
-
+        const message = req.query.message || null;
         req.session.grandtotal = grandtotal;
         res.render('cart', {
             user,
             data,
+            message,
             grandtotal,
-            totalItems,
-            totalPages,
-            currentPage: page
+            cartCount: cartCount
         });
 
     } catch (error) {
@@ -181,6 +176,7 @@ const deletecart=async(req,res)=>{
         res.status(500).send('Internal Server error')
     }
 }
+
 
 module.exports={
     getcartpage,

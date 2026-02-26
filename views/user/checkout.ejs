@@ -28,69 +28,101 @@
         </nav>
     </header>
      <main class="checkout-container">
-    <div class="checkout-grid">
-        <section class="address-section">
-    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
-        <h3>Select Delivery Address</h3>
+    <div class="checkout-stepper">
+        <div class="step completed"><span>1</span> Cart</div>
+        <div class="step active"><span>2</span> Checkout</div>
+        <div class="step"><span>3</span> Payment</div>
     </div>
 
-    <% if (userAddress && userAddress.length > 0) { %>
-        <% userAddress.forEach((address, i) => { %>
-            <div class="address-card" style="position: relative;">
-                <input type="radio" name="selectedAddress" value="<%= address._id %>" id="address<%= i %>" <%= i===0 ? 'checked' : '' %>>
+    <div class="checkout-grid">
+        <section class="address-section">
+            <div class="section-title">
+                <i class="fa-solid fa-location-dot"></i>
+                <h3>Delivery Address</h3>
+            </div>
+
+            <div class="address-grid">
+                <% if (userAddress && userAddress.length > 0) { %>
+                    <% userAddress.forEach((address, i) => { %>
+                        <div class="address-card">
+                            <input type="radio" name="selectedAddress" value="<%= address._id %>" id="address<%= i %>" <%= i===0 ? 'checked' : '' %>>
+                            <label for="address<%= i %>" class="address-label">
+                                <span class="address-type"><%=address.addressType%></span>
+                                <div class="address-details">
+                                    <p class="name"><strong><%= address.houseName %></strong></p>
+                                    <p><%= address.city %>, <%= address.zipCode %></p>
+                                    <p><%= address.country %></p>
+                                    <p class="phone"><i class="fa-solid fa-phone"></i> <%= address.phoneNumber %></p>
+                                </div>
+                                <button type="button" class="edit-link" onclick="window.location.href='/editAddress?id=<%=address._id%>'">
+                                    Edit
+                                </button>
+                            </label>
+                        </div>
+                    <% }) %>
+                <% } %>
                 
-                <label for="address<%= i %>" style="flex: 1;">
-                    <p><strong>AddressType:</strong> <%=address.addressType%></p>
-                    <p><strong>House:</strong> <%= address.houseName %></p>
-                    <p><strong>City:</strong> <%= address.city %> - <%= address.zipCode %></p>
-                    <p><strong>Country:</strong><%=address.country%></p>
-                    <p><strong>Phone:</strong> <%= address.phoneNumber %></p>
-                </label>
-
-                <button class="edit-address-btn" 
-                        onclick="window.location.href='/editAddress?id=<%=address._id%>'"
-                        style="position: absolute; right: 15px; top: 15px; background: none; border: none; color: #2d6a3e; cursor: pointer;">
-                    <i class="fa-solid fa-pen-to-square"></i> Edit
-                </button>
+                <div class="add-address-card" onclick="window.location.href='/addAddress'">
+                    <i class="fa-solid fa-plus"></i>
+                    <p>Add New Address</p>
+                </div>
             </div>
-        <% }) %>
-    <% } else { %>
-        <p>No addresses found. Please add one.</p>
-    <% } %>
 
-    <button class="add-address-btn" onclick="window.location.href='/addAddress'">+ Add New Address</button>
-</section>
-
-        <section class="order-summary">
-            <h3>Order Summary</h3>
-            <% if (cart && cart.items && cart.items.length > 0) { %>
-    <% cart.items.forEach(item => { %>
-        <div class="item-row">
-            <img src="/uploads/<%= item.proudctId.productimage[0] %>" width="60" height="60">
-            <div class="item-info">
-                <strong><%= item.proudctId.category? item.proudctId.category.name: 'No Category' %></strong><br>
-                 <small> Product Name: <%= item.proudctId.productName %></small><br>
-                <small>Qty: <%= item.quantity %></small>
+            <div class="section-title mt-40">
+                <i class="fa-solid fa-credit-card"></i>
+                <h3>Payment Method</h3>
             </div>
-            <span>₹<%= item.proudctId.salesPrice * item.quantity %></span>
-        </div>
-    <% }) %>
-<% } else { %>
-    <p>Your cart is empty.</p>
-<% } %>
-
-            <hr>
-            
-            <div class="total-calculation">
-                <p>Subtotal <span>₹<%= grandTotal %></span></p>
-                <p>Shipping <span class="free">FREE</span></p>
-                <p>Tax (0%) <span>₹0</span></p>
-                <hr>
-                <h4>Total Amount <span>₹<%= grandTotal %></span></h4>
-            </div>
-            
-            <button class="place-order-btn" onclick="placeOrder()">Cash On Delivery</button>
+            <div class="payment-options">
+                <div class="payment-card active">
+                    <input type="radio" name="paymentMethod" value="COD" checked>
+                    <div class="payment-info">
+                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                        <span>Cash On Delivery</span>
+                    </div>
+                </div>
+                </div>
         </section>
+
+        <aside class="order-summary">
+            <h3>Order Summary</h3>
+            <div class="summary-items">
+                <% if (cart && cart.items && cart.items.length > 0) { %>
+                    <% cart.items.forEach(item => { %>
+                        <div class="summary-item">
+                            <div class="item-img-box">
+                                <img src="/uploads/<%= item.proudctId.productimage[0] %>" alt="product">
+                                <span class="qty-badge"><%= item.quantity %></span>
+                            </div>
+                            <div class="item-desc">
+                                <p class="brand"><%= item.proudctId.brand %></p>
+                                <p class="p-name"><%= item.proudctId.productName %></p>
+                            </div>
+                            <span class="price">₹<%= item.proudctId.salesPrice * item.quantity %></span>
+                        </div>
+                    <% }) %>
+                <% } %>
+            </div>
+
+            <div class="price-breakdown">
+                <div class="price-row">
+                    <span>Subtotal</span>
+                    <span>₹<%= grandTotal %></span>
+                </div>
+                <div class="price-row">
+                    <span>Shipping</span>
+                    <span class="free">FREE</span>
+                </div>
+                <div class="price-row total">
+                    <span>Total Amount</span>
+                    <span>₹<%= grandTotal %></span>
+                </div>
+            </div>
+
+            <button class="place-order-btn" onclick="placeOrder()">
+                CONFIRM ORDER <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <p class="safe-checkout"><i class="fa-solid fa-shield-halved"></i> 100% Safe & Secure Checkout</p>
+        </aside>
     </div>
 </main>
      <footer>

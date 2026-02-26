@@ -7,6 +7,7 @@ const nodemailer=require('nodemailer');
 const bcrypt=require('bcrypt');
 const user = require('../../models/userSchema');
 const product = require('../../models/productSchema');
+const Cart=require('../../models/cartSchema')
 // const { search } = require('../../route/userRouter');
 // const user = require('../../models/userSchema');
 
@@ -147,7 +148,15 @@ const resendOtp=async(req,res)=>{
 }
 const homepage=async(req,res)=>{
   try{
-   return res.render('home')
+    const user = req.session.user;
+        let cartCount = 0;
+        if (user) {
+            const cart = await Cart.findOne({ userId: user });
+            if (cart) {
+                cartCount = cart.items.length; 
+            }
+        }
+   return res.render('home',{cartCount: cartCount})
   }catch(error){
      console.log('home page not found')
         res.status(500).send('server error')
@@ -184,7 +193,15 @@ const homepage=async(req,res)=>{
 const loadshoppingpage=async(req,res)=>{
   try {
     const user=req.session.user;
+    let cartCount = 0;
+    if(user){
+      const cart = await Cart.findOne({ userId: user });
+      if(cart){
+        cartCount = cart.items.length;
+      }
+    }
     const userData=await User.findOne({_id:user});
+    const userWishlist = userData ? userData.wishlist.map(id => id.toString()) : [];
     const category=await Category.find({islisted:true});
     const categoryIds=category.map((Category)=>Category._id.toString());
     let search = req.query.search || '';
@@ -198,7 +215,11 @@ const loadshoppingpage=async(req,res)=>{
 
     }).populate('category').sort({CreatedOn:-1})
     .skip(skip)
-    .limit(limit);
+    .limit(limit)
+    .lean();
+    product.forEach(product => {
+      product.isWishlisted = userWishlist.includes(product._id.toString());
+    });
     const totalproducts=await Product.countDocuments({
       isBlocked:false,
       category:{$in:categoryIds},
@@ -217,7 +238,8 @@ const loadshoppingpage=async(req,res)=>{
       totalproducts:totalproducts,
       totalpages: currentpage,  
       currentPage: page,      
-       search:search
+       search:search,
+       cartCount: cartCount
     })
   } catch (error) {
     console.log('error',error);

@@ -18,6 +18,14 @@ const getcheckout=async(req,res)=>{
         model: 'category' 
     }
         })
+        if (!cart || cart.items.length === 0) {
+            return res.redirect('/cart');
+        }
+        for(const item of cart.items){
+            if(!item.proudctId||item.proudctId.isBlocked===true||item.proudctId.quantity<item.quantity){
+                return res.redirect('/cart?message=Out of stock')
+            }
+        }
         let grandTotal = 0;
         if (cart && cart.items && cart.items.length > 0) {
         cart.items.forEach(item => {
@@ -44,6 +52,14 @@ const placeorder=async(req,res)=>{
             path:'items.proudctId',
             model:'product'
         })
+        for (const item of cart.items) {
+            if (item.proudctId.quantity < item.quantity) {
+                return res.json({ 
+                    success: false, 
+                    message: `Insufficient stock` 
+                });
+            }
+        }
         let total = 0;
         const orderItems = cart.items.map(item => {
             total += item.proudctId.salesPrice * item.quantity;
@@ -64,6 +80,11 @@ const placeorder=async(req,res)=>{
             status: 'pending'
         })
         await newOrder.save()
+        for (const item of cart.items) {
+            await Product.findByIdAndUpdate(item.proudctId._id, {
+                $inc: { quantity: -item.quantity } 
+            });
+        }
         await Cart.findOneAndDelete({ userId });
         res.json({success:true,message:`Order Placed successfully`})
     } catch (error) {

@@ -22,113 +22,120 @@
             <div class="logo">VisionVogue</div>
             <div class="nav-icons">
                <a href="/wishlist" ><i class="fa-regular fa-heart"></i></a>
-               <a href="/cart"> <i class="fa-solid fa-cart-shopping"></i></a>
+               <a href="/cart" class="cart-icon-container"> <i class="fa-solid fa-cart-shopping">
+                <% if (locals.cartCount > 0) { %>
+            <span class="cart-badge"><%= cartCount %></span>
+        <% } %>
+               </i></a>
               <a href="/profile" > <i class="fa-regular fa-user"></i></a>
             </div>
         </nav>
     </header>
-     <main class="container">
-        <aside class="sidebar">
-            <form action="/filter" method="get">
-            <div class="filter-group">
-    <h3>Category</h3>
-    <ul>
-        <% for(let i=0; i < category.length; i++) { %>
-            <li>
-                <label>
-                    <input type="checkbox" name="category" value="<%= category[i]._id %>" class="category-checkbox">
-                   <a href="/filter?category=<%=category[i]._id%>"><%= category[i].name %></a>
-                </label>
-            </li>
-        <% } %>
-    </ul>
-</div>
-            <hr>
-           <div class="filter-group">
-    <h3>brand</h3>
-    <ul>
-        <% for(let i=0; i < brand.length; i++) { %>
-            <li>
-                <label>
-                    <input type="checkbox" name="brand" value="<%= brand[i]._id %>" class="category-checkbox">
-                  <a href="/filter?brand=<%=brand[i]._id%>"><%= brand[i].name %></a>
-                </label>
-            </li>
-        <% } %>
-    </ul>
-</div>
-            <hr>
-            <div class="filter-group">
-                <h3>Price</h3>
-                <div class="price-input">
-                    <input type="text" name="minPrice" placeholder="Min" vlaue="<%=locals.minPrice||''%>">
-                    <span>—</span>
-                    <input type="text" name="maxPrice" placeholder="Max" value="<%=locals.maxPrice||''%>">
-                </div>
-                <button type="submit" class="filter-btn">Filter</button>
+    <main class="shop-wrapper">
+    <div class="shop-container">
+        <aside class="sidebar-premium">
+            <div class="filter-header">
+                <h3><i class="fa-solid fa-sliders"></i> Filters</h3>
+                <a href="/shop" class="reset-link">Reset All</a>
             </div>
+
+            <form action="/filter" method="get" id="filterForm">
+                <div class="filter-section">
+                    <h4 class="filter-title">Categories</h4>
+                    <div class="filter-list custom-scrollbar">
+                        <% for(let i=0; i < category.length; i++) { %>
+                            <label class="checkbox-container">
+                                <input type="checkbox" name="category" value="<%= category[i]._id %>">
+                                <span class="checkmark"></span>
+                                <span class="label-text"><%= category[i].name %></span>
+                            </label>
+                        <% } %>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h4 class="filter-title">Brands</h4>
+                    <div class="filter-list custom-scrollbar">
+                        <% for(let i=0; i < brand.length; i++) { %>
+                            <label class="checkbox-container">
+                                <input type="checkbox" name="brand" value="<%= brand[i]._id %>">
+                                <span class="checkmark"></span>
+                                <span class="label-text"><%= brand[i].name %></span>
+                            </label>
+                        <% } %>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h4 class="filter-title">Price Range</h4>
+                    <div class="price-range-inputs">
+                        <input type="number" name="minPrice" placeholder="Min" value="<%=locals.minPrice||''%>">
+                        <div class="range-dash"></div>
+                        <input type="number" name="maxPrice" placeholder="Max" value="<%=locals.maxPrice||''%>">
+                    </div>
+                    <button type="submit" class="apply-filter-btn">Apply Filters</button>
+                </div>
             </form>
         </aside>
-     
-        <section class="content">
-            <div class="content-header">
-                <h1>Collections</h1>
-                 <form action="/search" method="get">
-                <div class="search-box">
-                        <input type="text" name="search" placeholder="Search">
-                        <button class="btn-clear">Clear</button>
-                    </form>
-            </div> 
-            <form action="/sort" method="post">
-            <div class="sort-container">
-  <label for="sort-select" class="visually-hidden">Sort products</label>
-  <select id="sort-select" name="sortOption" class="sort-dropdown" onchange="this.form.submit()">
-    <option value="default" selected disabled> Sort </option>
-    <option value="az" <%= locals.selectedSort === 'az' ? 'selected' : '' %>> A to Z</option>
-    <option value="za" <%= locals.selectedSort === 'za' ? 'selected' : '' %>> Z to A</option>
-    <option value="low-high"<%= locals.selectedSort === 'low-high' ? 'selected' : '' %>> Low to High</option>
-    <option value="high-low"<%= locals.selectedSort === 'high-low' ? 'selected' : '' %>> High to Low</option>
-  </select>
-</div>
-            </form>
 
-    <div class="product-grid">
-    <% for(let i=0; i < products.length; i++){ %>
-        <div class="product-card">
-            <div class="product-image-container">
-              <span class="wishlist" onclick="addtoWishlist('<%=products[i]._id%>')"><i class="fa-regular fa-heart"></i></span>
-                <img src="/uploads/<%= products[i].productimage[0] %>" alt="<%= products[i].productName %>">
-            </div>
-            
-            <div class="product-info">
-                <h4 class="product-title"><%= products[i].category.name %></h4>
-                <p class="product-brand">Product Name: <%= products[i].productName %></p>
-                <p class="product-brand">Brand: <%= products[i].brand %></p>
-                <div class="price-section">
-                    <span class="sales-price">₹<%= products[i].salesPrice.toLocaleString('en-IN') %></span>
-                    <span class="regular-price"><strike>₹<%= products[i].regularPrice.toLocaleString('en-IN') %></strike></span>
+        <section class="shop-content">
+            <div class="top-bar">
+                <div class="search-premium">
+                    <form action="/search" method="get">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" name="search" placeholder="Search for eyewear...">
+                        <button type="submit">Search</button>
+                    </form>
                 </div>
-                <a href="/productDetails?id=<%=products[i]._id%>">
-                <button class="add-to-cart-btn">View Details</button>
-                </a>
-            </div>
-        </div>
-    <% } %>
-</div>
-    <div class="container">
-                    <nav aria-label="page navigation">
-                        <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
-                            <%for(let i=1;i<=totalpages;i++){%>
-                                <li class="page-item <%=(i===currentPage)? 'active':''%>">
-                                 <a class="page-link" href="?page=<%= i %>&search=<%= search %>"><%= i %></a>
-                                </li>
-                                <%}%>
-                        </ul>
-                    </nav>
+
+                <div class="sort-premium">
+                    <form action="/sort" method="post">
+                        <select name="sortOption" onchange="this.form.submit()">
+                            <option value="default">Sort by: Default</option>
+                            <option value="az" <%= locals.selectedSort === 'az' ? 'selected' : '' %>>Name: A to Z</option>
+                            <option value="za" <%= locals.selectedSort === 'za' ? 'selected' : '' %>>Name: Z to A</option>
+                            <option value="low-high" <%= locals.selectedSort === 'low-high' ? 'selected' : '' %>>Price: Low to High</option>
+                            <option value="high-low" <%= locals.selectedSort === 'high-low' ? 'selected' : '' %>>Price: High to Low</option>
+                        </select>
+                    </form>
                 </div>
+            </div>
+
+            <div class="product-grid-premium">
+                <% for(let i=0; i < products.length; i++){ %>
+                    <div class="product-card-v2">
+                        <div class="card-media">
+                            <span class="wishlist-btn" onclick="addtoWishlist('<%=products[i]._id%>')">
+                                <i id="wishlist-icon-<%=products[i]._id%>" 
+                                   class="fa-heart <%= products[i].isWishlisted ? 'fa-solid active' : 'fa-regular' %>"></i>
+                            </span>
+                            <img src="/uploads/<%= products[i].productimage[0] %>" alt="<%= products[i].productName %>">
+                            <div class="card-overlay">
+                                <a href="/productDetails?id=<%=products[i]._id%>" class="quick-view">View Details</a>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <span class="card-category"><%= products[i].category.name %></span>
+                            <h3 class="card-title"><%= products[i].productName %></h3>
+                            <div class="card-price-row">
+                                <span class="price-now">₹<%= products[i].salesPrice.toLocaleString('en-IN') %></span>
+                                <span class="price-old">₹<%= products[i].regularPrice.toLocaleString('en-IN') %></span>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+
+            <div class="pagination-container">
+                <%for(let i=1;i<=totalpages;i++){%>
+                    <a href="?page=<%= i %>&search=<%= search %>" 
+                       class="page-num <%=(i===currentPage)? 'active':''%>"><%= i %></a>
+                <%}%>
+            </div>
         </section>
-     </main>
-     
+    </div>
+</main>
      <footer>
         <div class="footer-content">
             <div class="footer-column">
@@ -193,6 +200,9 @@
             data:{productId:productId},
             success:(response)=>{
                 if(response.status){
+                    const icon = document.getElementById(`wishlist-icon-${productId}`);
+                    icon.classList.remove('fa-regular');
+                icon.classList.add('fa-solid', 'is-wishlisted');
                     swal.fire({
                         icon:'success',
                         title:'Added to wishlist',

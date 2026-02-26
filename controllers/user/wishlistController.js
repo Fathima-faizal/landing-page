@@ -1,10 +1,16 @@
 const User=require('../../models/userSchema');
 const Product=require('../../models/productSchema');
-
+const Cart=require('../../models/cartSchema')
 
 const getwishlist=async(req,res)=>{
     try {
         const userId=req.session.user;
+        if (userId) {
+            const cart = await Cart.findOne({ userId: userId });
+            if (cart) {
+                cartCount = cart.items.length; 
+            }
+        }
         const page = parseInt(req.query.page) || 1; 
         const limit = 3;
         const skip = (page - 1) * limit;
@@ -19,7 +25,8 @@ const getwishlist=async(req,res)=>{
             user,
            wishlist:proudcts,
            currentPage: page,
-        totalPages: totalPages
+        totalPages: totalPages,
+        cartCount: cartCount
         })
 
     } catch (error) {

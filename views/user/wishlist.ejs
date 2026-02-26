@@ -22,74 +22,69 @@
             <div class="logo">VisionVogue</div>
             <div class="nav-icons">
                <a href="/wishlist" ><i class="fa-regular fa-heart"></i></a>
-               <a href="/cart"> <i class="fa-solid fa-cart-shopping"></i></a>
+               <a href="/cart" class="cart-icon-container"> <i class="fa-solid fa-cart-shopping"></i>
+                <% if (locals.cartCount > 0) { %>
+            <span class="cart-badge"><%= cartCount %></span>
+        <% } %>
+            </a>
               <a href="/profile" > <i class="fa-regular fa-user"></i></a>
             </div>
         </nav>
     </header>
-     <div class="wishlist-container">
-    <h2>Your Wishlist</h2>
-    
-    <table class="wishlist-table">
-        <thead>
-            <tr>
-                <th>Image</th>
-                <th>Product Details</th>
-                <th>Price</th>
-                <th>Action</th>
-                <th>Remove</th>
-            </tr>
-        </thead>
-        <tbody>
-            <%if(wishlist.length>0){%>
-                <%for(let product of wishlist){%>
-            <tr>
-                <td>
-                    <img src="/uploads/<%=product.productimage[0]%>"  class="product-img">
-                </td>
-                <td class="details">
-                    <span class="brand"><%=product.brand%></span>
-                    <span class="product-name"><%=product.category.name%></span>
-                    <span class="category"><%=product.productName%></span>
-                </td>
-                <td class="price"><%=product.salesPrice%></td>
-                <td>
-                  <button class="add-btn" onclick="addToCart('<%=product._id%>')">Add to Cart</button></a>
-                </td>
-                <td>
-                    <button class="remove-btn">
-    <a href="/wishlist/delete?id=<%=product._id%>" 
-       onclick="return confirmDelete(event, '<%=product.category.name%>')" >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="3 6 5 6 21 6"></polyline>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-        </svg>
-    </a>
-</button>
-                </td>
-            </tr>
-            <%}%>
-            <%}else{%>
-                <tr>
-                    <td colspan="5" style="text-align: center; padding: 40px 0;">
-                        <p style="margin: 0; font-size: 18px; color: #666;">No items found in wishlist</p>
-                    </td>
-                </tr>
-                <%}%>
-            </tbody>
-    </table>
+     <main class="wishlist-wrapper">
     <div class="container">
-                    <nav aria-label="page navigation">
-                        <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
-                            <%for(let i=1;i<=totalPages;i++){%>
-                                <li class="page-item <%=(i===currentPage)? 'active':''%>">
-                                 <a class="page-link" href="?page=<%= i %>"><%= i %></a>
-                                </li>
-                                <%}%>
-                        </ul>
-                    </nav>
+        <h2 class="wishlist-title">My Wishlist</h2>
+
+        <div class="wishlist-grid">
+            <% if(wishlist.length > 0) { %>
+                <% for(let product of wishlist) { %>
+                    <div class="wishlist-card">
+                        <div class="image-box">
+                            <img src="/uploads/<%=product.productimage[0]%>" alt="product">
+                            <button class="remove-wish-btn" title="Remove">
+                                <a href="/wishlist/delete?id=<%=product._id%>" onclick="return confirmDelete(event, '<%=product.productName%>')">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </a>
+                            </button>
+                        </div>
+                        
+                        <div class="product-details">
+                            <span class="brand-name"><%=product.brand%></span>
+                            <h3 class="item-name"><%=product.productName%></h3>
+                            <p class="category-tag"><%=product.category.name%></p>
+                            
+                            <div class="price-action">
+                                <span class="price-tag">₹<%=product.salesPrice%></span>
+                                <button class="add-to-cart-btn" onclick="addToCart('<%=product._id%>')">
+                                    <i class="fa-solid fa-cart-plus"></i> Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            <% } else { %>
+                <div class="empty-wishlist">
+                    <div class="empty-icon"><i class="fa-regular fa-heart"></i></div>
+                    <h3>Your wishlist is empty</h3>
+                    <p>Looks like you haven't added anything to your wishlist yet.</p>
+                    <a href="/shop" class="go-shop-btn">Continue Shopping</a>
                 </div>
-</div>
+            <% } %>
+        </div>
+
+        <% if(totalPages > 1) { %>
+        <nav class="pagination-container">
+            <ul class="pagination">
+                <% for(let i=1; i<=totalPages; i++) { %>
+                    <li class="page-item <%=(i===currentPage)? 'active':''%>">
+                        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                    </li>
+                <% } %>
+            </ul>
+        </nav>
+        <% } %>
+    </div>
+</main>
     <footer>
         <div class="footer-content">
             <div class="footer-column">

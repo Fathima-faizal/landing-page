@@ -20,7 +20,10 @@
             <div class="logo">VisionVogue</div>
             <div class="nav-icons">
                <a href="/wishlist" ><i class="fa-regular fa-heart"></i></a>
-               <a href="/cart"> <i class="fa-solid fa-cart-shopping"></i></a>
+               <a href="/cart" class="cart-icon-container"> <i class="fa-solid fa-cart-shopping"></i>
+            <% if (locals.cartCount > 0) { %>
+            <span class="cart-badge"><%= cartCount %></span>
+        <% } %></a>
               <a href="/profile" > <i class="fa-regular fa-user"></i></a>
             </div>
         </nav>

@@ -83,7 +83,7 @@
                 </div>
                        <select name="status" class="status" onchange="this.form.submit()">
                 <option value="">All Status</option>
-                <% ['pending', 'shipped', 'delivered', 'cancelled'].forEach(s => { %>
+                <% ['pending','processing', 'shipped', 'delivered','cancelled','return request','approve'].forEach(s => { %>
                     <option value="<%= s %>" <%= statusFilter === s ? 'selected' : '' %>><%= s.toUpperCase() %></option>
                 <% }) %>
             </select>
@@ -109,7 +109,7 @@
                         <%=order.userId? order.userId.email:'Guest'%></td>
                     <td>
                         <select onchange="changeStatus('<%= order._id %>', this.value)" class="status-select">
-                            <% ['pending', 'shipped', 'delivered', 'cancelled'].forEach(s => { %>
+                            <% ['pending', 'processing','shipped','delivered','cancelled','return request','approve'].forEach(s => { %>
                                 <option value="<%= s %>" <%= order.status === s ? 'selected' : '' %>><%= s %></option>
                             <% }) %>
                         </select>

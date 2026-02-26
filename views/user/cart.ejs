@@ -21,98 +21,96 @@
             <div class="logo">VisionVogue</div>
             <div class="nav-icons">
                <a href="/wishlist"><i class="fa-regular fa-heart"></i></a>
-               <a href="/cart"><i class="fa-solid fa-cart-shopping"></i></a>
+               <a href="/cart" class="cart-icon-container"><i class="fa-solid fa-cart-shopping"></i>
+                <% if (locals.cartCount > 0) { %>
+            <span class="cart-badge"><%= cartCount %></span>
+        <% } %>
+            </a>
                <a href="/profile"><i class="fa-regular fa-user"></i></a>
             </div>
         </nav>
     </header>
 
-    <div class="wishlist-container mt-50 mb-50">
-        <div class="container">
-            <h2>Your Cart</h2>
-            <div class="table-responsive">
-                <table class="table wishlist-table text-center">
-                    <thead>
-                        <tr>
-                            <th>Image</th>
-                            <th>Product Details</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Remove</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% if (data.length > 0) { %>
-                            <% var totalSum = 0 %>
-                          <% for (let i = 0; i < data.length; i++) { %>
-    <tr>
-        <td class="image product-thumbnail">
-            <img src="/uploads/<%= data[i].productDetails.productimage[0] %>" class="product-img">
-        </td>
-        <td class="details text-start">
-            <span class="brand"><b><%= data[i].productDetails.brand %></b></span><br>
-            <span class="product-name"><%= data[i].categoryDetails ? data[i].categoryDetails.name : 'No Category' %></span><br>
-            <small class="text-muted"><%= data[i].productDetails.productName %></small>
-        </td>
-        <td class="price">
-            ₹<span id="subTotal<%= i %>"><%= data[i].productDetails.salesPrice * data[i].items.quantity %></span>
-        </td>
-     <td class="text-center">
-    <div class="quantity-control">
-        <button class="qty-btn" onclick="changeQuantity('<%= data[i].productDetails._id %>', -1, '<%= data[i].productDetails.salesPrice %>', '<%= i %>')">−</button>
-        <input type="text" id="cartProductQuantity<%= i %>" class="qty-input" value="<%= data[i].items.quantity %>" readonly>
-        <button class="qty-btn" onclick="changeQuantity('<%= data[i].productDetails._id %>', 1, '<%= data[i].productDetails.salesPrice %>', '<%= i %>')">+</button>
-    </div>
-</td>
-        <td>
-            <button class="remove-btn" style="background: #dc3545; padding: 5px 10px; border-radius: 5px; border: none;">
-                <a href="/cart/delete?id=<%=data[i].productDetails._id%>" onclick="confirmRemove(event,'<%= data[i].categoryDetails.name %>')">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    </svg>
-                </a>
-            </button>
-        </td>
-    </tr>
-<% } %>
- <% } else { %>
-<tr>
-<td colspan="5" style="text-align: center; padding: 40px 0;">
- <p style="margin: 0; font-size: 18px; color: #666;">No items found in Cart</p>
-</td>
-</tr>
- <% } %>
-</tbody>
-    </table>
-    </div>
-            <div class="price-total">
-    <div class="cart-total-wrapper">
-        <div class="cart-total-box">
-            <div class="total-row">
-                <h3>Total: <span id="grandTotalDisplay">₹<%= grandtotal %></span></h3>
+    <main class="cart-wrapper">
+    <div class="container">
+        <h2 class="cart-title">Shopping Cart</h2>
+        
+        <% if (locals.message) { %>
+            <div id="errorMessage" class="error-banner">
+                <i class="fa fa-exclamation-triangle"></i> <%= message %>
             </div>
-            <hr>
-            <div class="checkout-row">
-                <a href="/checkout" class="btn-checkout">Proceed to Checkout</a>
+        <% } %>
+
+        <div class="cart-grid">
+            <div class="cart-items-section">
+                <% if (data.length > 0) { %>
+                    <% for (let i = 0; i < data.length; i++) { %>
+                        <div class="cart-card">
+                            <div class="product-image">
+                                <img src="/uploads/<%= data[i].productDetails.productimage[0] %>" alt="product">
+                            </div>
+                            
+                            <div class="product-info">
+                                <div class="info-top">
+                                    <span class="brand-tag"><%= data[i].productDetails.brand %></span>
+                                    <h3 class="product-name-text"><%= data[i].productDetails.productName %></h3>
+                                    <p class="category-text"><%= data[i].categoryDetails ? data[i].categoryDetails.name : 'General' %></p>
+                                </div>
+                                
+                                <div class="info-bottom">
+                                    <div class="quantity-wrapper">
+                                        <button class="q-btn" onclick="changeQuantity('<%= data[i].productDetails._id %>', -1, '<%= data[i].productDetails.salesPrice %>', '<%= i %>')">−</button>
+                                        <input type="text" id="cartProductQuantity<%= i %>" class="q-input" value="<%= data[i].items.quantity %>" readonly>
+                                        <button class="q-btn" onclick="changeQuantity('<%= data[i].productDetails._id %>', 1, '<%= data[i].productDetails.salesPrice %>', '<%= i %>')">+</button>
+                                    </div>
+                                    <div class="price-box">
+                                        <span class="currency">₹</span>
+                                        <span class="amount" id="subTotal<%= i %>"><%= data[i].productDetails.salesPrice * data[i].items.quantity %></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="delete-icon-btn" onclick="confirmRemove(event,'<%= data[i].productDetails.productName %>')">
+                                <a href="/cart/delete?id=<%=data[i].productDetails._id%>"><i class="fa-regular fa-trash-can"></i></a>
+                            </button>
+                        </div>
+                    <% } %>
+                <% } else { %>
+                    <div class="empty-cart-state">
+                        <div class="empty-icon">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        </div>
+                        <p>Your cart is empty!</p>
+                        <a href="/shop" class="btn-shop-now">Start Shopping</a>
+                    </div>
+                <% } %>
             </div>
-        </div>
-    </div>
-</div>
-<div class="container">
-                    <nav aria-label="page navigation">
-                        <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
-                            <%for(let i=1;i<=totalPages;i++){%>
-                                <li class="page-item <%=(i===currentPage)? 'active':''%>">
-                                 <a class="page-link" href="?page=<%= i %>"><%= i %></a>
-                                </li>
-                                <%}%>
-                        </ul>
-                    </nav>
+
+            <% if (data.length > 0) { %>
+            <aside class="cart-summary-sidebar">
+                <div class="summary-box">
+                    <h3>Price Details</h3>
+                    <div class="summary-row">
+                        <span>Price (<%= cartCount %> items)</span>
+                        <span>₹<%= grandtotal %></span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Delivery Charges</span>
+                        <span class="text-free">FREE</span>
+                    </div>
+                    <hr>
+                    <div class="summary-row total">
+                        <span>Total Amount</span>
+                        <span id="grandTotalDisplay">₹<%= grandtotal %></span>
+                    </div>
+                    <a href="/checkout" class="checkout-primary-btn">PROCEED TO CHECKOUT</a>
+                    <p class="secure-text"><i class="fa-solid fa-shield-check"></i> Safe and Secure Payments.</p>
                 </div>
-</div>
+            </aside>
+            <% } %>
         </div>
     </div>
+</main>
     
     <footer>
         <div class="footer-content">

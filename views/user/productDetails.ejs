@@ -27,65 +27,76 @@
             </div>
         </nav>
     </header>
-     <main class="container">
-        <section class="product-hero">
-            <div class="product-image">
-                <img id="mainProductImage" src="/uploads/<%=product.productimage[0]%>" alt="<%= product.ProductName %>">
+     <main class="product-page-wrapper">
+    <div class="product-container">
+        <div class="gallery-section">
+            <div class="main-display-area">
+                <div class="image-zoom-container" id="zoomContainer">
+                    <img id="mainProductImage" src="/uploads/<%=product.productimage[0]%>" alt="<%= product.ProductName %>">
+                </div>
             </div>
-            <div class="product-details">
-                <h1><%=product.category.name%></h1>
-                <p><strong>Brand Name:</strong><%=product.brand%></p>
-                <p><strong>Product Name:</strong><%=product.productName%></p>
-               <ul class="features">
-    <li class="category-desc"><strong>Category Info:</strong> <%= category.description %></li>
-    <li class="product-desc"><strong>Product Details:</strong> <%= product.description %></li>
-</ul>
-                <div class="price">
-                    <p>Price:
+            
+            <div class="thumbnail-grid">
+                <% product.productimage.forEach((img, index) => { %>
+                    <div class="thumb-card <%= index === 0 ? 'active-thumb' : '' %>" onclick="changeImage('/uploads/<%= img %>', this)">
+                        <img src="/uploads/<%= img %>" alt="Thumbnail">
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+
+        <div class="info-section-glass">
+            <div class="header-info">
+                <span class="brand-badge"><%=product.brand%></span>
+                <h1 class="product-main-title"><%=product.productName%></h1>
+                <p class="category-path"><%=product.category.name%> / Eye Wear</p>
+            </div>
+
+            <div class="price-card">
+                <div class="price-row">
                     <span class="current-price">₹<%=product.salesPrice%></span>
                     <span class="old-price">₹<%=product.regularPrice%></span>
-                    </p>
+                    <span class="discount-tag">
+                        <%= Math.round((product.regularPrice - product.salesPrice) / product.regularPrice * 100) %>% OFF
+                    </span>
                 </div>
-                <div class="quantity-container">
-    <label for="quantity">Quantity:</label>
-    <input type="number" id="quantity" name="quantity" value="1" min="1" max="<%= product.quantity %>">
-    
-</div>
-<% if (product.quantity > 0) { %>
-    <button class="try-on-btn"  onclick="addToCart('<%=product._id%>')">Add to Cart</button>
-<% } else { %>
-    <button class="btn-out-of-stock" disabled>Out of Stock</button>
-    <p style="color: red;">This item is currently unavailable</p>
-<% } %>
+                <p class="tax-info">Inclusive of all taxes</p>
             </div>
-        </section>
 
-        <section class="similar-collections">
-    <h2>Similar Collections</h2>
-    <div class="product-grid" style="display: flex; gap: 10px; overflow-x: auto;">
-        <% product.productimage.forEach((img, index) => { %>
-            <% if(index!==0){%>
-            <div class="card" style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px;">
-                <img src="/uploads/<%= img %>" 
-                     alt="Similar Product" 
-                     onclick="changeImage('/uploads/<%= img %>')"
-                     style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;">
+            <div class="description-box">
+                <h3>Product Description</h3>
+                <p><%= product.description %></p>
             </div>
-            <%}%>
-        <% }) %>
+
+            <div class="action-area">
+                <div class="quantity-selector">
+                    <label>Quantity</label>
+                    <div class="q-controls">
+                        <button onclick="updateQty(-1)">-</button>
+                        <input type="number" id="quantity" value="1" readonly>
+                        <button onclick="updateQty(1)">+</button>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <% if (product.quantity > 0) { %>
+                        <button class="add-cart-premium" onclick="addToCart('<%=product._id%>')">
+                            <i class="fa-solid fa-bag-shopping"></i> ADD TO CART
+                        </button>
+                    <% } else { %>
+                        <button class="out-of-stock-btn" disabled>OUT OF STOCK</button>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="trust-badges">
+                <div class="badge"><i class="fa-solid fa-truck-fast"></i> <span>Fast Delivery</span></div>
+                <div class="badge"><i class="fa-solid fa-rotate-left"></i> <span>30 Days Return</span></div>
+                <div class="badge"><i class="fa-solid fa-shield-halved"></i> <span>Secure Payment</span></div>
+            </div>
+        </div>
     </div>
-</section>
-
-        <section class="info-section">
-            <h3>Shopping and Return</h3>
-            <ul>
-                <li>Free shipping for orders over $2000</li>
-                <li>30-day return policy</li>
-                <li>Comfortable fit and stylish design</li>
-            </ul>
-        </section>
-    </main>
-     
+</main>
      <footer>
         <div class="footer-content">
             <div class="footer-column">
@@ -119,65 +130,59 @@
     </footer>
     
    <script>
-    function changeImage(imagePath) {
+    // 1. തംബ്നെയിൽ ക്ലിക്ക് ചെയ്യുമ്പോൾ മെയിൻ ഇമേജ് മാറ്റാൻ
+function changeImage(imagePath, element) {
     const mainImg = document.getElementById('mainProductImage');
     mainImg.src = imagePath;
 
-   
-    setTimeout(() => {
-        mainImg.style.opacity = "1";
-    }, 100);
+    // ആക്റ്റീവ് ബോർഡർ മാറ്റാൻ
+    document.querySelectorAll('.thumb-card').forEach(card => card.classList.remove('active-thumb'));
+    element.classList.add('active-thumb');
 }
-const container = document.querySelector('.product-image');
-const img = document.querySelector('#mainProductImage');
-    container.addEventListener('mousemove', (e) => {
-        const x = e.clientX - e.target.offsetLeft;
-        const y = e.clientY - e.target.offsetTop;
 
-        img.style.transformOrigin = `${x}px ${y}px`;
-        img.style.transform = "scale(2.5)";
-    });
+// 2. സൂമിംഗ് ഫങ്ക്ഷൻ (പുതിയ ക്ലാസ്സ് നേയിമുകൾ അനുസരിച്ച്)
+const container = document.getElementById('zoomContainer');
+const img = document.getElementById('mainProductImage');
 
-    container.addEventListener('mouseleave', () => {
-        img.style.transformOrigin = "center";
-        img.style.transform = "scale(1)";
-    });
+container.addEventListener('mousemove', (e) => {
+    const rect = container.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
-    function moveSlide(index) {
-    const wrapper = document.getElementById('offerWrapper');
-    const dots = document.querySelectorAll('.dot');
-    
-    // Move the wrapper by 100% (which is 2 cards)
-    wrapper.style.transform = `translateX(-${index * 50}%)`;
-    
-    // Update active dot
-    dots.forEach(dot => dot.classList.remove('active'));
-    dots[index].classList.add('active');
-}
-    window.addEventListener( "pageshow", function ( event ) {
-        var historyTraversal = event.persisted || 
-                               ( typeof window.performance != "undefined" && 
-                                 window.performance.navigation.type === 2 );
-        if ( historyTraversal ) {
-            window.location.reload();
-        }
-    });
-    window.history.pushState(null, null, window.location.href);
-    window.onpopstate = function () {
-        window.history.go(1);
-    };
-     function addToCart(productId) {
-    const quantityInput = document.getElementById('quantity');
-    const quantity = parseInt(quantityInput.value);
-    if (quantity > 3) {
+    img.style.transformOrigin = `${x}px ${y}px`;
+    img.style.transform = "scale(2.5)";
+});
+
+container.addEventListener('mouseleave', () => {
+    img.style.transformOrigin = "center";
+    img.style.transform = "scale(1)";
+});
+
+// 3. ക്വാണ്ടിറ്റി കൂട്ടാനും കുറയ്ക്കാനും (Update Qty)
+function updateQty(val) {
+    const qtyInput = document.getElementById('quantity');
+    let currentQty = parseInt(qtyInput.value);
+    let maxQty = 3; // നിങ്ങൾ സെറ്റ് ചെയ്ത ലിമിറ്റ്
+
+    let newQty = currentQty + val;
+
+    if (newQty >= 1 && newQty <= maxQty) {
+        qtyInput.value = newQty;
+    } else if (newQty > maxQty) {
         Swal.fire({
             icon: 'warning',
             title: 'Limit Exceeded',
-            text: 'You can only add a maximum of 3 units per product.',
-            confirmButtonColor: '#cf2b2b'
+            text: 'You can only add a maximum of 3 units.',
+            timer: 1500,
+            showConfirmButton: false
         });
-        return; 
     }
+}
+
+// 4. Add to Cart (Ajax)
+function addToCart(productId) {
+    const quantity = parseInt(document.getElementById('quantity').value);
+
     $.ajax({
         url: '/cart',
         method: 'POST',
@@ -197,8 +202,7 @@ const img = document.querySelector('#mainProductImage');
                 Swal.fire({
                     icon: 'info',
                     title: 'Already in Cart',
-                    text: response.message,
-                    timer: 2000
+                    text: response.message
                 });
             }
         },
@@ -206,8 +210,7 @@ const img = document.querySelector('#mainProductImage');
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'There was an error adding the product to your cart',
-                timer: 2000
+                text: 'Something went wrong!'
             });
         }
     });
