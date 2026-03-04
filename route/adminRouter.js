@@ -68,10 +68,7 @@ router.get('/deleteProduct',adminAuth,productController.deleteProduct);
  router.get('/Reviews',adminAuth,orderController.getReview);
  router.get('/deletereview',adminAuth,orderController.deleteReview)
          
-                       //contact //
 
- router.get('/Contact',adminAuth,orderController.getcontact)                      
- router.post('/updateReturnStatus',adminAuth,orderController.updatereturn)
 
  
 

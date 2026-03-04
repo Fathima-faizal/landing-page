@@ -5,6 +5,7 @@ const Cart=require('../../models/cartSchema')
 const getwishlist=async(req,res)=>{
     try {
         const userId=req.session.user;
+        let cartCount=0
         if (userId) {
             const cart = await Cart.findOne({ userId: userId });
             if (cart) {

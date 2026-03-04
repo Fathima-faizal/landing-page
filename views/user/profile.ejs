@@ -43,11 +43,27 @@
             </aside>
 
             <section class="profile-card">
-                <h2>Profile</h2>
-                <div class="input-field"><%=user.name%></div>
-                <div class="input-field"><%=user.email%></div>
-                <a href="/changeEmail"><button class="change-btn">Change Email</button></a>
-            </section>
+    <div class="profile-header">
+        <div class="avatar-circle">
+            <i class="fa-solid fa-user"></i>
+        </div>
+        <h2>Personal Information</h2>
+    </div>
+    
+    <div class="info-group">
+        <label>Full Name</label>
+        <div class="info-value"><%=user.name%></div>
+    </div>
+
+    <div class="info-group">
+        <label>Email Address</label>
+        <div class="info-value"><%=user.email%></div>
+    </div>
+
+    <div class="profile-actions">
+        <a href="/changeEmail" class="edit-btn">Change Email</a>
+    </div>
+</section>
         </div>
     </main>
 

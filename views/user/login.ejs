@@ -26,33 +26,53 @@
             </div>
         </nav>
     </header>
-
     <main class="login-container">
-        <section class="login-box">
-            <h1>Sign in</h1>
-            <form action="/login" method="post" id="loginForm" autocomplete="off">
-                <input type="email" name="email" placeholder="email@mail.com"  autocomplete="off">
-                 <div id="error1" class="error-message"></div>
-                 <div class="form-group" style="position: relative;">
-                <input type="password" name="password" placeholder="••••••••••••••••"  autocomplete="new-password">
-                   <i class="fa-solid fa-eye" id="togglePassword" style="position: absolute; right: 10px; top: 20px; cursor: pointer; color: #777;"></i>
-                <div id="error2" class="error-message"></div>
-                 </div>
-                    <% if (locals.message) { %>
-             <div id="msg" style="color: #d9534f; background-color: #f2dede; border: 1px solid #ebccd1; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center; font-weight: bold;">
-             <%= message %>
-             </div>
-           <% } %>
-                <button type="submit" class="btn-signin">Sign in</button>
-                
-            </form>
+    <section class="login-box">
+        <div class="login-header">
+            <h1>Welcome Back</h1>
+            <p>Please enter your details to sign in.</p>
+        </div>
 
-            <a href="/forgotPassword" class="forgot-password">Forgot Password?</a>
-              <a href="/signup" style="text-decoration: none;">
-            <button class="btn-signup">New user? Sign up now</button>
-            </a>
-        </section>
-    </main>
+        <form action="/login" method="post" id="loginForm" autocomplete="off">
+            <div class="form-group">
+                <label>Email Address</label>
+                <div class="input-wrapper">
+                    <i class="fa-regular fa-envelope"></i>
+                    <input type="email" name="email" placeholder="email@mail.com" autocomplete="email">
+                </div>
+                <div id="error1" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" name="password" id="passwordField" placeholder="••••••••" autocomplete="new-password">
+                    <i class="fa-solid fa-eye-slash toggle-icon" id="togglePassword"></i>
+                </div>
+                <div id="error2" class="error-message"></div>
+            </div>
+
+            <div class="form-options">
+                <a href="/forgotPassword" class="forgot-link">Forgot Password?</a>
+            </div>
+
+            <% if (locals.message) { %>
+                <div id="msg" class="server-msg"><%= message %></div>
+            <% } %>
+
+            <button type="submit" class="btn-signin">Sign In</button>
+        </form>
+
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <p class="signup-prompt">
+            New to VisionVogue? <a href="/signup">Create an account</a>
+        </p>
+    </section>
+</main>
 
     <footer>
         <div class="footer-content">

@@ -289,7 +289,7 @@ const changePasswordValid=async(req,res)=>{
         res.json({succes:false,message:`Failed to send OTP, please try again`})
       }
      }else{
-      res.render('change-password',{message:`USer with this email does not Exist`})
+      res.render('changePassword',{message:`USer with this email does not Exist`})
      }
   } catch (error) {
     console.log('Error in change Password Validation',error);

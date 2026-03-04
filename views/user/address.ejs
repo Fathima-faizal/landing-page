@@ -22,15 +22,14 @@
                <a href="/cart"> <i class="fa-solid fa-cart-shopping"></i></a>
               <a href="/profile" > <i class="fa-regular fa-user"></i></a>
     </header>
-
-    <main class="profile-container">
+   <main class="profile-container">
         <h1>Address</h1>
         
         <div class="content-wrapper">
             <aside class="sidebar">
                 <h3>My Account</h3>
                 <ul>
-                   <a href="/profile"><li>Profile</li></a>
+                   <a href="/profile"><li >Profile</li></a>
                    <a href="/address"> <li class="active">Address</li> </a>
                    <a href="/order"><li>Order</li> </a>
                    <a href="/wallet"><li>Wallet</li> </a>
@@ -41,51 +40,45 @@
                    <a href="/logout"><li>Log out</li> </a>
                 </ul>
             </aside>
-            <div class="address-content">
-                <% if (userAddress && userAddress.address.length > 0) { %>
-            <% userAddress.address.forEach((address)=>{ %>
-            <div class="address-card">
-                <div class="address-card">
-            <div class="address-details">
-                <% if (address.isDefault) { %>
-        <span class="default-badge">Default Address</span>
-    <% } %>
-             <p><strong>AddressType:</strong> <%=address.addressType%></p>
-             <p><strong>House:</strong> <%= address.houseName %></p>
-             <p><strong>Street:</strong> <%= address.street %></p>
-             <p><strong>Landmark:</strong> <%= address.landmark %></p>
-            <p><strong>City:</strong> <%= address.city %> - <%= address.zipCode %></p>
-            <p><strong>Country:</strong> <%= address.country %></p>
-            <p><strong>Phone:</strong><%=address.phoneNumber%></p>
+           <div class="address-grid">
+            <div class="add-address-card-new">
+                <div class="add-icon"><i class="fa-solid fa-plus"></i></div>
+                <h4>Add New Address</h4>
+                <p>Click here to add a new shipping location</p>
+                <a href="/addAddress" class="btn-add-minimal">Add Address</a>
             </div>
-            <div class="actions">
-                 
-            <a href="/editAddress?id=<%=address._id%>">
-             <button class="btn edit">Edit</button>
-            </a>
-            <a href="/deleteAddress?id=<%=address._id%>">
-             <button class="btn delete"
-            onclick="return confirm('Are you sure you want to delete this Address?')">
-            Delete
-          </button>
-        </a>
-        <%if(address.isDefault===false){%>
-                <a href="/defaultAddress?id=<%=address._id%>"><button class="btn-block">Deafault Address</button></a>
-                 <%}%>
-      </div>
-                </div>
-    </div>
-  <% }) %>
- <%}%>
-<div class="add-address-card">
-    <p>Save multiple addresses to speed up your checkout process</p>
-    <a href="/addAddress">
-      <button class="btn-add">Add new Address -></button>
-    </a>
-  </div>
+
+            <% if (userAddress && userAddress.address.length > 0) { %>
+                <% userAddress.address.forEach((address)=>{ %>
+                    <div class="address-card-premium <%= address.isDefault ? 'default-border' : '' %>">
+                        <div class="card-header">
+                            <span class="type-tag"><%= address.addressType %></span>
+                            <% if (address.isDefault) { %>
+                                <span class="default-badge"><i class="fa-solid fa-circle-check"></i> Default</span>
+                            <% } %>
+                        </div>
+                        
+                        <div class="address-body">
+                            <h4 class="user-name"><%= address.houseName %></h4>
+                            <p><i class="fa-solid fa-map-pin"></i> <%= address.street %>, <%= address.landmark %></p>
+                            <p><%= address.city %>, <%= address.country %> - <strong><%= address.zipCode %></strong></p>
+                            <p class="phone-row"><i class="fa-solid fa-phone"></i> <%= address.phoneNumber %></p>
+                        </div>
+
+                        <div class="card-actions">
+                            <a href="/editAddress?id=<%=address._id%>" class="action-link edit"><i class="fa-regular fa-pen-to-square"></i> Edit</a>
+                            <a href="/deleteAddress?id=<%=address._id%>" class="action-link delete" onclick="return confirm('Delete this address?')"><i class="fa-regular fa-trash-can"></i> Delete</a>
+                            <% if(!address.isDefault) { %>
+                                <a href="/defaultAddress?id=<%=address._id%>" class="set-default">Set as Default</a>
+                            <% } %>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } %>
+        </div>
     </div>
         </div>
-      <div class="container">
+        <div class="container">
                     <nav aria-label="page navigation">
                         <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
                             <%for(let i=1;i<=totalPages;i++){%>

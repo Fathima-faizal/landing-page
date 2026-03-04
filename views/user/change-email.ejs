@@ -27,19 +27,39 @@
     </header>
 
     <main class="signup-container">
-        <section class="form-box">
-            <h1>Change Email</h1>
-            <form id="signform" class="signform" method="post" action="/changeEmail" id="signUpForm" autocomplete="off">
-            
-  <div class="form-group">
-  <input type="email"id='email' name="email" placeholder="Enter the current email" required autocomplete="off">
-  <div id="error2" class="error-message"></div>
-  </div>
-  <button type="submit" class="btn-primary">Verify</button>
-</form>
+    <section class="form-box shadow-card">
+        <div class="step-indicator">
+            <span class="step active">1</span>
+            <div class="line"></div>
+            <span class="step">2</span>
+        </div>
 
-        </section>
-    </main>
+        <div class="header-content">
+            <div class="icon-shield">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h1>Change Email</h1>
+            <p class="subtitle">To protect your account, please verify your current email address first.</p>
+        </div>
+
+        <form id="signform" class="signform" method="post" action="/changeEmail" autocomplete="off">
+            <div class="form-group">
+                <label for="email">Current Email</label>
+                <div class="input-wrapper">
+                    <i class="fa-regular fa-envelope"></i>
+                    <input type="email" id="email" name="email" placeholder="e.g. name@email.com" required>
+                </div>
+                <div id="error2" class="error-message"></div>
+            </div>
+            
+            <button type="submit" class="btn-primary">
+                Send Verification Code <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            
+            <a href="/profile" class="back-link">Cancel and go back</a>
+        </form>
+    </section>
+</main>
 
     <footer>
         <div class="footer-content">

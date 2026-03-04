@@ -90,128 +90,346 @@ body {
 .sidebar li.active {
     background: #f0f0f0;
 }
-.return-container {
-    padding: 60px 20px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* മുകൾ ഭാഗത്ത് നിന്ന് തുടങ്ങാൻ */
-    min-height: 80vh;
+:root {
+    --primary-green: #1a4d2e;
+    --accent-green: #49ad65;
+    --bg-light: #f4f7f5;
+    --text-dark: #2d3436;
+    --shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
-.return-card {
+body {
+    background-color: var(--bg-light); /* Changed to light for better readability */
+    color: var(--text-dark);
+}
+
+/* Container Adjustments */
+.profile-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    color: var(--text-dark);
+}
+
+.profile-container h1 {
+    font-size: 2rem;
+    color: var(--primary-green);
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+/* Sidebar Styling */
+.sidebar {
     background: white;
-    padding: 40px;
+    width: 280px;
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    width: 100%;
-    max-width: 550px; 
-    color: #333;
-   margin-top: -40px;
+    box-shadow: var(--shadow);
+    padding: 20px 0;
+    overflow: hidden;
 }
 
-.return-card h3 {
-    font-size: 24px;
-    margin-bottom: 10px;
-    color: #1a1a1a;
-    text-align: center;
+.sidebar h3 {
+    padding: 0 25px 15px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #999;
 }
 
-.return-card > p {
-    text-align: center;
-    color: #666;
+.sidebar ul li {
+    padding: 15px 25px;
     font-size: 14px;
-    margin-bottom: 25px;
-}
-
-
-.item-summary {
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 20px;
-    padding: 20px;
-    background: #f8f9fa;
-    margin-bottom: 25px;
-    border-radius: 10px;
-    border: 1px solid #eee;
+    gap: 12px;
 }
 
-.item-summary img {
-    border-radius: 8px;
-    object-fit: cover;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+.sidebar li:hover {
+    background: #f0faf2;
+    color: var(--accent-green);
 }
 
-.item-summary div p {
-    margin: 4px 0;
-    font-size: 15px;
-}
-
-/* ഫോം ഘടകങ്ങൾ */
-form label {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 14px;
-    color: #444;
-}
-
-textarea {
-    width: 100%;
-    min-height: 120px; 
-    padding: 15px;
-    margin-bottom: 25px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 14px;
-    resize: vertical;
-    transition: border-color 0.3s;
-}
-
-textarea:focus {
-    outline: none;
-    border-color: #2e7d32;
-    box-shadow: 0 0 5px rgba(46, 125, 50, 0.2);
-}
-
-.btn-group {
-    display: flex;
-    justify-content: space-between;
-    gap: 15px;
-    margin-top: 10px;
-}
-
-.btn-confirm {
-    background: #d32f2f;
+.sidebar li.active {
+    background: var(--primary-green);
     color: white;
-    border: none;
-    padding: 12px 25px;
+}
+/* Container for the cards */
+.product-selection-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Stacked list, or use 1fr 1fr for two columns */
+    gap: 15px;
+    margin-bottom: 25px;
+}
+/* The Main Premium Box */
+.return-card-premium {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #eef0f2;
+    color: #333;
+    width: 100%;
+    max-width: 850px; /* Adjust based on your layout */
+}
+
+/* Header Inside the Box */
+.return-header {
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.return-header h2 {
+    color: #1a4d2e;
+    font-size: 1.6rem;
+    margin-bottom: 5px;
+}
+
+.order-id-text {
+    font-weight: 700;
+    color: #1a4d2e;
+}
+
+.sub-text {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Instruction Text */
+.instruction-text {
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #444;
+    font-size: 0.95rem;
+}
+
+/* Item Grid Rework */
+.product-selection-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 35px;
+}
+
+.product-item-card {
+    border: 1px solid #f0f0f0;
+    border-radius: 10px;
+    padding: 15px;
+    transition: 0.3s ease;
+    background: #fafafa;
+}
+
+.product-item-card:hover {
+    border-color: #1a4d2e;
+    background: #fff;
+}
+
+/* Selected State for the Card */
+.item-checkbox:checked + .card-content {
+    background: #f0faf2;
+    border: none; /* We handle border on the parent label if preferred */
+}
+
+/* Reason Section Styling */
+.reason-section {
+    background: #fbfdfb;
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid #edf2ee;
+}
+
+.reason-section label {
+    color: #1a4d2e;
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+.textarea-wrapper textarea {
+    border: 1px solid #d1d8d1;
+    border-radius: 8px;
+    padding: 15px;
+    font-size: 0.9rem;
+    background: #fff;
+    transition: 0.3s;
+}
+
+.textarea-wrapper textarea:focus {
+    border-color: #1a4d2e;
+    box-shadow: 0 0 0 3px rgba(26, 77, 46, 0.1);
+    outline: none;
+}
+
+/* Action Buttons */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 25px;
+}
+
+.btn-primary {
+    background: #1a4d2e; /* Dark Brand Green */
+    color: white;
+    padding: 12px 35px;
     border-radius: 8px;
     font-weight: 600;
-    cursor: pointer;
-    flex: 2; 
-    transition: background 0.3s;
+    transition: 0.3s;
+    flex: 0 1 auto; /* Don't stretch too wide */
 }
 
-.btn-confirm:hover {
-    background: #b71c1c;
+.btn-primary:hover {
+    background: #123620;
+    transform: translateY(-2px);
 }
 
-.btn-back {
+.btn-secondary {
     background: #f5f5f5;
-    text-decoration: none;
-    color: #555;
+    color: #666;
     padding: 12px 25px;
+    border: 1px solid #e0e0e0;
     border-radius: 8px;
-    text-align: center;
-    flex: 1;
-    font-weight: 500;
-    border: 1px solid #ddd;
-    transition: all 0.3s;
+    flex: 0 1 auto;
+}
+/* Container & Header */
+.return-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+    margin-bottom: 25px;
+}
+.order-badge {
+    background: #f0f0f0;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: #555;
 }
 
-.btn-back:hover {
-    background: #e0e0e0;
-    color: #222;
+/* Product Card Selection */
+.product-selection-grid {
+    display: grid;
+    gap: 15px;
+    margin-bottom: 30px;
 }
+.product-item-card {
+    position: relative;
+    cursor: pointer;
+    display: block;
+}
+.product-item-card input[type="checkbox"] {
+    display: none; /* Hide original checkbox */
+}
+.card-content {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 2px solid #eee;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+
+/* Image & Text */
+.img-wrapper img {
+    width: 70px;
+    height: 70px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+.product-info h4 { margin: 0; font-size: 1rem; }
+.category { font-size: 0.8rem; color: #888; margin: 4px 0; }
+.price { font-weight: 600; color: #333; }
+
+/* Reason Box */
+.reason-section label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.textarea-wrapper {
+    position: relative;
+}
+.textarea-wrapper textarea {
+    width: 100%;
+    height: 120px;
+    padding: 15px 15px 15px 40px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+    resize: none;
+}
+.textarea-wrapper i {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    color: #aaa;
+}
+
+/* Buttons */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+.btn-primary {
+    background: #000;
+    color: #fff;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    flex: 2;
+}
+.btn-secondary {
+    text-decoration: none;
+    text-align: center;
+    color: #666;
+    padding: 12px 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    flex: 1;
+}
+/* The Box */
+.product-item-card {
+    cursor: pointer;
+    display: block;
+    position: relative;
+}
+
+/* Hide the actual small checkbox */
+.item-checkbox {
+    position: absolute;
+    opacity: 0;
+}
+
+/* The Box Styling */
+.card-content {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Hover effect */
+.product-item-card:hover .card-content {
+    border-color: var(--accent-green);
+    transform: translateY(-2px);
+}
+
+/* WHEN CHECKED: Style the box */
+.item-checkbox:checked + .card-content {
+    border-color: #1a4d2e; /* Your dark green */
+    background-color: #f0faf2; /* Very light green tint */
+}
+
 
 footer {
     background: #558b2f; /* Muted olive green */

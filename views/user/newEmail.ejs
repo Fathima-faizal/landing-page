@@ -25,21 +25,43 @@
             </div>
         </nav>
     </header>
+     <main class="signup-container">
+    <section class="form-box card-shadow">
+        <div class="step-indicator">
+            <span class="step completed"><i class="fa-solid fa-check"></i></span>
+            <div class="line active"></div>
+            <span class="step active">2</span>
+        </div>
 
-    <main class="signup-container">
-        <section class="form-box">
-            <h1>New Email</h1>
-            <form id="signform" class="signform" method="post" action="/updateEmail" id="signUpForm" autocomplete="off">
-            
-  <div class="form-group">
-  <input type="email"id='email' name="newEmail" placeholder="Enter the new email" required autocomplete="off">
-  <div id="error2" class="error-message"></div>
-  </div>
-  <button type="submit" class="btn-primary">Submit</button>
-</form>
+        <div class="header-content">
+            <div class="icon-header">
+                <i class="fa-solid fa-envelope-circle-check"></i>
+            </div>
+            <h1>Update Email</h1>
+            <p class="subtitle">Verification successful! Now, please enter the new email address you'd like to use for your account.</p>
+        </div>
 
-        </section>
-    </main>
+        <form id="signform" class="signform" method="post" action="/updateEmail" autocomplete="off">
+            <div class="form-group">
+                <label for="email">New Email Address</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-at"></i>
+                    <input type="email" id="email" name="newEmail" placeholder="new.email@visionvogue.com" required>
+                </div>
+                <div id="error2" class="error-message"></div>
+            </div>
+
+            <button type="submit" class="btn-primary">
+                Update My Email <i class="fa-solid fa-rotate"></i>
+            </button>
+
+            <div class="security-note">
+                <i class="fa-solid fa-lock"></i>
+                <span>Your data is encrypted and secure.</span>
+            </div>
+        </form>
+    </section>
+</main>
 
     <footer>
         <div class="footer-content">

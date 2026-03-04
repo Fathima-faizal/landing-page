@@ -171,7 +171,21 @@
         window.history.go(1);
     };
     function placeOrder() {
-    const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked').value;
+   const selectedAddressElement = document.querySelector('input[name="selectedAddress"]:checked');
+
+    if (!selectedAddressElement) {
+        // Show popup if no address is found/selected
+        Swal.fire({
+            title: "Address Required",
+            text: "Please add or select a delivery address before confirming your order.",
+            icon: "warning",
+            confirmButtonColor: "#1a4d2e", // Matches your VisionVogue theme
+            confirmButtonText: "Okay"
+        });
+        return; // Stop the function here
+    }
+
+    const selectedAddress = selectedAddressElement.value;
 
     $.ajax({
         url: '/placeOrder',

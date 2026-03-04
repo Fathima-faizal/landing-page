@@ -94,9 +94,9 @@ router.post('/addMoney',userAuth,profileControllers.addmoney)
 router.get('/order',userAuth,orderControllers.getorder)   
 router.post('/order',userAuth,orderControllers.postorder);
 router.get('/orderDetails/:id',userAuth,orderControllers.orderdetails) 
-router.post('/cancel/:id',userAuth,orderControllers.cancelproduct)  
-router.get('/return/:orderId/:productId',userAuth,orderControllers.getreturn);
-router.post('/return',userAuth,orderControllers.postreturn)
+router.get('/return/:orderId',userAuth,orderControllers.getReturnPage);
+router.post('/returnSubmit',userAuth,orderControllers.submitReturn)
+router.post('/cancel', userAuth,orderControllers.cancelOrderItem);  
 router.get('/review/:orderId/:productId',userAuth,orderControllers.getreview);
 router.post('/review',userAuth,orderControllers.postreview)                 
 router.get('/downloadInvoice/:orderId', userAuth, orderControllers.downloadInvoice);

@@ -27,29 +27,43 @@
             </div>
         </nav>
     </header>
+   <main class="otp-container">
+    <section class="otp-box card-shadow">
+        <div class="security-header">
+            <div class="shield-icon">
+                <i class="fa-solid fa-shield-check"></i>
+            </div>
+            <h1>Verify Your Identity</h1>
+            <p class="subtitle">We've sent a 4-digit code to your email. Please enter it below to continue.</p>
+        </div>
 
-    <main class="otp-container">
-        <section class="otp-box">
-            <h1>Verify OTP</h1>
-             <form method="post" action="/changeEmailOTP" onsubmit="return validateOTPform()">
+        <form method="post" action="/changeEmailOTP" onsubmit="return validateOTPform()">
             <div class="otp-white-card">
-                <div class="otp-inputs">
-                    <input type="text" id="otp" maxlength="1" class="otps">
-                    <input type="text" id="otp" maxlength="1" class="otps">
-                    <input type="text" id="otp" maxlength="1" class="otps">
-                    <input type="text" id="otp" maxlength="1" class="otps">
+                <div class="otp-inputs" id="otp-wrapper">
+                    <input type="text" class="otps" maxlength="1" pattern="\d*" inputmode="numeric">
+                    <input type="text" class="otps" maxlength="1" pattern="\d*" inputmode="numeric">
+                    <input type="text" class="otps" maxlength="1" pattern="\d*" inputmode="numeric">
+                    <input type="text" class="otps" maxlength="1" pattern="\d*" inputmode="numeric">
                 </div>
-            
-                <div class="otp-timer-row">
-                    <p>Don't get the OTP? <a href="#"  id="resetBtn" class="reset-link">Reset OTP</a></p>
-                    <span class="timer" id="timer">00:56</span>
+
+                <div class="otp-status-row">
+                    <div class="timer-wrapper">
+                        <i class="fa-regular fa-clock"></i>
+                        <span id="timer">00:56</span>
+                    </div>
+                    <div class="resend-wrapper">
+                        <span>Didn't receive it?</span>
+                        <a href="#" id="resetBtn" class="reset-link disabled">Resend OTP</a>
+                    </div>
                 </div>
             </div>
-            <button type="submit" class="btn-submit">Submit</button>
-             </form>
-        </section>
-    </main>
-
+            
+            <button type="submit" class="btn-submit">
+                Verify & Proceed <i class="fa-solid fa-circle-check"></i>
+            </button>
+        </form>
+    </section>
+</main>
     <footer>
         <div class="footer-content">
             <div class="footer-column">

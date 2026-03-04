@@ -43,57 +43,70 @@
                    <a href="/logout"><li>Log out</li> </a>
                 </ul>
             </aside>
-
-            <section class="profile-card">
-              <main class="order-mgmt">
-                <form action="/order" method="GET">
-                <div class="search-box">
-                        <input type="text"  name="search" placeholder="Search">
-                        <button type="submit" class="btn-clear">Clear</button>
+             <section class="order-content">
+            <div class="table-container-premium">
+                <div class="table-header">
+                    <form action="/order" method="GET" class="order-search">
+                        <div class="search-input-wrapper">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" name="search" placeholder="Search by Order ID..." >
+                        </div>
+                          <button type="submit" class="btn-clear-minimal">Clear Filter</button>
+                    </form>
                 </div>
-                </form>
 
-    <table class="order-table" id="orderTable">
-        <thead>
-            <tr>
-                <th>Order ID</th>
-                <th>Date</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-    <% if (orders && orders.length > 0) { %>
-        <% orders.forEach(order => { %>
-            <tr class="order-row">
-                <td>#<%= order.orderId %></td> 
-                <td><%= order.createdOn ? new Date(order.createdOn).toLocaleDateString() : 'N/A' %></td>
-                <td>₹<%= order.finalAmount %></td>
-                <td>
-                    <span class="badge <%= order.status ? order.status.toLowerCase() : 'pending' %>">
-                        <%= order.status %>
-                    </span>
-                </td>
-                <td>
-                    
-                    <a href="/orderDetails/<%= order._id %>" class="btn-detail">View Details</a>
-                    <% if (order.status !== 'cancelled' && order.status !== 'delivered') { %>
-        <button onclick="confirmCancel('<%= order._id %>')" class="cancel">
-            Cancel
-        </button>
-    <% } %>
-                </td>
-            </tr>
-        <% }) %>
-    <% } else { %>
-        <tr>
-            <td colspan="5" style="text-align: center;">No orders found.</td>
-        </tr>
-    <% } %>
-</tbody>
-    </table>
-</main>
+                <table class="order-table-modern">
+                    <thead>
+                        <tr>
+                            <th>Order Reference</th>
+                            <th>Date</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th class="text-right">Manage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (orders && orders.length > 0) { %>
+                            <% orders.forEach(order => { %>
+                                <tr class="order-row-premium">
+                                    <td>
+                                        <span class="order-id-chip">#<%= order.orderId %></span>
+                                    </td>
+                                    <td>
+                                        <div class="date-cell">
+                                            <i class="fa-regular fa-calendar-days"></i>
+                                            <%= order.createdOn ? new Date(order.createdOn).toLocaleDateString('en-GB') : 'N/A' %>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="price-text">₹<%= order.finalAmount.toLocaleString() %></span>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge <%= order.status.toLowerCase() %>">
+                                            <i class="fa-solid fa-circle"></i> <%= order.status %>
+                                        </span>
+                                    </td>
+                                    <td class="text-right">
+                                        <div class="action-group">
+                                            <a href="/orderDetails/<%= order._id %>" class="view-link"> Details</a>
+                                            <% if (order.status === 'delivered') { %>
+                                                <a href="/return/<%= order._id %>" class="return-link">Return</a>
+                                            <% } %>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="5" class="empty-state">
+                                    <i class="fa-solid fa-box-open"></i>
+                                    <p>No orders found matching your search.</p>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
  <div class="container">
                     <nav aria-label="page navigation">
                         <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
@@ -145,42 +158,6 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-   function confirmCancel(orderId) {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "Do you want to cancel this order?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, Cancel it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch(`/cancel/${orderId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status) {
-                    Swal.fire(
-                        'Cancelled!',
-                        'Your order has been cancelled and stock updated.',
-                        'success'
-                    ).then(() => {
-                        window.location.reload(); 
-                    });
-                } else {
-                    Swal.fire('Error', data.message, 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire('Oops!', 'Something went wrong', 'error');
-            });
-        }
-    });
-}
 </script>
 </body>
 </html>

@@ -206,7 +206,7 @@ const loadshoppingpage=async(req,res)=>{
     const categoryIds=category.map((Category)=>Category._id.toString());
     let search = req.query.search || '';
     const page=parseInt(req.query.page)||1;
-    const limit=4;
+    const limit=6;
     const skip=(page-1)*limit;
     const product=await Product.find({
       isBlocked:false,

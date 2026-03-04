@@ -26,40 +26,70 @@
         </nav>
     </header>
 
-    <main class="signup-container">
-        <section class="form-box">
-            <h1>Sign Up</h1>
-            <form id="signform" class="signform" method="post" action="/signup" id="signUpForm" autocomplete="off">
+   <main class="signup-container">
+    <section class="form-box">
+        <div class="form-header">
+            <h1>Create Account</h1>
+            <p>Join VisionVogue for an exclusive eyewear experience.</p>
+        </div>
 
-                <div class="form-group">
-  <input type="text" id="name" name="name" placeholder="name">
-  <div id="error1" class="error-message"></div>
-  </div>
-  <div class="form-group">
-  <input type="email"id='email' name="email" placeholder="Email"  autocomplete="off">
-  <div id="error2" class="error-message"></div>
-  </div>
-  <div class="form-group" style="position: relative;">
-  <input type="password" id="password" name="password" placeholder="Password" autocomplete="new-password" style="width: 100%; padding-right: 40px;">
-  <i class="fa-solid fa-eye" id="togglePassword" style="position: absolute; right: 10px; top: 20px; cursor: pointer; color: #777;"></i>
-  <div id="error3" class="error-message"></div>
-</div>
-  <div class="form-group" style="position: relative;">
-    <input type="password" id="ConformPassword" name="ConformPassword" placeholder="ConformPassword" autocomplete="new-password">
-    <i class="fa-solid fa-eye" id="togglePassword" style="position: absolute; right: 10px; top: 20px; cursor: pointer; color: #777;"></i>
-     <div id="error4" class="error-message"></div>
-</div>
-    <div class="social-login">
-                <a href="/auth/google">
-                <div class="icon-circle"><i class="fa-brands fa-google"></i></div>
+        <form id="signform" class="signform" method="post" action="/signup" autocomplete="off">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <div class="input-wrapper">
+                    <i class="fa-regular fa-user"></i>
+                    <input type="text" id="name" name="name" placeholder="Enter your name">
+                </div>
+                <div id="error1" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <div class="input-wrapper">
+                    <i class="fa-regular fa-envelope"></i>
+                    <input type="email" id="email" name="email" placeholder="email@example.com">
+                </div>
+                <div id="error2" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="Min. 8 characters" autocomplete="new-password">
+                    <i class="fa-solid fa-eye-slash toggle-password" data-target="password"></i>
+                </div>
+                <div id="error3" class="error-message"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="ConfirmPassword">Confirm Password</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-shield-check"></i>
+                    <input type="password" id="ConformPassword" name="ConformPassword" placeholder="Repeat password" autocomplete="new-password">
+                    <i class="fa-solid fa-eye-slash toggle-password" data-target="ConfirmPassword"></i>
+                </div>
+                <div id="error4" class="error-message"></div>
+            </div>
+
+            <button type="submit" class="btn-primary">Create Account</button>
+
+            <div class="divider">
+                <span>OR SIGN UP WITH</span>
+            </div>
+
+            <div class="social-login">
+                <a href="/auth/google" class="google-btn">
+                    <i class="fa-brands fa-google"></i> Google
                 </a>
-            </div>   
-<div id="main-error" class="error-message" style="text-align: center; margin-bottom: 10px;"></div>
-  <button type="submit" class="btn-primary">Sign up</button>
-</form>
+            </div>
 
-        </section>
-    </main>
+            <p class="login-prompt">
+                Already have an account? <a href="/login">Log in</a>
+            </p>
+        </form>
+    </section>
+</main>
 
     <footer>
         <div class="footer-content">

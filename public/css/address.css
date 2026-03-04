@@ -38,9 +38,6 @@ body {
 .nav-icons a{
     color: #0a1f0d;
 }
-
-
-/* Main Profile Layout */
 .profile-container {
     padding: 40px 10%;
     color: white;
@@ -62,8 +59,6 @@ body {
     background: white;
     color: #333;
     width: 200px;
-    min-width: 200px;
-    flex-shrink: 0;
     padding: 30px 0;
 }
 
@@ -90,92 +85,246 @@ body {
 .sidebar li.active {
     background: #f0f0f0;
 }
-.address-content {
+:root {
+    --primary-green: #1a4d2e;
+    --accent-green: #49ad65;
+    --bg-light: #f4f7f5;
+    --text-dark: #2d3436;
+    --shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+body {
+    background-color: var(--bg-light); /* Changed to light for better readability */
+    color: var(--text-dark);
+}
+
+/* Container Adjustments */
+.profile-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    color: var(--text-dark);
+}
+
+.profile-container h1 {
+    font-size: 2rem;
+    color: var(--primary-green);
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    background: white;
+    width: 280px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    padding: 20px 0;
+    overflow: hidden;
+}
+
+.sidebar h3 {
+    padding: 0 25px 15px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #999;
+}
+
+.sidebar ul li {
+    padding: 15px 25px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sidebar li:hover {
+    background: #f0faf2;
+    color: var(--accent-green);
+}
+
+.sidebar li.active {
+    background: var(--primary-green);
+    color: white;
+}
+/* Layout Adjustments */
+.header-section {
+    margin-bottom: 40px;
+}
+
+.subtitle {
+    opacity: 0.8;
+    font-size: 0.95rem;
+}
+
+/* Address Grid */
+.address-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
     flex-grow: 1;
 }
-.address-card {
-   background: white;
-    border-radius: 8px;
-    padding: 25px;
-    color: black;
+
+/* Premium Address Card */
+.address-card-premium {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    color: #333;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Keeps buttons at the bottom */
-    min-height: 250px; /* Ensures all cards are equal height */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid transparent;
 }
 
+.address-card-premium:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
 
-.add-address-card {
-  background: white; 
-    color: black;
-    border-radius: 8px; /* Matched to address-card */
-    text-align: center;
+.default-border {
+    border-color: #49ad65;
+    background: #f0fff4; /* Very light green tint for default */
+}
+
+/* Badges & Tags */
+.card-header {
     display: flex;
-    flex-direction: column;
-    justify-content: center; /* Centers content vertically */
-    align-items: center;    /* Centers content horizontally */
-    padding: 25px;
-   
+    justify-content: space-between;
+    margin-bottom: 15px;
 }
-.address-details p {
-    margin-bottom: 8px;
-    font-size: 14px;
+
+.type-tag {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
 }
-.actions{
+
+.default-badge {
+    color: #2e7d32;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Address Details */
+.address-body p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 6px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 15px;
-}
-.btn {
-    padding: 8px 25px;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    margin-right: 10px;
+    align-items: center;
+    gap: 8px;
 }
 
-
-.edit { background-color: #0b1f0d; }
-.delete { background-color: #8b0000; }
-
-
-.add-address-card {
-    text-align: center;
+.phone-row {
+    margin-top: 10px;
+    color: #333 !important;
+    font-weight: 500;
 }
 
-.add-address-card p {
-    font-weight: bold;
-    font-size: 1.2rem;
-    margin-bottom: 20px;
+/* Actions */
+.card-actions {
+    margin-top: auto;
+    padding-top: 20px;
+    display: flex;
+    gap: 15px;
+    border-top: 1px solid #eee;
 }
 
-.btn-add {
-    background: #0b1f0d;
-    color: white;
-    padding: 15px 30px;
-    border-radius: 10px;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-}
-.btn-add a {
+.action-link {
     text-decoration: none;
-    color:white
+    font-size: 0.85rem;
+    font-weight: 600;
 }
-.btn-block {
-background-color: #ff3b30;
-    color: white;
-    border: none;
-    padding: 5px 15px;
-    border-radius: 4px;
+
+.edit { color: #1a4d2e; }
+.delete { color: #d32f2f; }
+.set-default {
+    margin-left: auto;
+    font-size: 0.8rem;
+    color: #666;
+    text-decoration: underline;
+}
+
+.add-address-card-new {
+    /* Change border to your brand green */
+    border: 2px dashed #1a4d2e; 
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    text-align: center;
     
+    /* Change text color to dark green or dark grey */
+    color: #1a4d2e; 
+    cursor: pointer;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.add-address-card-new:hover {
+    /* Light green tint on hover so it feels interactive */
+    background: #f0fff4; 
+    transform: translateY(-3px);
+}
+
+/* Ensure the icon and text inside are visible */
+.add-address-card-new .add-icon, 
+.add-address-card-new h4, 
+.add-address-card-new p {
+    color: #1a4d2e;
+}
+
+.add-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.btn-add-minimal {
+    margin-top: 15px;
+    background: white;
+    color: #1a4d2e;
+    padding: 8px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+/* Footer */
+.footer {
+    background: #6b8e61;; /* Muted olive green */
+    color: white;
+    padding: 40px 10% 20px;
+    margin-top: 50px;
+}
+
+.footer-columns {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.footer h4 {
+    margin-bottom: 15px;
+}
+
+.copyright {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 11px;
+    opacity: 0.8;
 }
 .pagination {
     display: flex;             
@@ -205,32 +354,4 @@ background-color: #ff3b30;
 
 .page-link:hover {
     background-color: #e2e6ea;
-}
-
-/* Footer */
-.footer {
-    background: #6b8e61;; /* Muted olive green */
-    color: white;
-    padding: 40px 10% 20px;
-    margin-top: 50px;
-}
-
-.footer-columns {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px;
-    font-size: 13px;
-    line-height: 1.8;
-}
-
-.footer h4 {
-    margin-bottom: 15px;
-}
-
-.copyright {
-    text-align: center;
-    margin-top: 40px;
-    font-size: 11px;
-    opacity: 0.8;
 }

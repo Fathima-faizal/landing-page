@@ -41,27 +41,72 @@
                    <a href="/logout"><li>Log out</li> </a>
                 </ul>
             </aside>
-            <section class="form-content">
-                <div class="form-card">
-                    <form method="post" action="/addAddress">
-                        <div class="form-grid">
-                            <input type="text" id="addressType" name="addressType" placeholder="AddressType" class="full-width" autocomplete="off">
-                            <input type="text" id="houseName" name="houseName" placeholder="House Name" autocomplete="off">
-                            <input type="text" id="street" name="street" placeholder="Street" autocomplete="off">
-                            <input type="text" id="landmark" name="landmark" placeholder="Landmark" class="full-width" autocomplete="off">
-                            <input type="text" id="city" name="city" placeholder="City" autocomplete="off">
-                            <input type="text" id="zipCode" name="zipCode" placeholder="Zip code" autocomplete="off">
-                              <input type="text" id="country" name="country" placeholder="country" class="full-width" autocomplete="off">
-                               <input type="text" id="phoneNumber" name="phoneNumber" placeholder="phone Number" class="full-width" autocomplete="off">
-                            
-                            </div>
-                            <div id="formError" class="error-message full-width"></div>
-                        <div class="form-actions">
-                            <button type="submit" id="btn-update" class="btn-update">Update</button>
-                        </div>
-                    </form>
+           <main class="profile-container">
+    <div class="form-wrapper-centered">
+
+        <div class="form-card-premium">
+            <div class="form-header">
+                <div class="icon-circle">
+                    <i class="fa-solid fa-location-dot"></i>
                 </div>
-            </section>
+                <h2>New Shipping Address</h2>
+                <p>Add a new location for your deliveries</p>
+            </div>
+
+            <form method="post" action="/addAddress" id="addressForm">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Address Type</label>
+                        <input type="text" id="addressType" name="addressType" placeholder="Address Type" >
+                    </div>
+
+                    <div class="form-group">
+                        <label>House Name/No.</label>
+                        <input type="text" id="houseName" name="houseName" placeholder="House Name" >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Street</label>
+                        <input type="text" id="street" name="street" placeholder="Street">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Landmark</label>
+                        <input type="text" id="landmark" name="landmark" placeholder="Landmark">
+                    </div>
+
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" id="city" name="city" placeholder="City" >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Zip Code</label>
+                        <input type="text" id="zipCode" name="zipCode" placeholder="Zip Code" >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Country</label>
+                        <input type="text" id="country" name="country" placeholder="Country" >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Phone Number" >
+                    </div>
+                </div>
+
+                <div id="formError" class="error-message"></div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">
+                        Save Address <i class="fa-solid fa-check"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
         </div>
     </main>
 

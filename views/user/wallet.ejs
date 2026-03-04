@@ -45,25 +45,29 @@
             </aside>
 
             <section class="profile-card">
-               <div class="wallet-card">
-        <h2>My Wallet</h2>
-        <div class="balance-section">
-            <p>Available Balance</p>
-            <h3>₹<%= walletBalance.toFixed(2) %></h3>
-            <div class="add-money-box">
-        <input type="number" id="addAmount" placeholder="Enter Amount" min="1">
-        <button onclick="addMoney()" class="add-btn">Add Money</button>
-    </div>
+    <div class="wallet-card">
+        <h2>My Digital Wallet</h2>
+        
+        <div class="balance-display-premium">
+            <p class="balance-label">Available Balance</p>
+            <h3 class="balance-amount">₹<%= walletBalance.toFixed(2) %></h3>
+            
+            <div class="add-money-container">
+                <input type="number" id="addAmount" placeholder="Enter Amount (e.g. 500)" min="1">
+                <button onclick="addMoney()" class="add-btn-premium">
+                    <i class="fa-solid fa-plus"></i> Add
+                </button>
+            </div>
         </div>
         
         <div class="transaction-history">
-            <h4>Recent Transactions</h4>
+            <h4><i class="fa-solid fa-clock-rotate-left"></i> Recent Activity</h4>
             <% if (transactions.length > 0) { %>
                 <table class="transaction-table">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Description</th>
+                            <th>Transaction Date</th>
+                            <th>Reference / Description</th>
                             <th>Amount</th>
                             <th>Status</th>
                         </tr>
@@ -71,23 +75,26 @@
                     <tbody>
                         <% transactions.reverse().forEach(t => { %>
                             <tr>
-                                <td><%= new Date(t.date).toLocaleDateString() %></td>
-                                <td><%= t.description %></td>
+                                <td style="color: #666;"><%= new Date(t.date).toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}) %></td>
+                                <td style="font-weight: 600;"><%= t.description %></td>
                                 <td class="<%= t.type === 'credit' ? 'text-success' : 'text-danger' %>">
-                                    <%= t.type === 'credit' ? '+' : '-' %> ₹<%= t.amount %>
+                                    <%= t.type === 'credit' ? '+' : '-' %> ₹<%= t.amount.toLocaleString() %>
                                 </td>
-                                <td><span class="status-tag"><%= t.status %></span></td>
+                                <td>
+                                    <span class="status-tag status-<%= t.status.toLowerCase() %>">
+                                        <%= t.status %>
+                                    </span>
+                                </td>
                             </tr>
                         <% }) %>
                     </tbody>
                 </table>
             <% } else { %>
-                <p>No transactions found.</p>
+                <div style="text-align: center; padding: 40px; color: #999;">
+                    <i class="fa-solid fa-wallet" style="font-size: 3rem; margin-bottom: 10px; opacity: 0.3;"></i>
+                    <p>No transactions made yet.</p>
+                </div>
             <% } %>
-        </div>
-    </div>
-
-            </section>
         </div>
         <div class="container">
                     <nav aria-label="page navigation">
@@ -100,6 +107,8 @@
                         </ul>
                     </nav>
                 </div>
+    </div>
+            </section>
     </main>
 
     <footer class="footer">

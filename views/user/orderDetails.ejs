@@ -43,31 +43,103 @@
                    <a href="/logout"><li>Log out</li> </a>
                 </ul>
             </aside>
-
-            <section class="profile-card">
-             <div class="order-detail-card">
-           <h3>Order Summary</h3>
-    <a href="/downloadInvoice/<%= order._id %>" class="btn-invoice">Download Invoice</a>
-    
-    <div class="product-list">
-    <% order.orderedItems.forEach(item => { %>
-        <div class="item-row">
-            <img src="/uploads/<%= item.productId.productimage[0] %>" alt="product" width="100">
-            <div class="item-info">
-            <p><strong>Category:</strong><%= item.productId.category ? item.productId.category.name : 'No Category' %></p>
-            <p><strong>Name:</strong> <%= item.productId.productName %></p>
-            <p><strong>Brand:</strong> <%= item.productId.brand %></p>
-            <p><strong>Qty:</strong> <%= item.quantity %></p>
-            </div>
-            <div class="item-actions">
-    <a href="/return/<%= order._id %>/<%= item.productId._id %>" class="return">Return</a>
-    <a href="/review/<%= order._id %>/<%= item.productId._id %>" class="review" >Review</a>
-   </div>
+            <section class="order-details-container">
+    <div class="details-header-premium">
+        <div class="header-main">
+            <h2>Order Details</h2>
+            <p>ID: <span class="order-id-text">#<%= order.orderId %></span> | Placed on <%= new Date(order.createdOn).toLocaleDateString() %></p>
         </div>
-    <% }) %>
-     
+        <a href="/downloadInvoice/<%= order._id %>" class="btn-invoice-premium">
+            <i class="fa-solid fa-file-pdf"></i> Download Invoice
+        </a>
+    </div>
+     <div class="status-card-premium">
+    <h3>Order Status</h3>
+    <div class="stepper-horizontal">
+        <div class="step <%= (['pending', 'processing', 'shipped', 'delivered'].includes(order.status)) ? 'active' : '' %>">
+            <div class="circle"><i class="fa-solid fa-box"></i></div>
+            <span>Placed</span>
+        </div>
+
+        <div class="step <%= (['shipped', 'delivered'].includes(order.status)) ? 'active' : '' %>">
+            <div class="circle"><i class="fa-solid fa-truck"></i></div>
+            <span>Shipped</span>
+        </div>
+
+        <div class="step <%= (order.status === 'delivered') ? 'active' : '' %>">
+            <div class="circle"><i class="fa-solid fa-house-circle-check"></i></div>
+            <span>Delivered</span>
+        </div>
+    </div>
 </div>
-</div> 
+
+    <div class="details-info-grid">
+        <div class="info-card">
+            <h4><i class="fa-solid fa-location-dot"></i> Shipping Address</h4>
+            <div class="address-box">
+                <% if (addressData && addressData.address) { %>
+        <% const shippingAddress = addressData.address.find(addr => addr._id.toString() === order.address.toString());%>
+        
+        <% if (shippingAddress) { %>
+            <p><strong>Name:</strong> <%= shippingAddress.houseName %></p>
+            <p><strong>City:</strong> <%= shippingAddress.city %> - <%= shippingAddress.zipCode %> </p>
+            <p><strong>Landmark:</strong> <%= shippingAddress.landmark %></p>
+            <p><strong>Phone:</strong> <%= shippingAddress.phoneNumber %></p>
+        <% } else { %>
+            <p>Address details not found.</p>
+        <% } %>
+    <% } else { %>
+        <p>No address associated with this order.</p>
+    <% } %>
+            </div>
+        </div>
+        <div class="info-card">
+            <h4><i class="fa-solid fa-credit-card"></i> Payment Summary</h4>
+            <div class="payment-box">
+                <p>Method: <strong>Cash on delivery</strong></p>
+                <p>Status: <span class="badge <%= (order.status || '').toLowerCase() %>"><%= order.status || 'Pending' %></span></p>
+                <hr>
+                <div class="summary-line"><span>Subtotal</span> <span>₹<%= order.totalPrice.toLocaleString() %></span></div>
+                <div class="summary-line discount"><span>Coupon Discount</span> <span>- ₹<%= order.discount.toLocaleString() %></span></div>
+                <div class="summary-line total"><span>Total Paid</span> <span>₹<%= order.finalAmount.toLocaleString() %></span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="items-card-premium">
+        <h3>Ordered Items (<%= order.orderedItems.length %>)</h3>
+        <div class="product-stack">
+            <% order.orderedItems.forEach(item => { %>
+                <div class="product-row-premium">
+                    <div class="product-thumb">
+                        <img src="/uploads/<%= item.productId.productimage[0] %>" alt="product">
+                    </div>
+                    <div class="product-main-info">
+                        <span class="cat-label"><%= item.productId.category ? item.productId.category.name : 'General' %></span>
+                        <h4><%= item.productId.productName %></h4>
+                        <p class="brand-text">Brand: <%= item.productId.brand %></p>
+                        <p class="qty-text">Qty: <strong><%= item.quantity %></strong></p>
+                    </div>
+                    <div class="product-price-section">
+                        <p class="unit-price">₹<%= item.price.toLocaleString() %> / unit</p>
+                        <p class="total-item-price">₹<%= (item.price * item.quantity).toLocaleString() %></p>
+                    </div>
+                    <div class="product-row-actions">
+                        <% if (order.status !== 'Cancelled' && order.status !== 'Delivered') { %>
+                            <button type="button" class="btn-cancel-item" onclick="handleCancel('<%= order._id %>', '<%= item.productId._id %>')">
+                                <i class="fa-solid fa-ban"></i> Cancel
+                            </button>
+                        <% } %>
+                        <% if (order.status === 'delivered') { %>
+                            <a href="/review/<%= order._id %>/<%= item.productId._id %>" class="btn-review-item">
+                                <i class="fa-solid fa-star"></i> Review
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
            <div class="container">
                     <nav aria-label="page navigation">
                         <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
@@ -119,6 +191,38 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
+    async function handleCancel(orderId, productId) {
+    const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to cancel this item and return it to stock?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, Cancel it!'
+    });
+
+    if (result.isConfirmed) {
+        try {
+            const response = await fetch('/cancel', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId, productId })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                await Swal.fire('Cancelled!', data.message, 'success');
+                window.location.reload(); 
+            } else {
+                Swal.fire('Error', data.message, 'error');
+            }
+        } catch (error) {
+            Swal.fire('Error', 'Something went wrong!', 'error');
+        }
+    }
+}
    
 </script>
 </body>

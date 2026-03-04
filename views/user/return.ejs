@@ -26,7 +26,7 @@
     </header>
 
     <main class="profile-container">
-        <p>Order -> Order Details -> Return</p>
+        <p>Order -> Return</p>
         
         <div class="content-wrapper">
             <aside class="sidebar">
@@ -45,34 +45,54 @@
             </aside>
 
             <section class="profile-card">
-            <main class="return-container">
-    <div class="return-card">
-        <h3>Request Return</h3>
-        <p>Order ID: #<%= order.orderId %></p>
+                <div class="return-card-premium">
+    <div class="return-header">
+        <h2> Return Products</h2>
+        <span class="order-badge">Order ID: #<%= order.orderId %></span>
+    </div>
 
-        <div class="item-summary">
-            <img src="/uploads/<%= item.productId.productimage[0] %>" alt="product" width="80">
-            <div>
-                <p><strong><%= item.productId.category ? item.productId.category.name : 'No Category' %></strong></p>
-                <p>Qty: <%= item.quantity %></p>
+    <form id="returnForm" class="return-form">
+        <input type="hidden" name="orderId" id="orderId" value="<%= order._id %>">
+        
+        <p class="instruction-text">Select the items you wish to return:</p>
+
+        <div class="product-selection-grid">
+            <% order.orderedItems.forEach(item => { %>
+                <% if(item.status !== 'return request') { %>
+                <label class="product-item-card">
+                    <input type="checkbox" name="selectedItems" value="<%= item.productId._id %>" class="item-checkbox">
+                    <div class="card-content">
+                        <div class="img-wrapper">
+                            <img src="/uploads/<%= item.productId.productimage[0] %>" alt="<%= item.productId.productName %>">
+                        </div>
+                        <div class="product-info">
+                            <h4><%= item.productId.productName %></h4>
+                            <p class="category">Category: <%= item.productId.category ? item.productId.category.name : 'N/A' %></p>
+                            <p class="price">₹<%= item.price %> <span class="qty">Qty: <%= item.quantity %></span></p>
+                        </div>
+                        <div class="check-indicator">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                    </div>
+                </label>
+                <% } %>
+            <% }) %>
+        </div>
+
+        <div class="reason-section">
+            <label for="reason">Reason for Return</label>
+            <div class="textarea-wrapper">
+                <textarea id="reason" name="reason" required placeholder="Please describe the reason for returning these items..."></textarea>
             </div>
         </div>
 
-        <form action="/return" method="POST">
-            <input type="hidden"id="orderId" name="orderId" value="<%= order._id %>">
-            <input type="hidden" id="productId" name="productId" value="<%= item.productId._id %>">
-
-            <label for="reason">Reason for Return:</label>
-            <textarea name="reason" id="reason" placeholder="Return"></textarea>
-
-            <div class="btn-group">
-                <a href="/orderDetails/<%= order._id %>" class="btn-back">Cancel</a>
-                <button type="button" onclick="submitReturn()" class="btn-confirm">Submit Return</button>
-            </div>
-        </form>
-    </div>
-</main>
-            </section>
+        <div class="form-actions">
+            <a href="/order" class="btn-secondary">Cancel</a>
+            <button type="button" onclick="submitReturn()" class="btn-primary">Submit Return Request</button>
+        </div>
+    </form>
+                </div>
+</section>
         </div>
         
     </main>
@@ -112,49 +132,49 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-    function submitReturn() {
+   function submitReturn() {
     const orderId = document.getElementById('orderId').value;
-    const productId = document.getElementById('productId').value;
     const reason = document.getElementById('reason').value;
+    
+    // Get all checked products
+    const selectedCheckboxes = document.querySelectorAll('input[name="selectedItems"]:checked');
+    const productIds = Array.from(selectedCheckboxes).map(cb => cb.value);
 
-    if (reason.trim() === "") {
-        return Swal.fire('Error', 'Please provide a reason for return', 'error');
+    if (productIds.length === 0) {
+        return Swal.fire('Wait!', 'Please select at least one item to return.', 'info');
+    }
+
+    if (reason.trim().length < 10) {
+        return Swal.fire('More Detail', 'Please provide a more detailed reason (min 10 characters).', 'warning');
     }
 
     Swal.fire({
-        title: 'Are you sure?',
-        text: "Do you want to return this product?",
+        title: 'Confirm Return?',
+        text: `You are returning ${productIds.length} item(s).`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, Return it!'
+        confirmButtonColor: '#000',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Process it!'
     }).then((result) => {
         if (result.isConfirmed) {
-            fetch('/return', {
+            fetch('/returnSubmit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderId, productId, reason })
+                body: JSON.stringify({
+        orderId: orderId, 
+        selectedItems: productIds, 
+        reason: reason 
+                }) // Sending array of IDs
             })
             .then(response => response.json())
             .then(data => {
                 if (data.status) {
-                    Swal.fire({
-                        title: 'Requested!',
-                        text: 'Your return request has been submitted.',
-                        icon: 'success',
-                        timer: 2000,
-                        showConfirmButton: false
-                    }).then(() => {
-                        window.location.href = `/orderDetails/${orderId}`;
-                    });
+                    Swal.fire('Success', 'Return request submitted!', 'success')
+                    .then(() => window.location.href = `/order`);
                 } else {
-                    Swal.fire('Error', data.message || 'Something went wrong', 'error');
+                    Swal.fire('Error', data.message, 'error');
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire('Oops!', 'Internal Server Error', 'error');
             });
         }
     });

@@ -1,6 +1,7 @@
 const User=require('../../models/userSchema');
 const Product=require('../../models/productSchema');
 const Cart=require('../../models/cartSchema');
+const Address=require('../../models/addressSchema');
 const Order=require('../../models/orderSchema');
 const PDFdocument=require('pdfkit')
   
@@ -87,6 +88,7 @@ const orderdetails=async(req,res)=>{
                 path: 'category' 
             }
         }).lean();
+        const addressData = await Address.findOne({ "address._id": order.address });
         const totalItems = order.orderedItems.length;
         const totalPages = Math.ceil(totalItems / limit);
         const paginatedItems = order.orderedItems.slice(skip, skip + limit);
@@ -94,73 +96,79 @@ const orderdetails=async(req,res)=>{
         res.render('orderDetails',{
             order,
             currentPage: page,
-            totalPages: totalPages
+            totalPages: totalPages,
+            addressData:addressData
         })
     } catch (error) {
         console.log('error',error);
         res.status(500).send('Internal server errror')
     }
 }
-const cancelproduct = async (req, res) => {
+const getReturnPage = async (req, res) => {
     try {
-        const orderId = req.params.id;
-        const order = await Order.findById(orderId);
-        if (!order) {
-            return res.status(404).json({ status: false, message: "Order not found" });
-        }
-        if (order.status === 'delivered') {
-            return res.status(400).json({ status: false, message: "Delivered orders cannot be cancelled" });
-        }
-        for (const item of order.orderedItems) {
-            await Product.updateOne(
-                { _id: item.productId },
-                { $inc: { quantity: item.quantity } }
-            );
-        }
-        await Order.findByIdAndDelete(orderId);
-        return res.json({ status: true, message: "Order removed and stock updated" });
-    } catch (error) {
-        console.log('error', error);
-        res.status(500).json({ status: false, message: "Internal server error" });
-   }
-}
-const getreturn=async(req,res)=>{
-  try {
-    const {orderId,productId}=req.params;
-    const order=await Order.findById(orderId).populate({
+        const orderId = req.params.orderId;
+        const order = await Order.findById(orderId).populate({
             path:'orderedItems.productId',
-            populate: {
-                path: 'category' 
-            }
+            populate: { path: 'category' }
         });
-     const item = order.orderedItems.find(i => i.productId._id.toString() === productId);
-     res.render('return', { order, item });
-  } catch (error) {
-    console.log('error',error);
-    res.status(500).send('Internal server error')
-  }
-}
-const postreturn=async(req,res)=>{
-    try {
-        const {orderId,productId,reason}=req.body;
-        await Order.updateOne(
-            {_id:orderId,
-             'orderedItems.productId':productId
-            },
-            {
-                $set:{
-                    'orderedItems.$.status':'return request',
-                    'orderedItems.$.returnReason':reason
-                }
-
-            }
-        )
-      return res.json({ status: true, message: 'Return Request Submited!' });
+        
+        if (!order) {
+            return res.redirect('/order');
+        }
+        
+        res.render('return', { order });
     } catch (error) {
-        console.log('error',error);
-        res.status(500).send('Internal server erro')
+        console.error(error);
+        res.status(500).send("Internal Server Error");
     }
-}
+};
+const submitReturn = async (req, res) => {
+    try {
+        const { orderId, selectedItems, reason } = req.body;
+        const order = await Order.findById(orderId);
+        const itemsToReturn = Array.isArray(selectedItems) ? selectedItems : [selectedItems];
+        for (const item of order.orderedItems) {
+            if (itemsToReturn.includes(item.productId.toString())) {
+                item.status = 'return request';
+                item.returnReason = reason;
+                await Product.findByIdAndUpdate(item.productId, {
+                    $inc: { quantity: item.quantity }
+                });
+            }
+        }
+        order.status = 'return request';
+        
+        await order.save();
+        return res.json({ status: true, message: "Return request submitted" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error submitting return");
+    }
+};
+const cancelOrderItem = async (req, res) => {
+    try {
+        const { orderId, productId } = req.body
+        const order = await Order.findById(orderId);
+        if (!order) return res.status(404).json({ success: false, message: "Order not found" });
+        const itemIndex = order.orderedItems.findIndex(item => item.productId.toString() === productId);
+        if (itemIndex > -1) {
+            const item = order.orderedItems[itemIndex];
+            await Product.findByIdAndUpdate(productId, {
+                $inc: { quantity: item.quantity }
+            });
+            order.orderedItems.splice(itemIndex, 1);
+            if (order.orderedItems.length === 0) {
+                order.status = 'cancelled';
+            }
+            await order.save();
+            return res.json({ success: true, message: "Item cancelled and stock updated" });
+        }
+        res.json({ success: false, message: "Item not found" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
 const getreview = async (req, res) => {
     try {
          const {orderId,productId}=req.params;
@@ -256,10 +264,10 @@ module.exports={
     getorder,
     postorder,
     orderdetails,
-    getreturn,
-    postreturn,
+    getReturnPage,
+    submitReturn,
     getreview,
     postreview,
     downloadInvoice,
-    cancelproduct,
+    cancelOrderItem,
 }

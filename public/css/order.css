@@ -90,107 +90,249 @@ body {
 .sidebar li.active {
     background: #f0f0f0;
 }
+:root {
+    --primary-green: #1a4d2e;
+    --accent-green: #49ad65;
+    --bg-light: #f4f7f5;
+    --text-dark: #2d3436;
+    --shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
 
-.search-box {
-    display: flex;
+body {
+    background-color: var(--bg-light); /* Changed to light for better readability */
+    color: var(--text-dark);
+}
+
+/* Container Adjustments */
+.profile-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    color: var(--text-dark);
+}
+
+.profile-container h1 {
+    font-size: 2rem;
+    color: var(--primary-green);
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+/* Sidebar Styling */
+.sidebar {
     background: white;
-    border-radius: 4px;
-    overflow: hidden;
-    width: 300px;
-    margin-top: 20px;
-}
-
-.search-box input {
-    border: none;
-    padding: 10px;
     width: 280px;
-    outline: none;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    padding: 20px 0;
+    overflow: hidden;
 }
 
-.btn-clear {
-    background-color: #1b5135;
+.sidebar h3 {
+    padding: 0 25px 15px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #999;
+}
+
+.sidebar ul li {
+    padding: 15px 25px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sidebar li:hover {
+    background: #f0faf2;
+    color: var(--accent-green);
+}
+
+.sidebar li.active {
+    background: var(--primary-green);
     color: white;
-    border: none;
-    padding: 0 15px;
-    cursor: pointer;
+}
+/* Order Specific Styling */
+.order-content { flex-grow: 1; }
+
+.table-container-premium {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    color: #333;
 }
 
-/* Table Alignment Fix */
-.order-table {
+.table-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid #eee;
+    background: #fafafa;
+}
+
+/* Search Box Rework */
+.search-input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 300px;
+}
+
+.search-input-wrapper i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+.search-input-wrapper input {
+    width: 100%;
+    padding: 10px 15px 10px 40px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    font-size: 0.9rem;
+}
+
+.btn-clear-minimal {
+    background: transparent;
+    border: 1px solid #ddd;
+    color: #666;
+    padding: 10px 20px;
+    border-radius: 30px; /* Matches the rounded search input */
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: -123px;
+}
+
+.btn-clear-minimal:hover {
+    background: #f5f5f5;
+    color: #1a4d2e; /* Brand green on hover */
+    border-color: #1a4d2e;
+}
+
+/* Optional: If you want it to look even more minimal (no border) */
+.btn-clear-text-only {
+    background: none;
+    border: none;
+    color: #888;
+    text-decoration: underline;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.btn-clear-text-only:hover {
+    color: #d32f2f; /* Red on hover to signal "resetting" or "clearing" */
+}
+/* Table Style */
+.order-table-modern {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden;
 }
 
-.order-table th, .order-table td {
-    padding: 15px;
-    text-align: left; /* എല്ലാ വിവരങ്ങളും ഇടത് വശത്തേക്ക് ചേർക്കുന്നു */
-    border-bottom: 1px solid #eee;
-}
-
-.order-table th {
-    background-color: #f9fbf9; /* ഹെഡിംഗിന് നേരിയ നിറം */
-    color: #333;
-    font-weight: 600;
+.order-table-modern th {
+    text-align: left;
+    padding: 18px 25px;
+    font-size: 0.85rem;
+    color: #777;
     text-transform: uppercase;
-    font-size: 14px;
+    letter-spacing: 1px;
 }
 
-.order-table td {
-    font-size: 15px;
-    color: #555;
-    vertical-align: middle;
+.order-row-premium {
+    border-bottom: 1px solid #f5f5f5;
+    transition: background 0.2s;
 }
 
-/* Status Badge Alignment */
-.badge {
-    padding: 6px 12px;
+.order-row-premium:hover { background: #fcfdfc; }
+
+.order-row-premium td {
+    padding: 20px 25px;
+    font-size: 0.95rem;
+}
+
+/* Chips and Badges */
+.order-id-chip {
+    background: #f0f0f0;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-family: monospace;
+}
+
+.price-text {
+    font-weight: 700;
+    color: #1a4d2e;
+}
+
+.status-badge {
+    padding: 6px 14px;
     border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.pending { background-color: #fff4e5; color: #b7791f; }
-.shipped {background-color: #d1fae5; color: #065f46;}
-.delivered {background-color: #dcfce7; color: #15803d;}
-.cancelled {background-color: #fee2e2; color: #991b1b;}
-/* Action Button Style */
-.btn-detail {
-    padding: 8px 16px;
-    background-color: #2d6a4f;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 13px;
-    transition: 0.3s;
-}
-.cancel {
-    padding: 8px 16px;
-    background-color: red;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 13px;
-    transition: 0.3s;
-    border: none;
+.status-badge i { font-size: 0.5rem; }
+
+/* Status Colors */
+.status-badge.delivered { background: #e8f5e9; color: #2e7d32; }
+.status-badge.shipped { background: #e3f2fd; color: #1565c0; }
+.status-badge.pending { background: #fff3e0; color: #ef6c00; }
+.status-badge.cancelled { background: #ffebee; color: #c62828; }
+.status-badge.return_request { 
+    background: #f3e5f5; 
+    color: #7b1fa2; 
 }
 
-.btn-detail:hover {
-    background-color: #1b4332;
+/* Return Approved / Refunded - Teal or Soft Blue */
+.status-badge.approve { 
+    background: #e0f2f1; 
+    color: #00796b; 
 }
-.cancel:hover {
-    background-color: red;
+/* Actions */
+.text-right { text-align: right; }
+.action-group { display: flex; justify-content: flex-end; gap: 15px; }
+
+.view-link {
+    color: #1a4d2e;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border: 1px solid #1a4d2e;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.2s;
 }
-/* Order ID Column width */
-.order-table th:first-child, 
-.order-table td:first-child {
-    width: 30%;
-    word-break: break-all; 
+
+
+.view-link:hover { background: #1a4d2e; color: white; }
+
+.return-link {
+    color: #d32f2f;
+    text-decoration: none;
+     font-weight: 600;
+    font-size: 0.85rem;
+    border: 1px solid #d32f2f;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    align-self: center;
 }
+
+/* Empty State */
+.empty-state {
+    padding: 80px 0 !important;
+    text-align: center;
+    color: #999;
+}
+
+.empty-state i { font-size: 3rem; margin-bottom: 15px; opacity: 0.3; }
 .footer {
     background: #558b2f; /* Muted olive green */
     color: white;

@@ -40,79 +40,142 @@ body {
     gap: 20px;
     font-size: 1.1rem;
 }
-
+/* Card & Layout */
 .otp-container {
-    background-color: #2d6a3e;
-    padding: 60px 20px;
+    background: linear-gradient(135deg, #1a4d2e 0%, #2d6a3e 100%);
+    padding: 80px 20px;
+    min-height: 85vh;
     display: flex;
-    justify-content: center;
-    min-height: 60vh;
+    align-items: center;
 }
 
-.otp-box {
-    width: 100%;
-    max-width: 450px;
+.card-shadow {
+    background: white;
+    padding: 50px 40px;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    max-width: 500px;
+     margin-left: 434px;
+}
+
+.shield-icon {
+    font-size: 3.5rem;
+    color: #1a4d2e;
+    margin-bottom: 15px;
     text-align: center;
-    color: white;
 }
 
 .otp-box h1 {
-    margin-bottom: 25px;
-    font-size: 2.2rem;
+    color: #1a4d2e;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
 }
 
-.otp-white-card {
-    background: white;
-    padding: 40px 30px;
-    border-radius: 5px; /* Slight rounding as per image */
+.subtitle {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.5;
     margin-bottom: 30px;
-    color: #333;
+}
+
+/* OTP Input Boxes */
+.otp-white-card {
+    background: #f8fbf9;
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid #e0eadd;
+    margin-bottom: 25px;
 }
 
 .otp-inputs {
     display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 40px;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
 }
 
 .otps {
-    width: 70px;
-    height: 50px;
-    background-color: #d9d9d9;
-    border: none;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 1.5rem;
-    color: #333;
-    padding: 0; /* Override previous input padding */
-    margin-bottom: 0;
+    width: 60px;
+    height: 65px;
+    border-radius: 12px;
+    border: 2px solid #ddd;
+    background: white;
+    font-size: 1.8rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+     padding-left: 23px;
 }
 
-.otp-timer-row {
+.otps:focus {
+    border-color: #1a4d2e;
+    box-shadow: 0 0 10px rgba(26, 77, 46, 0.15);
+    outline: none;
+    transform: translateY(-3px);
+}
+
+/* Timer & Resend */
+.otp-status-row {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    gap: 12px;
     font-size: 0.9rem;
-    color: #555;
+}
+
+.timer-wrapper {
+    color: #1a4d2e;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.resend-wrapper {
+    color: #777;
+    text-align: center;
 }
 
 .reset-link {
-    color: #2d6a3e;
+    color: #1a4d2e;
+    font-weight: 700;
     text-decoration: none;
-    font-weight: bold;
+    margin-left: 5px;
 }
 
+.reset-link.disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Submit Button */
 .btn-submit {
-    width: 100%;
-    padding: 18px;
-    background-color: #0a1a0f;
+    /* Layout */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;       /* Makes button match the width of the card */
+    max-width: 420px;   /* Optional: prevents it from getting too wide on desktop */
+    margin: 20px auto 0; /* 'auto' on left/right centers it; 20px on top creates the gap */
+    
+    /* Styling */
+    padding: 16px 30px;
+    background: #1a1a1a;
     color: white;
     border: none;
     border-radius: 12px;
-    font-size: 1.3rem;
-    font-weight: bold;
+    font-size: 1.1rem;
+    font-weight: 600;
     cursor: pointer;
+    
+    /* Animation */
+    transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+    background: #000;
+    transform: translateY(-2px); /* Slight lift looks better than just scaling */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 footer {
     background-color: #6b8e61; /* The lighter olive green */

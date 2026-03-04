@@ -132,76 +132,6 @@ const deleteReview=async(req,res)=>{
         res.status(500).send("Error deleting review");
     }
 }
- const getcontact=async(req,res)=>{
-    try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = 5;
-        const skip = (page - 1) * limit;
-        let search = req.query.search || '';
-        let query = {'orderedItems.returnReason':{$ne:null}};
-        if (search) {
-            const users = await User.find({
-                $or: [
-                    { name: { $regex: search, $options: 'i' } },
-                    { email: { $regex: search, $options: 'i' } }
-                ]
-            }).select('_id');
-            
-            const userIds = users.map(user => user._id);
-            query.userId = { $in: userIds };
-        }
-        const totalReviews = await Order.countDocuments(query);
-        const returns = await Order.find(query)
-            .populate('userId', 'name email')
-            .populate({
-                path: 'orderedItems.productId',
-                populate: {
-                    path: 'category',
-                    model: 'category'
-                }
-            })
-            .sort({ createdOn: -1 })
-            .skip(skip)
-            .limit(limit)
-            .lean();
-        res.render('Contact', {
-            returns,
-            currentPage: page,
-            totalPages: Math.ceil(totalReviews / limit),
-            search: search
-        });
-    } catch (error) {
-        console.log('error', error);
-        res.status(500).send('Internal server error');
-    }
- }
-const updatereturn=async(req,res)=>{
-    try {
-        const { orderId, itemId, status } = req.body;
-        const normalizedStatus = status.toLowerCase();
-        const updatedOrder = await Order.findOneAndUpdate(
-            {_id: orderId,"orderedItems._id": itemId},
-            {
-                $set:{ "orderedItems.$.status": normalizedStatus } 
-            },
-            { new:true,runValidators: true }
-        );
-        if (!updatedOrder) {
-            return res.status(404).json({ 
-                success: false, 
-                message: "Order or Item not found" 
-            });
-        }
-        res.json({ 
-            success: true, 
-            message: `Return status updated to ${status}` 
-        });
-    } catch (error) {
-        console.log('error',error);
-        res.status(500).send('Internal server error')
-    }
-}
-
 
 module.exports={
     getorders,
@@ -209,6 +139,4 @@ module.exports={
     viewdetails,
     getReview,
     deleteReview,
-    getcontact,
-    updatereturn,
 }

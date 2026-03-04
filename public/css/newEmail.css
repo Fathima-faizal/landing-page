@@ -40,55 +40,124 @@ body {
     gap: 20px;
     font-size: 1.1rem;
 }
-
+/* Container Background */
 .signup-container {
-    background-color: #2d6a3e; /* Forest Green */
-    padding: 80px 20px;
+    background: linear-gradient(135deg, #1a4d2e 0%, #2d6a3e 100%);
+    padding: 60px 20px;
     display: flex;
+    align-items: center;
     justify-content: center;
-    min-height: 60vh;
+    min-height: 85vh;
 }
 
-.form-box {
+/* The Card */
+.card-shadow {
+    background: white;
+    padding: 45px;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
     width: 100%;
-    max-width: 450px;
-    text-align: left; /* Header is left-aligned in image */
-    color: white;
+    max-width: 480px;
+    color: #333;
 }
 
-.form-box h1 {
-    margin-bottom: 30px;
-    font-size: 2.5rem;
-    font-weight: bold;
+/* Stepper Styling */
+.step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 35px;
+    gap: 12px;
 }
+
+.step {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+    color: #888;
+}
+
+.step.active { background: #1a4d2e; color: white; }
+.step.completed { background: #49ad65; color: white; }
+
+.line { width: 45px; height: 2px; background: #e0e0e0; }
+.line.active { background: #49ad65; }
+
+/* Header & Icon */
+.header-content { text-align: center; margin-bottom: 30px; }
+.icon-header { font-size: 3rem; color: #1a4d2e; margin-bottom: 10px; }
+.form-box h1 { font-size: 1.8rem; color: #1a4d2e; margin-bottom: 10px; }
+.subtitle { font-size: 0.95rem; color: #666; line-height: 1.5; }
+
+/* Input Field Styling */
+.form-group { margin-bottom: 25px; }
+.form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.input-wrapper { position: relative; display: flex; align-items: center; }
+.input-wrapper i { position: absolute; left: 18px; color: #1a4d2e; font-size: 1.1rem; }
 
 .form-box input {
     width: 100%;
-    padding: 18px;
-    margin-bottom: 20px;
-    border-radius: 15px;
-    border: none;
-    background-color: #e5e5e5;
-    font-size: 1.1rem;
-    color: #666;
+    padding: 16px 16px 16px 50px !important; /* Adjusted for icon */
+    background: #f9f9f9;
+    border: 2px solid #eee;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
 }
 
-/* Specific styling for the black button */
+.form-box input:focus {
+    border-color: #1a4d2e;
+    background: white;
+    outline: none;
+    box-shadow: 0 5px 15px rgba(26, 77, 46, 0.1);
+}
+
+/* Primary Button (Updated for Alignment) */
 .btn-primary {
     width: 100%;
-    padding: 18px;
-    background-color: #0a140d; /* Very dark green/black */
+    padding: 16px;
+    background: #1a1a1a;
     color: white;
     border: none;
-    border-radius: 15px;
-    font-size: 1.3rem;
-    font-weight: bold;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
     cursor: pointer;
-    margin-top: 10px;
+    transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-    background-color: #000;
+    background: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.security-note {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 footer {
     background-color: #6b8e61; /* The lighter olive green */

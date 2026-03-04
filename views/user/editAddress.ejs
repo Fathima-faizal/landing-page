@@ -41,28 +41,72 @@
                    <a href="/logout"><li>Log out</li> </a>
                 </ul>
             </aside>
-           <section class="form-content">
-    <div class="form-card">
-        <form method="post" action="/editAddress">
-            <input type="hidden" name="addressId" value="<%= address._id %>">
+           <main class="profile-container">
+    <div class="form-wrapper-centered">
+        <div class="form-card-premium">
+            <div class="form-header">
+                <div class="icon-circle edit-mode">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </div>
+                <h2>Edit Address</h2>
+                <p>Update your shipping details below</p>
+            </div>
 
-            <div class="form-grid">
-                <input type="text" name="addressType" value="<%= address.addressType %>" placeholder="AddressType" class="full-width" required>
-                <input type="text" name="houseName" value="<%= address.houseName %>" placeholder="House Name" required>
-                <input type="text" name="street" value="<%= address.street %>" placeholder="Street" required>
-                <input type="text" name="landmark" value="<%= address.landmark %>" placeholder="Landmark" class="full-width" required>
-                <input type="text" name="city" value="<%= address.city %>" placeholder="City" required>
-                <input type="text" name="zipCode" value="<%= address.zipCode %>" placeholder="Zip code" required>
-                <input type="text" name="country" value="<%= address.country %>" placeholder="country" class="full-width" required>
-                <input type="text" name="phoneNumber" value="<%= address.phoneNumber %>" placeholder="phone Number" class="full-width" required>
-                
-            </div>
-            <div class="form-actions">
-                <button type="submit" class="btn-update">Update</button>
-            </div>
-        </form>
+            <form method="post" action="/editAddress" id="editAddressForm">
+                <input type="hidden" name="addressId" value="<%= address._id %>">
+
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Address Type</label>
+                        <input type="text" name="addressType" value="<%= address.addressType %>" placeholder="e.g. Home, Office" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>House Name / No.</label>
+                        <input type="text" name="houseName" value="<%= address.houseName %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Street</label>
+                        <input type="text" name="street" value="<%= address.street %>" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Landmark</label>
+                        <input type="text" name="landmark" value="<%= address.landmark %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" name="city" value="<%= address.city %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Zip Code</label>
+                        <input type="text" name="zipCode" value="<%= address.zipCode %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Country</label>
+                        <input type="text" name="country" value="<%= address.country %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" name="phoneNumber" value="<%= address.phoneNumber %>" required>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-update-premium">
+                        Save Changes <i class="fa-solid fa-floppy-disk"></i>
+                    </button>
+                    <a href="/address" class="btn-cancel-text">Discard Changes</a>
+                </div>
+            </form>
+        </div>
     </div>
-</section>
+</main>
         </div>
     </main>
 

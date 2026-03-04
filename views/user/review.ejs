@@ -44,27 +44,36 @@
                 </ul>
             </aside>
 
-            <section class="profile-card">
-        <div class="review-container">
-    <h3>Write a Review</h3>
-    <form id="reviewForm" action="/review" method="post">
-        <input type="hidden" id="orderId" name="orderId" value="<%= order._id %>">
-        <input type="hidden" id="productId" name="productId" value="<%= item.productId._id %>">
-        
-        <div class="rating" id="rating">
-            <input type="radio" name="rating" value="5" id="5"><label for="5">☆</label>
-            <input type="radio" name="rating" value="4" id="4"><label for="4">☆</label>
-            <input type="radio" name="rating" value="3" id="3"><label for="3">☆</label>
-            <input type="radio" name="rating" value="2" id="2"><label for="2">☆</label>
-            <input type="radio" name="rating" value="1" id="1"><label for="1">☆</label>
-        </div>
-        
-        <textarea name="comment" id="comment" placeholder="Share your experience..."></textarea>
-        <button type="button" onclick="submitReview()" class="btn-submit">Submit Review</button>
-    </form>
-</div>
-        
-            </section>
+           <section class="profile-card">
+    <div class="review-container">
+        <h3>Rate your Purchase</h3>
+        <form id="reviewForm">
+            <input type="hidden" id="orderId" name="orderId" value="<%= order._id %>">
+            <input type="hidden" id="productId" name="productId" value="<%= item.productId._id %>">
+            
+            <div class="rating-wrapper">
+                <label class="title">How would you rate this product?</label>
+                <div class="rating">
+                    <input type="radio" name="rating" value="5" id="star5"><label for="star5">★</label>
+                    <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
+                    <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
+                    <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
+                    <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="comment">Write your review</label>
+                <textarea name="comment" id="comment" placeholder="Tell others about the quality, fit, and style..."></textarea>
+            </div>
+            
+            <div class="btn-actions">
+                <a href="/orderDetails/<%= order._id %>" class="btn-cancel">Cancel</a>
+                <button type="button" onclick="submitReview()" class="btn-submit">Submit Review</button>
+            </div>
+        </form>
+    </div>
+</section>
         </div>
         
     </main>

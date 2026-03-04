@@ -39,16 +39,13 @@ body {
 .nav-icons a{
     color: #0a1f0d;
 }
-
-
-/* Main Profile Layout */
 .profile-container {
     padding: 40px 10%;
     color: white;
 }
 
-.profile-container h1 {
-    font-size: 32px;
+.profile-container p {
+    font-size: 12px;
     margin-bottom: 30px;
 }
 
@@ -60,79 +57,6 @@ body {
 .profile-card{
     margin-left: 40px;
 }
-.wallet-card {
-    background: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.balance-section {
-    background: #2d6a3e;
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin: 20px 0;
-    text-align: center;
-}
-
-.balance-section h3 {
-    font-size: 2.5rem;
-    margin: 10px 0;
-}
-
-.transaction-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    color:black
-}
-
-.transaction-table th, .transaction-table td {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-    text-align: left;
-}
-
-.text-success { color: #2d6a3e; font-weight: bold; }
-.text-danger { color: #dc3545; font-weight: bold; }
-
-.status-tag {
-    background: #f0f0f0;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-}
-.add-money-box {
-    margin-top: 15px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.add-money-box input {
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    width: 150px;
-}
-
-.add-btn {
-    background-color: #ffffff;
-    color: #2d6a3e;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.add-btn:hover {
-    background-color: #e9f5ec;
-}
-
-/* Sidebar */
 .sidebar {
     background: white;
     color: #333;
@@ -163,8 +87,215 @@ body {
 .sidebar li.active {
     background: #f0f0f0;
 }
+:root {
+    --primary-green: #1a4d2e;
+    --accent-green: #49ad65;
+    --bg-light: #f4f7f5;
+    --text-dark: #2d3436;
+    --shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
 
+body {
+    background-color: var(--bg-light); /* Changed to light for better readability */
+    color: var(--text-dark);
+}
 
+/* Container Adjustments */
+.profile-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    color: var(--text-dark);
+}
+
+.profile-container h1 {
+    font-size: 2rem;
+    color: var(--primary-green);
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    background: white;
+    width: 280px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    padding: 20px 0;
+    overflow: hidden;
+}
+
+.sidebar h3 {
+    padding: 0 25px 15px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #999;
+}
+
+.sidebar ul li {
+    padding: 15px 25px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sidebar li:hover {
+    background: #f0faf2;
+    color: var(--accent-green);
+}
+
+.sidebar li.active {
+    background: var(--primary-green);
+    color: white;
+}
+
+:root {
+    --primary-green: #1a4d2e;
+    --accent-green: #49ad65;
+    --danger-red: #e74c3c;
+    --success-green: #2ecc71;
+    --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* Wallet Card Layout */
+.wallet-card {
+    padding: 20px;
+    background: #fff;
+    border-radius: 15px;
+}
+
+.wallet-card h2 {
+    color: var(--primary-green);
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+/* Premium Balance Dashboard */
+.balance-display-premium {
+    background: linear-gradient(135deg, var(--primary-green) 0%, #2a6d45 100%);
+    color: white;
+    padding: 40px;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: 0 15px 35px rgba(26, 77, 46, 0.2);
+}
+
+.balance-display-premium::after {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+.balance-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.balance-amount {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 10px 0;
+}
+
+/* Action Box */
+.add-money-container {
+    display: flex;
+    gap: 10px;
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+    max-width: 400px;
+}
+
+.add-money-container input {
+    background: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    flex: 1;
+    font-weight: 600;
+}
+
+.add-btn-premium {
+    background: var(--accent-green);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.add-btn-premium:hover {
+    transform: scale(1.05);
+    background: #56c275;
+}
+
+/* Transaction Table Styles */
+.transaction-history h4 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.transaction-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.transaction-table th {
+    padding: 15px;
+    text-align: left;
+    color: var(--text-gray);
+    font-size: 0.85rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.transaction-table tr {
+    background: #fdfdfd;
+    transition: transform 0.2s;
+}
+
+.transaction-table tr:hover {
+    transform: translateX(5px);
+    background: #f8fdf9;
+}
+
+.transaction-table td {
+    padding: 15px;
+    font-size: 0.9rem;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Status Tags */
+.status-tag {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.status-completed { background: #e8f5e9; color: var(--success-green); }
+.status-pending { background: #fff8e1; color: #ff8f00; }
+
+.text-success { color: var(--success-green); font-weight: 700; }
+.text-danger { color: var(--danger-red); font-weight: 700; }
 /* Footer */
 .footer {
     background: #558b2f; /* Muted olive green */
