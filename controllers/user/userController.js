@@ -279,7 +279,7 @@ const filterproduct=async(req,res)=>{
           let findproduct=await Product.find(query).populate('category').lean();
           findproduct.sort((a,b)=>new Date(b.CreatedOn)-new Date(a.CreatedOn))
           const categorires=await Category.find({islisted:true});
-          let itemspage=4;
+          let itemspage=6;
           let currentPage=parseInt(req.query.page)||1;
           let startIndex=(currentPage-1)*itemspage;
           let endIndex=startIndex+itemspage;
@@ -338,7 +338,7 @@ const searchproducts=async(req,res)=>{
       })
     }
       searchresult.sort((a,b)=>new Date(b.createOn)-new Date(a.createOn));
-      let itemsPage=4;
+      let itemsPage=6;
       let currentPage=parseInt(req.query.page)||1;
       let startIndex=(currentPage-1)*itemsPage;
       let endIndex=startIndex+itemsPage;
@@ -379,7 +379,7 @@ const sortproducts=async(req,res)=>{
     }else if(option=='high-low'){
       products.sort((a,b)=>b.salesPrice-a.salesPrice)
     }
-    let itemsPage=4;
+    let itemsPage=6;
     let currentPage=parseInt(req.query.page)||1;
     let totalpages=Math.ceil(products.length/itemsPage);
     let startIndex=(currentPage-1)*itemsPage;

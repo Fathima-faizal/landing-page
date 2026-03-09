@@ -285,11 +285,14 @@ body {
 .status-badge.shipped { background: #e3f2fd; color: #1565c0; }
 .status-badge.pending { background: #fff3e0; color: #ef6c00; }
 .status-badge.cancelled { background: #ffebee; color: #c62828; }
-.status-badge.return_request { 
+.status-badge.processing { 
+    background: #e0f7fa; 
+    color: #00838f; 
+}
+.status-badge.return { 
     background: #f3e5f5; 
     color: #7b1fa2; 
 }
-
 /* Return Approved / Refunded - Teal or Soft Blue */
 .status-badge.approve { 
     background: #e0f2f1; 

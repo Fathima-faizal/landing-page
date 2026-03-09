@@ -125,7 +125,7 @@
                         <p class="total-item-price">₹<%= (item.price * item.quantity).toLocaleString() %></p>
                     </div>
                     <div class="product-row-actions">
-                        <% if (order.status !== 'Cancelled' && order.status !== 'Delivered') { %>
+                        <% if (order.status !== 'cancelled' && order.status !== 'delivered'&& order.status!=='shipped') { %>
                             <button type="button" class="btn-cancel-item" onclick="handleCancel('<%= order._id %>', '<%= item.productId._id %>')">
                                 <i class="fa-solid fa-ban"></i> Cancel
                             </button>

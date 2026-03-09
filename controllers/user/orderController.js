@@ -125,21 +125,44 @@ const getReturnPage = async (req, res) => {
 const submitReturn = async (req, res) => {
     try {
         const { orderId, selectedItems, reason } = req.body;
+        const userId = req.session.user;
         const order = await Order.findById(orderId);
         const itemsToReturn = Array.isArray(selectedItems) ? selectedItems : [selectedItems];
+        let totalRefundAmount = 0;
         for (const item of order.orderedItems) {
             if (itemsToReturn.includes(item.productId.toString())) {
-                item.status = 'return request';
+                item.status = 'return';
                 item.returnReason = reason;
+                totalRefundAmount += item.price * item.quantity;
                 await Product.findByIdAndUpdate(item.productId, {
                     $inc: { quantity: item.quantity }
                 });
             }
         }
-        order.status = 'return request';
-        
+        if (totalRefundAmount > 0) {
+            const user = await User.findById(userId);
+            if (user) {
+                user.wallet = (user.wallet || 0) + totalRefundAmount;
+        order.status = 'return';
+        user.history.push({
+                    description: `Refund for Order #${orderId.toString().slice(-6)}`,
+                    amount: totalRefundAmount,
+                    type: 'credit',
+                    status: 'Completed',
+                    date: new Date()
+                });
+                
+                await user.save();
+            }
+        }
+        order.status = 'return'; 
         await order.save();
-        return res.json({ status: true, message: "Return request submitted" });
+
+        return res.json({ 
+            status: true, 
+            message: "Amount refunded to your wallet",
+            refundedAmount: totalRefundAmount 
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send("Error submitting return");
@@ -215,43 +238,76 @@ const downloadInvoice = async (req, res) => {
         const orderId = req.params.orderId;
         const order = await Order.findById(orderId)
             .populate('orderedItems.productId')
-            .populate('userId'); 
-
-        if (!order) {
-            return res.status(404).send('Order not found');
-        }
-        const doc = new PDFdocument({ margin: 50 });
-        const fileName = `invoice_${order._id}.pdf`;
+            .populate('userId');
+        if (!order) return res.status(404).send('Order not found');
+        const addressData = await Address.findOne({ "address._id": order.address });
+        const addr = addressData ? addressData.address.find(a => a._id.toString() === order.address.toString()) : null;
+        const doc = new PDFdocument({ margin: 50, size: 'A4' });
+        const fileName = `VisionVogue_Invoice_${order._id}.pdf`;
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
         doc.pipe(res);
-        doc.fontSize(25).text('VisionVogue', { align: 'center' });
-        doc.fontSize(10).text('Your Vision, Our Style', { align: 'center' });
+        doc.fillColor('#1a4d2e').fontSize(25).text('VisionVogue', { align: 'left' });
+        doc.fillColor('#444444').fontSize(10).text('Your Vision, Our Style', { align: 'left' });
+        doc.fillColor('#444444')
+           .text('VisionVogue Eyewear Ltd.', 400, 50, { align: 'right' })
+           .text('Email: support@visionvogue.com', { align: 'right' })
+           .text('Phone: +91 8923457190', { align: 'right' });
         doc.moveDown();
-        doc.fontSize(18).text('INVOICE', { underline: true });
-        doc.moveDown()
-        doc.fontSize(12).text(`Order ID: ${order._id}`);
-        doc.text(`Date: ${new Date(order.createdOn).toLocaleDateString()}`);
-        doc.text(`Payment Method: Cash On Delivery`);
+        doc.moveTo(50, 100).lineTo(550, 100).strokeColor('#eeeeee').stroke();
         doc.moveDown();
-        doc.fontSize(12).text('Item', 50, 250);
-        doc.text('Quantity', 250, 250);
-        doc.text('Price', 350, 250);
-        doc.text('Total', 450, 250);
-        doc.moveTo(50, 265).lineTo(550, 265).stroke();
-
-        let y = 280;
-        order.orderedItems.forEach(item => {
-            doc.fontSize(10).text(item.productId.productName, 50, y);
-            doc.text(item.quantity.toString(), 250, y);
-            doc.text(`Rs. ${item.price}`, 350, y);
-            doc.text(`Rs. ${item.quantity * item.price}`, 450, y);
+        doc.fillColor('#1a4d2e').fontSize(20).text('INVOICE', 50, 120);
+        doc.fillColor('#444444').fontSize(10);
+        doc.text(`Invoice Number: INV-${order._id.toString().slice(-6).toUpperCase()}`, 50, 145);
+        doc.text(`Order Date: ${new Date(order.createdOn).toLocaleDateString()}`, 50, 160);
+        doc.text(`Payment Method: ${order.paymentMethod || 'Cash on delivery'}`, 50, 175);
+        doc.fontSize(12).fillColor('#1a4d2e').text('Bill To:', 350, 120);
+        doc.fontSize(10).fillColor('#444444');
+        const userName = order.userId ? order.userId.name : 'Customer';
+        doc.text(userName, 350, 140);
+        doc.fontSize(12).fillColor('#1a4d2e').text('Bill To:', 350, 120);
+        doc.fontSize(10).fillColor('#444444');
+        doc.text(order.userId ? order.userId.name : 'Customer', 350, 140);
+        if (addr) {
+            let currentY = 155;
+            doc.text(`${addr.houseName || ''}`, 350, currentY);
+            currentY += 15;
+            doc.text(`${addr.street || ''}`, 350, currentY);
+            currentY += 15;
+            doc.text(`${addr.city}, ${addr.country} - ${addr.zipCode}`, 350, currentY);
+            currentY += 15;
+            doc.text(`Tel: ${addr.phoneNumber}`, 350, currentY);
+        } else {
+            doc.text('Address details unavailable', 350, 155);
+        }
+        const tableTop = 230;
+        doc.rect(50, tableTop, 500, 25).fill('#1a4d2e');
+        doc.fillColor('#ffffff').fontSize(10);
+        doc.text('Item Description', 60, tableTop + 8);
+        doc.text('Qty', 280, tableTop + 8);
+        doc.text('Unit Price', 350, tableTop + 8);
+        doc.text('Total', 480, tableTop + 8);
+        let y = tableTop + 30;
+        order.orderedItems.forEach((item, index) => {
+            if (index % 2 === 0) {
+                doc.rect(50, y - 5, 500, 20).fill('#f9f9f9');
+            }
+            doc.fillColor('#444444');
+            doc.text(item.productId.productName, 60, y);
+            doc.text(item.quantity.toString(), 280, y);
+            doc.text(`Rs. ${item.price.toLocaleString()}`, 350, y);
+            doc.text(`Rs. ${(item.quantity * item.price).toLocaleString()}`, 480, y);
             y += 20;
         });
-        doc.moveTo(50, y).lineTo(550, y).stroke();
         y += 20;
-        doc.fontSize(14).text(`Grand Total: Rs. ${order.finalAmount}`, 400, y, { bold: true });
-        doc.fontSize(10).text('Thank you for shopping with VisionVogue!', 50, 700, { align: 'center' });
+        doc.moveTo(50, y).lineTo(550, y).strokeColor('#eeeeee').stroke();
+        y += 15;
+        doc.fontSize(10).fillColor('#444444').text('Subtotal:', 350, y);
+        doc.text(`Rs. ${order.totalPrice.toLocaleString()}`, 480, y);
+        y += 20;
+        doc.fillColor('#1a4d2e').fontSize(14).text('Grand Total:', 350, y, { bold: true });
+        doc.text(`Rs. ${order.finalAmount.toLocaleString()}`, 480, y, { bold: true });
+        doc.fontSize(10).fillColor('#999999').text('This is a computer generated invoice and does not require a physical signature.', 50, 750, { align: 'center' });
         doc.end();
 
     } catch (error) {

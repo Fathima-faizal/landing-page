@@ -315,10 +315,23 @@ body {
     text-transform: uppercase;
 }
 
-.badge.pending { background: #fff8e1; color: #f57f17; }
-.badge.shipped { background: #e3f2fd; color: #1976d2; }
 .badge.delivered { background: #e8f5e9; color: #2e7d32; }
-
+.badge.shipped { background: #e3f2fd; color: #1565c0; }
+.badge.pending { background: #fff3e0; color: #ef6c00; }
+.badge.cancelled { background: #ffebee; color: #c62828; }
+.badge.processing { 
+    background: #e0f7fa; 
+    color: #00838f; 
+}
+.badge.return { 
+    background: #f3e5f5; 
+    color: #7b1fa2; 
+}
+/* Return Approved / Refunded - Teal or Soft Blue */
+.badge.approve { 
+    background: #e0f2f1; 
+    color: #00796b; 
+}
 /* 6. Items Table/Stack */
 .items-card-premium h3 {
     font-size: 1.1rem;

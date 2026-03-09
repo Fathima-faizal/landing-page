@@ -67,6 +67,7 @@ const placeorder=async(req,res)=>{
                 productId: item.proudctId._id,
                 quantity: item.quantity,
                 price: item.proudctId.salesPrice,
+                paymentMethod: paymentMethod,
                 status:'pending'
             };
         });

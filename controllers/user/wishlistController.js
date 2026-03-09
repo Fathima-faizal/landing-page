@@ -13,7 +13,7 @@ const getwishlist=async(req,res)=>{
             }
         }
         const page = parseInt(req.query.page) || 1; 
-        const limit = 3;
+        const limit = 4;
         const skip = (page - 1) * limit;
         const user=await User.findById(userId);
         const totalWishlistItems = user.wishlist.length;

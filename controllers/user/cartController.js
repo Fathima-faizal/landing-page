@@ -7,7 +7,6 @@ const getcartpage = async (req, res) => {
     try {
         const userId = req.session.user;
         let cartCount=0
-        const limit = 2; 
         const user = await User.findById(userId);
     const fullCart = await Cart.findOne({ userId: userId }).populate({
         path:'items.proudctId',
@@ -24,7 +23,6 @@ const getcartpage = async (req, res) => {
                 }
             });
         }
-        const cartCountDoc = await Cart.findOne({ userId: userId });
         const data = await Cart.aggregate([
             { $match: { userId: new mongoose.Types.ObjectId(userId) } },
             { $unwind: '$items' },

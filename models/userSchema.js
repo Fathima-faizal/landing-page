@@ -48,8 +48,11 @@ const userSchema=new Schema({
     history: [{
     description: { type: String },
     amount: { type: Number },
-    type: { type: String },
-    status: { type: String },
+    type: { type: String,
+         enum: ['credit', 'debit'] },
+    status: { type: String,
+        default: 'Completed'
+     },
     date: { type: Date, default: Date.now }
   }
 ],

@@ -1,7 +1,6 @@
 const User=require('../../models/userSchema');
 const Order=require('../../models/orderSchema');
-const Address=require('../../models/addressSchema')
-
+const Address=require('../../models/addressSchema');
 const getorders=async(req,res)=>{
     try {
         const page=parseInt(req.query.page)||1;
@@ -17,6 +16,7 @@ const getorders=async(req,res)=>{
         if(statusFilter){
             query.status=statusFilter
         }
+
         const totalorder=await Order.countDocuments(query);
        const orders = await Order.find(query)
     .populate('userId')
@@ -30,7 +30,6 @@ const getorders=async(req,res)=>{
             totalPages:Math.ceil(totalorder/limit),
             search,
            statusFilter,
-          
         })
     } catch (error) {
         console.log('error',error)

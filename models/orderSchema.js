@@ -39,9 +39,14 @@ const orderSchema=new Schema({
         status:{
         type:String,
         required:true,
-        enum:['pending','processing','shipped','delivered','cancelled','return request','approve']
+        enum:['pending','processing','shipped','delivered','cancelled','return','approve']
     },
     }],
+     paymentMethod: {
+        type: String,
+        enum: ['COD', 'Wallet','Online'],
+        required: true
+    },
     totalPrice:{
       type:Number,
       required:true
@@ -74,8 +79,7 @@ const orderSchema=new Schema({
      status: { 
         type: String, 
         default: 'pending' 
-    }
-
+    },
 
 })
 
