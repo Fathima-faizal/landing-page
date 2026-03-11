@@ -128,31 +128,10 @@ const submitReturn = async (req, res) => {
         const userId = req.session.user;
         const order = await Order.findById(orderId);
         const itemsToReturn = Array.isArray(selectedItems) ? selectedItems : [selectedItems];
-        let totalRefundAmount = 0;
         for (const item of order.orderedItems) {
             if (itemsToReturn.includes(item.productId.toString())) {
                 item.status = 'return';
                 item.returnReason = reason;
-                totalRefundAmount += item.price * item.quantity;
-                await Product.findByIdAndUpdate(item.productId, {
-                    $inc: { quantity: item.quantity }
-                });
-            }
-        }
-        if (totalRefundAmount > 0) {
-            const user = await User.findById(userId);
-            if (user) {
-                user.wallet = (user.wallet || 0) + totalRefundAmount;
-        order.status = 'return';
-        user.history.push({
-                    description: `Refund for Order #${orderId.toString().slice(-6)}`,
-                    amount: totalRefundAmount,
-                    type: 'credit',
-                    status: 'Completed',
-                    date: new Date()
-                });
-                
-                await user.save();
             }
         }
         order.status = 'return'; 
@@ -160,8 +139,8 @@ const submitReturn = async (req, res) => {
 
         return res.json({ 
             status: true, 
-            message: "Amount refunded to your wallet",
-            refundedAmount: totalRefundAmount 
+            message: "Return request submitted to admin",
+          
         });
     } catch (error) {
         console.error(error);

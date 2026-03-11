@@ -43,10 +43,15 @@
                 <i class="fas fa-image"></i> <span>Banner Management</span>
                 </a>
             </div>
+            <div class="nav-item">
+                <a href="#">
+                <i class="fas fa-image"></i> <span>Invetry Management</span>
+                </a>
+            </div>
             <hr class="nav-divider">
 
             <div class="nav-item">
-                <a href="#">
+                <a href="/admin/coupon">
               <i class="fas fa-ticket-alt"></i>  <span>Coupon</span>
                 </a>
             </div>
@@ -61,15 +66,15 @@
                 </a>
             </div>
             <div class="nav-item">
-                <a href="/admin/Contact">
-                 <i class="fa-solid fa-envelope"></i> <span>Contact us</span>
+                <a href="/admin/offer">
+                 <i class="fa-solid fa-envelope"></i> <span>Offers</span>
                 </a>
             </div>
         </aside>
 
         <main class="main-content">
             <header class="top-header">
-                <h2>Product Management</h2>
+                <h2>Order Management</h2>
                 <a href="/admin/logout">
                 <button class="logout-top">Log out</button>
                 </a>
@@ -83,7 +88,7 @@
                 </div>
                        <select name="status" class="status" onchange="this.form.submit()">
                 <option value="">All Status</option>
-                <% ['pending','processing', 'shipped', 'delivered','cancelled','return','approve'].forEach(s => { %>
+                <% ['pending','processing', 'shipped','cancelled', 'delivered','return','approve','reject'].forEach(s => { %>
                     <option value="<%= s %>" <%= statusFilter === s ? 'selected' : '' %>><%= s.toUpperCase() %></option>
                 <% }) %>
             </select>
@@ -108,11 +113,24 @@
                     <td><%= order.userId ? order.userId.name : 'Guest' %><br>
                         <%=order.userId? order.userId.email:'Guest'%></td>
                     <td>
+                        <% if (order.status === 'return') { %>
+                    <div class="action-buttons">
+                        <button onclick="changeStatus('<%= order._id %>', 'approve')" class="btn-approve">Approve</button>
+                        <button onclick="changeStatus('<%= order._id %>', 'reject')" class="btn-reject">Reject</button>
+                    </div>
+                <% } else { %>
                         <select onchange="changeStatus('<%= order._id %>', this.value)" class="status-select">
-                            <% ['pending', 'processing','shipped','delivered','cancelled','return','approve'].forEach(s => { %>
+                            <% 
+                             const statusFlow = ['pending', 'processing','cancelled','shipped', 'delivered','return','approve','reject'];
+                             const currentIndex = statusFlow.indexOf(order.status);
+                             statusFlow.forEach((s, index) => {
+                                if (index >= currentIndex) {
+                                    %>
                                 <option value="<%= s %>" <%= order.status === s ? 'selected' : '' %>><%= s %></option>
-                            <% }) %>
+                               <%}%>
+                                <% }) %>
                         </select>
+                        <%}%>
                     </td>
                     <td>
                         <a href="/admin/Views/<%= order._id %>" class="btn-view">View Detail</a>

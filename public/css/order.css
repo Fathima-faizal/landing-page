@@ -298,6 +298,10 @@ body {
     background: #e0f2f1; 
     color: #00796b; 
 }
+.status-badge.reject { 
+    background: #ffebee; 
+    color: #c62828; 
+}
 /* Actions */
 .text-right { text-align: right; }
 .action-group { display: flex; justify-content: flex-end; gap: 15px; }

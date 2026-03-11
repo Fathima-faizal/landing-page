@@ -40,7 +40,7 @@ body {
 }
 
 .nav-item {
-    padding: 13.5px 30px;
+    padding: 15px 30px;
     display: flex;
     align-items: center;
     gap: 17px;
@@ -118,19 +118,10 @@ body {
     padding:30px;
     
 }
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr; 
-    gap: 30px; 
-    margin-bottom: 25px;
-}
-
-.form-row.full-width {
-    grid-template-columns: 1fr;
-}
-
-/* Improved input styling for the wider layout */
+/* Styling for all input types to ensure consistency */
 input[type="text"], 
+input[type="datetime-local"], 
+input[type="number"],
 textarea {
     width: 100%;
     padding: 14px; 
@@ -138,15 +129,65 @@ textarea {
     border-radius: 6px;
     font-size: 15px;
     background-color: #fafafa; 
-    transition: border-color 0.2s;
+    transition: all 0.2s ease-in-out;
+    color: #333;
+}
+input[type="date"] {
+    width: 100%;          /* Fills the column width */
+    height: 50px;         /* Increased height */
+    padding: 10px;        /* Adds space inside for the text */
+    font-size: 16px;      /* Makes the text easier to read */
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: #fafafa;
 }
 
-input:focus, textarea:focus {
-    border-color: #28a745;
+/* Your existing focus effect */
+input[type="date"]:focus {
+    border-color: #1a4d2e; 
     outline: none;
     background-color: #fff;
+    box-shadow: 0 0 5px rgba(26, 77, 46, 0.2);
+}
+input[type="date"]:focus {
+       border-color: #1a4d2e; /* Matching your sidebar dark green */
+    outline: none;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(26, 77, 46, 0.2);
+}
+/* Specific focus state for better UX */
+input[type="number"]:focus, 
+input[type="text"]:focus {
+    border-color: #1a4d2e; /* Matching your sidebar dark green */
+    outline: none;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(26, 77, 46, 0.2);
 }
 
+/* Labels styling for better readability */
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #444;
+    font-size: 14px;
+}
+
+/* Error message spacing */
+.error-message {
+    display: block;
+    font-size: 12px;
+    margin-top: 5px;
+    min-height: 15px; /* Prevents layout jumping when error appears */
+}
+
+/* Force the form row to handle the grid properly */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 20px 30px; /* Vertical and horizontal gap */
+    margin-bottom: 20px;
+}
 .submit-container {
     display: flex;
     justify-content: flex-end;
@@ -167,9 +208,3 @@ input:focus, textarea:focus {
     .btn-save:hover {
         background-color: #218838;
     }
-.error-message {
-    color: #ee0b22; 
-    margin-top: 2px;
-    height: 15px;
-    display: none;
-}

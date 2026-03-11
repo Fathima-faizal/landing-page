@@ -39,7 +39,7 @@ const orderSchema=new Schema({
         status:{
         type:String,
         required:true,
-        enum:['pending','processing','shipped','delivered','cancelled','return','approve']
+        enum:['pending','processing','shipped','delivered','cancelled','return','approve','reject']
     },
     }],
      paymentMethod: {

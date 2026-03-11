@@ -39,7 +39,7 @@ body {
 }
 
 .nav-item {
-    padding: 15px 30px;
+    padding: 13.5px 30px;
     display: flex;
     align-items: center;
     gap: 17px;
@@ -177,28 +177,35 @@ body {
     color: #555;
 }
 
-/* Action Buttons */
-.actions {
+.action-buttons {
     display: flex;
-    gap: 10px;
-    justify-content: center;
+    gap: 5px;
 }
 
-.btn-block {
-    background-color: #ff3b30;
+.btn-approve {
+    background-color: #28a745;
     color: white;
     border: none;
-    padding: 5px 15px;
+    padding: 5px 10px;
     border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
 }
 
-.btn-unblock {
-    background-color: #1b5135;
+.btn-reject {
+    background-color: #dc3545;
     color: white;
     border: none;
-    padding: 5px 15px;
+    padding: 5px 10px;
     border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
 }
+
+.btn-approve:hover { background-color: #218838; }
+.btn-reject:hover { background-color: #c82333; }
+
+
 
 .pagination {
     display: flex;             

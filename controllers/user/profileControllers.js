@@ -458,8 +458,8 @@ const changePasswordValid=async(req,res)=>{
       {$set:{"address.$[].isDefault":false}}
     )
     await Address.updateOne(
-      {userId:userId},
-      {$set:{"address.0.isDefault":true}}
+      {userId:userId,"address._id": id},
+      {$set:{"address.$.isDefault":true}}
     )
     res.redirect('address')
   } catch (error) {

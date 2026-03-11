@@ -1,6 +1,7 @@
 const User=require('../../models/userSchema');
 const Order=require('../../models/orderSchema');
 const Address=require('../../models/addressSchema');
+const Product=require('../../models/productSchema')
 const getorders=async(req,res)=>{
     try {
         const page=parseInt(req.query.page)||1;
@@ -42,6 +43,26 @@ const updatestatus=async(req,res)=>{
         const {status}=req.body;
         const order=await Order.findById(id);
         order.status=status.toLowerCase();
+        if(order.status==='approve'){
+            const user = await User.findById(order.userId);
+            if (user) {
+                const refundAmount = order.finalAmount;
+                user.wallet = (user.wallet || 0) + refundAmount;
+                user.history.push({
+                    description: `Refund for Approved Return #${order.orderId.toString().slice(-6)}`,
+                    amount: refundAmount,
+                    type: 'credit',
+                    status: 'Completed',
+                    date: new Date()
+                });
+                await user.save();
+                for (const item of order.orderedItems) {
+                    await Product.findByIdAndUpdate(item.productId, {
+                        $inc: { quantity: item.quantity }
+                    });
+                }
+            }
+        }
         await order.save();
         res.json({success:true,message:'Status updated successfully'})
     } catch (error) {

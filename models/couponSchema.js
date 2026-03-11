@@ -5,29 +5,33 @@ const couponSchema=new mongoose.Schema({
    name:{
     type:String,
     required:true,
-    unique:true
+    unique:true,
+    trim:true
    },
+   couponCode: {
+        type: String,
+        required: true,
+        unique: true,
+        uppercase: true, 
+        trim: true
+    },
    createdOn:{
     type:Date,
     default:Date.now,
     required:true
    },
-   expireon:{
+   expireOn:{
     type:Date,
     required:true,
-   },
-   offerprice:{
-    type:Number,
-    required:true
    },
    minimumPrice:{
     type:Number,
     required:true,
    },
    islisted:{
-    type:Boolean,
-    default:true,
-   },
+        type:Boolean,
+        default:true,
+    },
    userId:[{
     type:Schema.Types.ObjectId,
     ref:'user',

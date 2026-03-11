@@ -44,8 +44,8 @@
             <div class="address-grid">
                 <% if (userAddress && userAddress.length > 0) { %>
                     <% userAddress.forEach((address, i) => { %>
-                        <div class="address-card">
-                            <input type="radio" name="selectedAddress" value="<%= address._id %>" id="address<%= i %>" <%= i===0 ? 'checked' : '' %>>
+                          <div class="address-card <%= address.isDefault ? 'active-card' : '' %>">
+                         <input type="radio" name="selectedAddress" value="<%= address._id %>" id="address<%= i %>" <%= address.isDefault ? 'checked' : '' %>>
                             <label for="address<%= i %>" class="address-label">
                                 <span class="address-type"><%=address.addressType%></span>
                                 <div class="address-details">

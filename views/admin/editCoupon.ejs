@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Admin Dashboard</title>
+     <link rel="stylesheet" href="/css/editcoupon.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="nav-item ">
+                <a href="/admin/dashboard">
+                <i class="fas fa-th-large"></i> <span>Dashboard</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/admin/product">
+                <i class="fas fa-box"></i> <span>Product Management</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/admin/orderManagement">
+                <i class="fas fa-shopping-cart"></i> <span>Order Management</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/admin/customer">
+                <i class="fas fa-user"></i> <span>User Management</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/admin/category">
+                <i class="fas fa-layer-group"></i> <span>Category Management</span>
+                </a>
+            </div>
+           <div class="nav-item">
+                <a href="#">
+                <i class="fas fa-image"></i> <span>Banner Management</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#">
+                <i class="fas fa-image"></i> <span>Invetry Management</span>
+                </a>
+            </div>
+            <hr class="nav-divider">
+
+            <div class="nav-item active">
+                <a href="/admin/coupon">
+                <i class="fas fa-ticket-alt"></i> <span>Coupon</span>
+                </a>
+            </div>
+             <div class="nav-item">
+                <a href="/admin/brand">
+               <i class="fa-solid fa-tags"></i> <span>Brand</span>
+                </a>
+            </div>
+             <div class="nav-item">
+                <a href="/admin/Reviews">
+                <i class="fas fa-comment-alt"></i> <span>Review</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/admin/offer">
+               <i class="fa-solid fa-envelope"></i> <span>Offers</span>
+                </a>
+            </div>
+            
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <h2>Coupon Management</h2>
+                <a href="/admin/logout">
+                <button class="logout-top">Log out</button>
+                </a>
+            </header>
+            <section class="content-body">
+                <h3>Edit Coupon</h3>
+                <form id="productForm" action="/admin/editCoupon/<%=coupons._id%>" method="post" onsubmit="return handleFormsubmit(event)">
+   <div class="form-row">
+                        <div>
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" placeholder="Enter name" value="<%=coupons.name%>">
+                            <small id="name-error" class="error-message" style="color: red;"></small>
+                        </div>
+                        <div>
+                            <label for="code">Coupon Code</label>
+                            <input type="text" id="code" name="couponCode" placeholder="Enter Coupon code" value="<%=coupons.couponCode%>" style="text-transform: uppercase;">
+                            <small id="code-error" class="error-message" style="color: red;"></small>
+                        </div>
+                        <div>
+                            <label for="Startdate">Start Date</label>
+                            <input type="date" id="Startdate" name="startdate" value="<%=coupons.createdOn.toISOString().split('T')[0]%>">
+                            <small id="startdate-error" class="error-message" style="color: red;"></small>
+                        </div>
+                        <div>
+                            <label for="Enddate">End Date</label>
+                            <input type="date" id="Enddate" name="Enddate" value="<%=coupons.expireOn.toISOString().split('T')[0]%>">
+                            <small id="enddate-error" class="error-message" style="color: red;"></small>
+                        </div>
+                        <div>
+                            <label for="Maximumprice">Maximum Discount Price</label>
+                            <input type="number" id="Minimumprice" name="Minimumprice" value="<%=coupons.minimumPrice%>" placeholder="Enter Minimum price">
+                            <small id="maxprice-error" class="error-message" style="color: red;"></small>
+                        </div>
+                    </div>
+
+                    <div class="submit-container">
+                        <button type="submit" class="btn-save">Save Coupon</button>
+                    </div>
+</form>
+</section>
+
+<script>
+function setDefaultDates() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = (today.getMonth() + 1).toString().padStart(2, '0');
+            const day = today.getDate().toString().padStart(2, '0');
+            const formattedDate = `${year}-${month}-${day}`;
+            
+            document.getElementById('Startdate').value = formattedDate;
+            
+            // Set min attribute so user can't pick past dates
+            document.getElementById('Startdate').setAttribute('min', formattedDate);
+            document.getElementById('Enddate').setAttribute('min', formattedDate);
+        }
+        function handleFormsubmit(event) {
+    event.preventDefault();
+
+    if (!validateForm()) {
+        return;
+    }
+    const id = "<%=coupons._id%>";
+    const name = document.getElementsByName('name')[0].value;
+    const couponCode = document.getElementsByName('couponCode')[0].value;
+    const startdate = document.getElementsByName('startdate')[0].value;
+    const Enddate = document.getElementsByName('Enddate')[0].value;
+    const Minimumprice = document.getElementsByName('Minimumprice')[0].value;
+
+    fetch(`/admin/editCoupon/${id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name,
+            couponCode,
+            startdate,
+            Enddate,
+            Minimumprice
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(err.message || "Failed to update coupon");
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        window.location.href = '/admin/coupon';
+    })
+    .catch(error => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops',
+            text: error.message
+        });
+    });
+}
+
+        // 2. Form Validation Logic
+        function validateForm() {
+            clearErrorMessages();
+            let isValid = true;
+
+            const name = document.getElementById('name').value.trim();
+            const code = document.getElementById('code').value.trim();
+            const startDate = document.getElementById('Startdate').value;
+            const endDate = document.getElementById('Enddate').value;
+            const minPrice = document.getElementById('Minimumprice').value;
+
+            if (name === "") {
+                displayErrorMessage('name-error', 'Please enter a coupon name');
+                isValid = false;
+            }
+
+            if (code === "") {
+                displayErrorMessage('code-error', 'Please enter a coupon code');
+                isValid = false;
+            }
+
+            if (!startDate) {
+                displayErrorMessage('startdate-error', 'Start date is required');
+                isValid = false;
+            }
+
+            if (!endDate) {
+                displayErrorMessage('enddate-error', 'End date is required');
+                isValid = false;
+            } else if (new Date(endDate) < new Date(startDate)) {
+                displayErrorMessage('enddate-error', 'End date cannot be before start date');
+                isValid = false;
+            }
+
+            if (minPrice <= 0) {
+                displayErrorMessage('maxprice-error', 'Maximum price must be greater than 0');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+       
+     
+
+        // Helpers
+        function displayErrorMessage(id, msg) {
+            const el = document.getElementById(id);
+            if(el) el.innerText = msg;
+        }
+
+        function clearErrorMessages() {
+            document.querySelectorAll('.error-message').forEach(el => el.innerText = '');
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', setDefaultDates);
+
+</script>
+
+</body>
+</html>

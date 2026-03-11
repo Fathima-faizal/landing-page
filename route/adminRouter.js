@@ -5,7 +5,8 @@ const customerController=require('../controllers/admin/customerController')
 const brandController=require('../controllers/admin/brandController');
 const productController=require('../controllers/admin/productConroller')
 const categoryController=require('../controllers/admin/categoryController');
-const orderController=require('../controllers/admin/orderController')
+const orderController=require('../controllers/admin/orderController');
+const couponController=require('../controllers/admin/couponController')
 const {userAuth,adminAuth}=require('../middleware/auth')
 const multer=require('multer');
 const storage=require('../helpers/multer');
@@ -68,11 +69,15 @@ router.get('/deleteProduct',adminAuth,productController.deleteProduct);
  router.get('/Reviews',adminAuth,orderController.getReview);
  router.get('/deletereview',adminAuth,orderController.deleteReview)
          
-
-
- 
-
-
+                         //Coupon Management//
+ router.get('/coupon',adminAuth,couponController.getcoupon)   
+ router.get('/addCoupon',adminAuth,couponController.addcoupon);
+ router.post('/coupon',adminAuth,couponController.postcoupon)                      
+ router.get('/editCoupon/:id',adminAuth,couponController.editcoupon)
+ router.post('/editCoupon/:id',adminAuth,couponController.posteditCoupon)
+ router.get('/listCoupon',adminAuth,couponController.listCoupon);
+ router.get('/unlistCoupon',adminAuth,couponController.unlistCoupon)
+ router.get('/deleteCoupon',adminAuth,couponController.deleteCoupon)
 
 
 
