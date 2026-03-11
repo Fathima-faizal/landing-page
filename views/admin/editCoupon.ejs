@@ -49,7 +49,7 @@
             <hr class="nav-divider">
 
             <div class="nav-item active">
-                <a href="/admin/coupon">
+                <a href="/admin/couponManagement">
                 <i class="fas fa-ticket-alt"></i> <span>Coupon</span>
                 </a>
             </div>
@@ -107,6 +107,11 @@
                             <input type="number" id="Minimumprice" name="Minimumprice" value="<%=coupons.minimumPrice%>" placeholder="Enter Minimum price">
                             <small id="maxprice-error" class="error-message" style="color: red;"></small>
                         </div>
+                         <div>
+                            <label for="discountPercentage"> Discount Price</label>
+                            <input type="number" id="discountPercentage" name="discountPercentage" value="<%=coupons.discountPercentage%>" placeholder="Enter Discount price">
+                            <small id="maxprice-error" class="error-message" style="color: red;"></small>
+                        </div>
                     </div>
 
                     <div class="submit-container">
@@ -141,6 +146,7 @@ function setDefaultDates() {
     const startdate = document.getElementsByName('startdate')[0].value;
     const Enddate = document.getElementsByName('Enddate')[0].value;
     const Minimumprice = document.getElementsByName('Minimumprice')[0].value;
+    const discountPercentage=document.getElementById('discountPercentage').value;
 
     fetch(`/admin/editCoupon/${id}`, {
         method: 'POST',
@@ -152,7 +158,8 @@ function setDefaultDates() {
             couponCode,
             startdate,
             Enddate,
-            Minimumprice
+            Minimumprice,
+            discountPercentage
         })
     })
     .then(response => {
@@ -164,7 +171,7 @@ function setDefaultDates() {
         return response.json();
     })
     .then(data => {
-        window.location.href = '/admin/coupon';
+        window.location.href = '/admin/couponManagement';
     })
     .catch(error => {
         Swal.fire({
@@ -185,6 +192,7 @@ function setDefaultDates() {
             const startDate = document.getElementById('Startdate').value;
             const endDate = document.getElementById('Enddate').value;
             const minPrice = document.getElementById('Minimumprice').value;
+            const discountPercentage=document.getElementById('discountPercentage').value;
 
             if (name === "") {
                 displayErrorMessage('name-error', 'Please enter a coupon name');
@@ -213,7 +221,9 @@ function setDefaultDates() {
                 displayErrorMessage('maxprice-error', 'Maximum price must be greater than 0');
                 isValid = false;
             }
-
+            if(discountPercentage<=0){
+                displayErrorMessage('maxprice-error','Maximum discount price must be greater than 0')
+            }
             return isValid;
         }
        

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failure Page</title>
+</head>
+<body>
+    <style>
+    body {
+        background-color: #f4f7f6;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* പേജിന്റെ നടുവിൽ വരാൻ */
+    }
+
+    .success-page {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding: 20px;
+    }
+
+    .status-card {
+        background: #ffffff;
+        padding: 40px 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 450px;
+        width: 100%;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .status-card i {
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    .status-card h2 {
+        color: #333;
+        font-size: 28px;
+        margin-bottom: 15px;
+    }
+
+    .status-card p {
+        color: #666;
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+
+    .btn-green {
+        display: inline-block;
+        padding: 12px 25px;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin: 5px;
+        min-width: 150px;
+    }
+
+    .btn-green:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+        .status-card {
+            padding: 30px 20px;
+        }
+        .btn-green {
+            display: block;
+            margin: 10px auto;
+        }
+    }
+</style>
+    <div class="success-page">
+    <div class="status-card">
+        <i class="fa-solid fa-circle-xmark" style="color: #dc3545; font-size: 60px;"></i>
+        <h2>Payment Failed</h2>
+        <p>Something went wrong with your transaction. Don't worry, you can try again.</p>
+        <a href="/checkout" class="btn-green" style="background: #dc3545;">Retry Payment</a>
+        <a href="/home" class="btn-green" style="background: #6c757d;">Back to Home</a>
+    </div>
+</div>
+</body>
+</html>

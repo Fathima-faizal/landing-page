@@ -98,6 +98,7 @@
                             <th>Start date</th>
                             <th>End date</th>
                             <th>Minimum price</th>
+                            <th>Discount price</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -109,6 +110,7 @@
         <td><%=new Date(coupons[i].createdOn).toLocaleDateString('en-us')%></td>
         <td><%=new Date(coupons[i].expireOn).toLocaleDateString('en-us')%></td>
         <td><%=coupons[i].minimumPrice%></td>
+        <td><%=coupons[i].discountPercentage%></td>
         <td class="actions">
             <% if(coupons[i].islisted === false) { %>
                 <a href="/admin/listCoupon?id=<%=coupons[i]._id%>">

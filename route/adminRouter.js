@@ -70,9 +70,9 @@ router.get('/deleteProduct',adminAuth,productController.deleteProduct);
  router.get('/deletereview',adminAuth,orderController.deleteReview)
          
                          //Coupon Management//
- router.get('/coupon',adminAuth,couponController.getcoupon)   
+ router.get('/couponManagement',adminAuth,couponController.getcoupon)   
  router.get('/addCoupon',adminAuth,couponController.addcoupon);
- router.post('/coupon',adminAuth,couponController.postcoupon)                      
+ router.post('/couponManagement',adminAuth,couponController.postcoupon)                      
  router.get('/editCoupon/:id',adminAuth,couponController.editcoupon)
  router.post('/editCoupon/:id',adminAuth,couponController.posteditCoupon)
  router.get('/listCoupon',adminAuth,couponController.listCoupon);

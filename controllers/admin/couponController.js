@@ -21,7 +21,7 @@ const getcoupon=async(req,res)=>{
             .skip(skip)
             .limit(limit);
             const totalPages = Math.ceil(totalCoupons / limit);
-        res.render('coupon',{
+        res.render('couponManagement',{
             coupons,
             currentPage: page,
             totalPages: totalPages,
@@ -47,14 +47,16 @@ const postcoupon=async(req,res)=>{
         couponCode:req.body.couponCode,
         startdate:new Date(req.body.startdate+'T00:00:00'),
         enddate:new Date(req.body.Enddate+'T00:00:00'),
-        Minimumprice:parseInt(req.body.Minimumprice)
+        Minimumprice:parseInt(req.body.Minimumprice),
+         discountPercentage:parseInt(req.body.discountPercentage)
     }
     const newCoupon= new Coupon({
         name:data.name,
         couponCode:data.couponCode,
         createdOn:data.startdate,
         expireOn:data.enddate,
-        minimumPrice:data.Minimumprice
+        minimumPrice:data.Minimumprice,
+        discountPercentage:data.discountPercentage
     })
     await newCoupon.save();
     return res.status(200).json({ status: true, message: "Coupon added successfully" });
@@ -76,7 +78,7 @@ const editcoupon=async(req,res)=>{
 const posteditCoupon=async(req,res)=>{
     try {
         const id=req.params.id;
-        const {name,couponCode,startdate,Enddate,Minimumprice}=req.body;
+        const {name,couponCode,startdate,Enddate,Minimumprice,discountPercentage}=req.body;
         const ExistingCoupon=await Coupon.findOne(
             {$or:[
                 {name:name},
@@ -95,7 +97,8 @@ const posteditCoupon=async(req,res)=>{
                 couponCode:couponCode,
                 createdOn:new Date(startdate),
                 expireOn:new Date(Enddate),
-                minimumPrice:parseInt(Minimumprice)
+                minimumPrice:parseInt(Minimumprice),
+                discountPercentage:parseInt( discountPercentage)
             },{new:true}
         )
         if(updateCoupon){
@@ -122,7 +125,7 @@ const listCoupon=async(req,res)=>{
         },{
             $set:{islisted:true}
         })
-        res.redirect('/admin/coupon')
+        res.redirect('/admin/couponManagement')
     } catch (error) {
         console.log('error',error);
         res.status(500).send('Internal server error')
@@ -136,7 +139,7 @@ const unlistCoupon=async(req,res)=>{
         },{
             $set:{islisted:false}
         })
-        res.redirect('/admin/coupon')
+        res.redirect('/admin/couponManagement')
     } catch (error) {
         console.log('error',error);
         res.status(500).send('Internal server error')
@@ -146,7 +149,7 @@ const deleteCoupon=async(req,res)=>{
     try {
         let id=req.query.id;
         await Coupon.findByIdAndDelete(id);
-        res.redirect('/admin/coupon')
+        res.redirect('/admin/couponManagement')
     } catch (error) {
        console.log('error',error);
        res.status(500).send('Internal server error') 

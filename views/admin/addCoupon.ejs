@@ -49,7 +49,7 @@
             <hr class="nav-divider">
 
             <div class="nav-item active">
-                <a href="/admin/coupon">
+                <a href="/admin/couponManagement">
                 <i class="fas fa-ticket-alt"></i> <span>Coupon</span>
                 </a>
             </div>
@@ -80,7 +80,7 @@
             </header>
             <section class="content-body">
                 <h3>Add Coupon</h3>
-                <form id="productForm" action="/admin/coupon" method="post">
+                <form id="productForm" action="/admin/couponManagement" method="post">
    <div class="form-row">
                         <div>
                             <label for="name">Name</label>
@@ -103,8 +103,13 @@
                             <small id="enddate-error" class="error-message" style="color: red;"></small>
                         </div>
                         <div>
-                            <label for="Maximumprice">Maximum Discount Price</label>
+                            <label for="Maximumprice">Minimum Price</label>
                             <input type="number" id="Minimumprice" name="Minimumprice" placeholder="Enter Minimum price">
+                            <small id="maxprice-error" class="error-message" style="color: red;"></small>
+                        </div>
+                        <div>
+                            <label for="discountPercentage"> Discount Price</label>
+                            <input type="number" id="discountPercentage" name=" discountPercentage" placeholder="Enter Discount price">
                             <small id="maxprice-error" class="error-message" style="color: red;"></small>
                         </div>
                     </div>
@@ -116,7 +121,6 @@
 </section>
 
 <script>
- // 1. ഹെൽപ്പർ ഫംഗ്ഷനുകൾ (ഇവ നിർബന്ധമാണ്)
 function displayErrorMessage(id, msg) {
     const el = document.getElementById(id);
     if (el) el.innerText = msg;
@@ -148,6 +152,7 @@ function validateForm() {
     const startDate = document.getElementById('Startdate').value;
     const endDate = document.getElementById('Enddate').value;
     const minPrice = document.getElementById('Minimumprice').value;
+    const discountPercentage=document.getElementById('discountPercentage').value;
 
     if (name === "") {
         displayErrorMessage('name-error', 'Please enter a coupon name');
@@ -176,6 +181,9 @@ function validateForm() {
         displayErrorMessage('maxprice-error', 'Minimum price must be greater than 0');
         isValid = false;
     }
+    if( discountPercentage===""||parseFloat(discountPercentage)<=0){
+        displayErrorMessage('maxprice-error','discount price must be greater than 0')
+    }
 
     return isValid;
 }
@@ -197,11 +205,12 @@ document.addEventListener('DOMContentLoaded', () => {
             couponCode: document.getElementById('code').value.trim(),
             startdate: document.getElementById('Startdate').value,
             Enddate: document.getElementById('Enddate').value,
-            Minimumprice: document.getElementById('Minimumprice').value
+            Minimumprice: document.getElementById('Minimumprice').value,
+            discountPercentage:document.getElementById('discountPercentage').value
         };
 
         try {
-            const response = await fetch('/admin/coupon', {
+            const response = await fetch('/admin/couponManagement', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -211,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 Swal.fire('Success', 'Coupon added successfully!', 'success')
-                    .then(() => window.location.href = '/admin/coupon');
+                    .then(() => window.location.href = '/admin/couponManagement');
             } else {
                 throw new Error(data.message || "Failed to save coupon");
             }

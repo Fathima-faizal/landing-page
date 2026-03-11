@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/checkout.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -72,15 +73,20 @@
                 <i class="fa-solid fa-credit-card"></i>
                 <h3>Payment Method</h3>
             </div>
-            <div class="payment-options">
-                <div class="payment-card active">
-                    <input type="radio" name="paymentMethod" value="COD" checked>
-                    <div class="payment-info">
-                        <i class="fa-solid fa-hand-holding-dollar"></i>
-                        <span>Cash On Delivery</span>
-                    </div>
-                </div>
-                </div>
+<div class="payment-options">
+    <label class="payment-card">
+        <input type="radio" name="paymentMethod" value="COD" checked>
+        <span>Cash On Delivery</span>
+    </label>
+    <label class="payment-card">
+        <input type="radio" name="paymentMethod" value="Razorpay">
+        <span>Razorpay (Online)</span>
+    </label>
+    <label class="payment-card">
+        <input type="radio" name="paymentMethod" value="Wallet">
+        <span>Wallet (Balance: ₹<%= user.wallet %>)</span>
+    </label>
+</div>
         </section>
 
         <aside class="order-summary">
@@ -102,19 +108,33 @@
                     <% }) %>
                 <% } %>
             </div>
-
+               <div class="coupon-section">
+        <div class="coupon-input-group">
+            <input type="text" id="couponCode" placeholder="Enter Coupon Code" style="text-transform: uppercase;" <%= appliedCoupon ? 'disabled' : '' %> value="<%= appliedCoupon || '' %>">
+            <% if (appliedCoupon) { %>
+                <button class="remove-btn" onclick="removeCoupon()">REMOVE</button>
+            <% } else { %>
+                <button class="apply-btn" onclick="applyCoupon()">APPLY</button>
+            <% } %>
+        </div>
+        <p id="couponMessage"></p>
+    </div>
             <div class="price-breakdown">
                 <div class="price-row">
                     <span>Subtotal</span>
                     <span>₹<%= grandTotal %></span>
                 </div>
                 <div class="price-row">
+                  <span>Discount</span>
+                <span>- ₹<%= discount %></span>
+                 </div>
+                <div class="price-row text-success">
                     <span>Shipping</span>
                     <span class="free">FREE</span>
                 </div>
                 <div class="price-row total">
                     <span>Total Amount</span>
-                    <span>₹<%= grandTotal %></span>
+                    <span>₹<%= finalAmount %></span>
                 </div>
             </div>
 
@@ -170,38 +190,100 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
+    function applyCoupon() {
+    const code = document.getElementById('couponCode').value;
+    const total = Number("<%= grandTotal %>");
+
+    $.ajax({
+        url: '/applyCoupon',
+        method: 'POST',
+        data: { couponCode: code, totalAmount: total },
+        success: (res) => {
+            if (res.success) {
+                Swal.fire("Success", res.message, "success").then(() => location.reload());
+            } else {
+                Swal.fire("Error", res.message, "error");
+            }
+        }
+    });
+}
+
+function removeCoupon() {
+    $.ajax({
+        url: '/removeCoupon',
+        method: 'POST',
+        success: (res) => {
+            location.reload();
+        }
+    });
+}
     function placeOrder() {
    const selectedAddressElement = document.querySelector('input[name="selectedAddress"]:checked');
+    const paymentMethodElement = document.querySelector('input[name="paymentMethod"]:checked');
 
     if (!selectedAddressElement) {
-        // Show popup if no address is found/selected
         Swal.fire({
             title: "Address Required",
             text: "Please add or select a delivery address before confirming your order.",
             icon: "warning",
-            confirmButtonColor: "#1a4d2e", // Matches your VisionVogue theme
+            confirmButtonColor: "#1a4d2e", 
             confirmButtonText: "Okay"
         });
-        return; // Stop the function here
+        return;
+    }
+    if (!paymentMethodElement) {
+        Swal.fire({
+            title: "Payment Method Required",
+            text: "Please select a payment method.",
+            icon: "warning"
+        });
+        return;
     }
 
-    const selectedAddress = selectedAddressElement.value;
-
+    const addressId = selectedAddressElement.value;
+    const paymentMethod = paymentMethodElement.value;
     $.ajax({
         url: '/placeOrder',
         method: 'POST',
-        data: {
-            addressId: selectedAddress,
-            paymentMethod: 'COD'
+        data: { 
+            addressId: addressId,
+            paymentMethod: paymentMethod
         },
-        success: (response) => {
-            if (response.success) {
-                window.location.href = '/orderSuccess';
+        success: (res) => {
+            if (res.method === 'Razorpay') {
+                razorpayPayment(res);
+            } else if (res.success) {
+                location.href = '/orderSuccess';
             } else {
-                Swal.fire("Error", "Order failed", "error");
+                Swal.fire("Error", res.message, "error");
             }
         }
     });
+}
+
+function razorpayPayment(order) {
+    const options = {
+        "key": "rzp_test_SPYRCHxOuTkjkU",
+        "amount": order.razorpayOrder.amount,
+        "currency": "INR",
+        "name": "VisionVogue",
+        "order_id": order.razorpayOrder.id,
+        "handler": function (response) {
+            $.ajax({
+                url: '/verifyPayment',
+                method: 'POST',
+                data: { response, orderId: order.orderId },
+                success: (res) => {
+                    if (res.success) location.href = '/orderSuccess';
+                    else location.href = '/orderFailure';
+                }
+            });
+        },
+        "modal": { "ondismiss": () => { location.href = '/orderFailure'; } }
+    };
+    const rzp = new Razorpay(options);
+    rzp.open();
+
 }
    </script>
 </body>

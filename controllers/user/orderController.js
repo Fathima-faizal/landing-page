@@ -95,6 +95,7 @@ const orderdetails=async(req,res)=>{
         order.orderedItems = paginatedItems;
         res.render('orderDetails',{
             order,
+            paymentMethod: order.paymentMethod,
             currentPage: page,
             totalPages: totalPages,
             addressData:addressData
@@ -284,8 +285,14 @@ const downloadInvoice = async (req, res) => {
         doc.fontSize(10).fillColor('#444444').text('Subtotal:', 350, y);
         doc.text(`Rs. ${order.totalPrice.toLocaleString()}`, 480, y);
         y += 20;
+        if (order.discount > 0) {
+            doc.fillColor('#e74c3c').text('Discount:', 350, y); 
+            doc.text(`- Rs. ${order.discount.toLocaleString()}`, 480, y);
+            y += 20;
+        }
         doc.fillColor('#1a4d2e').fontSize(14).text('Grand Total:', 350, y, { bold: true });
         doc.text(`Rs. ${order.finalAmount.toLocaleString()}`, 480, y, { bold: true });
+        y += 30;
         doc.fontSize(10).fillColor('#999999').text('This is a computer generated invoice and does not require a physical signature.', 50, 750, { align: 'center' });
         doc.end();
 

@@ -44,7 +44,7 @@ const orderSchema=new Schema({
     }],
      paymentMethod: {
         type: String,
-        enum: ['COD', 'Wallet','Online'],
+        enum: ['COD', 'Wallet','Razorpay'],
         required: true
     },
     totalPrice:{

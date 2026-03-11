@@ -7,7 +7,8 @@ const productController=require('../controllers/user/productController');
 const wishlistController=require('../controllers/user/wishlistController');
 const cartControllers=require('../controllers/user/cartController');
 const checkoutControllers=require('../controllers/user/checkoutController')
-const orderControllers=require('../controllers/user/orderController')
+const orderControllers=require('../controllers/user/orderController');
+const couponControllers=require('../controllers/user/couponController')
 const {userAuth,adminAuth}=require('../middleware/auth');
 
       // user Authentication//
@@ -82,7 +83,10 @@ router.get('/cart/delete',userAuth,cartControllers.deletecart)
                   
 router.get('/checkout',userAuth,checkoutControllers.getcheckout)
 router.post('/placeOrder',userAuth,checkoutControllers.placeorder)
-router.get('/orderSuccess',userAuth,checkoutControllers.ordersuccess)
+router.post('/verifyPayment', userAuth,checkoutControllers.verifyPayment);
+router.get('/orderSuccess',userAuth,checkoutControllers.ordersuccess);
+router.get('/orderFailure',userAuth,checkoutControllers.orderfailure)
+
 
                       //wallet//
 
@@ -101,7 +105,11 @@ router.get('/review/:orderId/:productId',userAuth,orderControllers.getreview);
 router.post('/review',userAuth,orderControllers.postreview)                 
 router.get('/downloadInvoice/:orderId', userAuth, orderControllers.downloadInvoice);
 
+                        //coupon //
 
+router.get('/Coupon',userAuth,couponControllers.loadedCoupon);
+router.post('/applyCoupon',userAuth,couponControllers.applycoupon);
+router.post('/removeCoupon',userAuth,couponControllers.removecoupon);                        
 
 
 
