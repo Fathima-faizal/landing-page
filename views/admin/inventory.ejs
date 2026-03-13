@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional Admin Dashboard</title>
-   <link rel="stylesheet" href="/css/orders.css">
+    <link rel="stylesheet" href="/css/inventory.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -18,12 +17,12 @@
                 <i class="fas fa-th-large"></i> <span>Dashboard</span>
                 </a>
             </div>
-            <div class="nav-item ">
+            <div class="nav-item">
                 <a href="/admin/product">
                 <i class="fas fa-box"></i> <span>Product Management</span>
                 </a>
             </div>
-            <div class="nav-item active">
+            <div class="nav-item">
                 <a href="/admin/orderManagement">
                 <i class="fas fa-shopping-cart"></i> <span>Order Management</span>
                 </a>
@@ -43,7 +42,7 @@
                 <i class="fas fa-image"></i> <span>Banner Management</span>
                 </a>
             </div>
-            <div class="nav-item">
+             <div class="nav-item active">
                 <a href="/admin/inventory">
                 <i class="fa-solid fa-clipboard-list"></i> <span>Invetry Management</span>
                 </a>
@@ -74,72 +73,51 @@
 
         <main class="main-content">
             <header class="top-header">
-                <h2>Order Management</h2>
+                <h2>Product Management</h2>
                 <a href="/admin/logout">
                 <button class="logout-top">Log out</button>
                 </a>
             </header>
             <section class="content-body">
                 <div class="toolbar">
-                    <form action="/admin/orderManagement" method="get">
+                    <form action="/admin/inventory" method="get">
                     <div class="search-box">
                         <input type="text" name="search" placeholder="Search">
                         <button class="btn-clear">Clear</button>
-                </div>
-                       <select name="status" class="status" onchange="this.form.submit()">
-                <option value="">All Status</option>
-                <% ['pending','processing', 'shipped','cancelled', 'delivered','return','approve','reject'].forEach(s => { %>
-                    <option value="<%= s %>" <%= statusFilter === s ? 'selected' : '' %>><%= s.toUpperCase() %></option>
-                <% }) %>
-            </select>
-                    </form>
-                </div>
-
-                <table class="user-table">
-                    <thead>
-                        <tr>
-                            <th>OrderId</th>
-                            <th>Date</th>
-                            <th>User</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                   <tbody>
-   <% orders.forEach(order => { %>
-                <tr>
-                    <td>#<%= order.orderId %></td>
-                    <td><%= new Date(order.createdOn).toLocaleDateString() %></td>
-                    <td><%= order.userId ? order.userId.name : 'Guest' %><br>
-                        <%=order.userId? order.userId.email:'Guest'%></td>
-                    <td>
-                        <% if (order.status === 'return') { %>
-                    <div class="action-buttons">
-                        <button onclick="changeStatus('<%= order._id %>', 'approve')" class="btn-approve">Approve</button>
-                        <button onclick="changeStatus('<%= order._id %>', 'reject')" class="btn-reject">Reject</button>
+                        </form>
+                       
                     </div>
-                <% } else { %>
-                        <select onchange="changeStatus('<%= order._id %>', this.value)" class="status-select">
-                            <% 
-                             const statusFlow = ['pending', 'processing','cancelled','shipped', 'delivered','return','approve','reject'];
-                             const currentIndex = statusFlow.indexOf(order.status);
-                             statusFlow.forEach((s, index) => {
-                                if (index >= currentIndex) {
-                                    %>
-                                <option value="<%= s %>" <%= order.status === s ? 'selected' : '' %>><%= s %></option>
-                               <%}%>
-                                <% }) %>
-                        </select>
-                        <%}%>
+                </div>
+        <table class="inventory-table">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Current Stock</th>
+                    <th>Update Quantity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% products.forEach(product => { %>
+                <tr>
+                    <td><%= product.productName %></td>
+                    <td><%= product.category ? product.category.name : 'N/A' %></td>
+                    <td id="stock-count-<%= product._id %>">
+                        <span class="badge <%= product.quantity < 10 ? 'low-stock' : 'in-stock' %>">
+                            <%= product.quantity %>
+                        </span>
                     </td>
                     <td>
-                        <a href="/admin/Views/<%= order._id %>" class="btn-view">View Detail</a>
+                        <input type="number" id="input-<%= product._id %>" value="<%= product.quantity %>" min="0">
+                    </td>
+                    <td>
+                        <button onclick="changeStock('<%= product._id %>')" class="btn-update">Save</button>
                     </td>
                 </tr>
-            <% }) %>
-    
-</tbody>
-                </table>
+                <% }) %>
+            </tbody>
+        </table>
                 <div class="container">
                     <nav aria-label="page navigation">
                         <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
@@ -167,31 +145,24 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-function changeStatus(orderId, newStatus) {
-    Swal.fire({
-        title: 'Update Status?',
-        text: `Change order status to ${newStatus}?`,
-        icon: 'question',
-        showCancelButton: true
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch(`/admin/updateStatus/${orderId}`, {
-                method: 'PATCH',
+     function changeStock(productId) {
+            const newQuantity = document.getElementById(`input-${productId}`).value;
+
+            fetch('/admin/updateStock', {
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: newStatus })
+                body: JSON.stringify({ productId, newQuantity })
             })
             .then(res => res.json())
             .then(data => {
-                if (data.success) {
-                    Swal.fire('Updated!', data.message, 'success');
-                    location.reload();
+                if (data.status) {
+                    Swal.fire('Updated!', data.message, 'success').then(() => location.reload());
                 } else {
                     Swal.fire('Error', data.message, 'error');
                 }
             });
         }
-    });
-}
+
 </script>
 </body>
 </html>

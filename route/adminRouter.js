@@ -6,7 +6,9 @@ const brandController=require('../controllers/admin/brandController');
 const productController=require('../controllers/admin/productConroller')
 const categoryController=require('../controllers/admin/categoryController');
 const orderController=require('../controllers/admin/orderController');
-const couponController=require('../controllers/admin/couponController')
+const couponController=require('../controllers/admin/couponController');
+const offerController=require('../controllers/admin/offerController');
+const bannerController=require('../controllers/admin/bannerController')
 const {userAuth,adminAuth}=require('../middleware/auth')
 const multer=require('multer');
 const storage=require('../helpers/multer');
@@ -79,7 +81,28 @@ router.get('/deleteProduct',adminAuth,productController.deleteProduct);
  router.get('/unlistCoupon',adminAuth,couponController.unlistCoupon)
  router.get('/deleteCoupon',adminAuth,couponController.deleteCoupon)
 
+                        //Inventory Management//
+
+router.get('/inventory',adminAuth,productController.getinventory)
+router.post('/updateStock', adminAuth,productController.updateStock);
+
+                         //offer Management//
+
+router.get('/offer',adminAuth,offerController.loadoffer);
+router.get('/addOffer',adminAuth,offerController.getaddoffer);
+router.post('/offer',adminAuth,offerController.postoffer);
+router.get('/editOffer/:id',adminAuth,offerController.editoffer);
+router.post('/editOffer/:id',adminAuth,offerController.editpostoffer);
+router.get('/deleteOffer',adminAuth,offerController.deleteoffer)                        
+router.get('/activeOffer',adminAuth,offerController.activeoffer);
+router.get('/unactiveOffer',adminAuth,offerController.unactiveoffer)
+
+                     //bannner Manamagement//
+
+router.get('/banner',adminAuth,bannerController.loadbanner);
+router.get('/addBanner',adminAuth,bannerController.getaddbanner);
+router.post('/banner',adminAuth,uploads.single('bannerImage'),bannerController.postbanner)
+router.get('/deleteBanner',adminAuth,bannerController.deletebanner)
 
 
- 
 module.exports=router;

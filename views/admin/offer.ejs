@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional Admin Dashboard</title>
-   <link rel="stylesheet" href="/css/orders.css">
+    <link rel="stylesheet" href="/css/offer.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -18,12 +17,12 @@
                 <i class="fas fa-th-large"></i> <span>Dashboard</span>
                 </a>
             </div>
-            <div class="nav-item ">
+            <div class="nav-item">
                 <a href="/admin/product">
                 <i class="fas fa-box"></i> <span>Product Management</span>
                 </a>
             </div>
-            <div class="nav-item active">
+            <div class="nav-item">
                 <a href="/admin/orderManagement">
                 <i class="fas fa-shopping-cart"></i> <span>Order Management</span>
                 </a>
@@ -43,7 +42,7 @@
                 <i class="fas fa-image"></i> <span>Banner Management</span>
                 </a>
             </div>
-            <div class="nav-item">
+             <div class="nav-item">
                 <a href="/admin/inventory">
                 <i class="fa-solid fa-clipboard-list"></i> <span>Invetry Management</span>
                 </a>
@@ -65,7 +64,7 @@
                 <i class="fas fa-comment-alt"></i> <span>Review</span>
                 </a>
             </div>
-            <div class="nav-item">
+            <div class="nav-item active">
                 <a href="/admin/offer">
                  <i class="fas fa-tag"></i> <span>Offers</span>
                 </a>
@@ -74,72 +73,61 @@
 
         <main class="main-content">
             <header class="top-header">
-                <h2>Order Management</h2>
+                <h2>Offer Management</h2>
                 <a href="/admin/logout">
                 <button class="logout-top">Log out</button>
                 </a>
             </header>
             <section class="content-body">
                 <div class="toolbar">
-                    <form action="/admin/orderManagement" method="get">
+                    <form action="/admin/offer" method="get">
                     <div class="search-box">
                         <input type="text" name="search" placeholder="Search">
                         <button class="btn-clear">Clear</button>
-                </div>
-                       <select name="status" class="status" onchange="this.form.submit()">
-                <option value="">All Status</option>
-                <% ['pending','processing', 'shipped','cancelled', 'delivered','return','approve','reject'].forEach(s => { %>
-                    <option value="<%= s %>" <%= statusFilter === s ? 'selected' : '' %>><%= s.toUpperCase() %></option>
-                <% }) %>
-            </select>
-                    </form>
-                </div>
-
-                <table class="user-table">
-                    <thead>
-                        <tr>
-                            <th>OrderId</th>
-                            <th>Date</th>
-                            <th>User</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                   <tbody>
-   <% orders.forEach(order => { %>
-                <tr>
-                    <td>#<%= order.orderId %></td>
-                    <td><%= new Date(order.createdOn).toLocaleDateString() %></td>
-                    <td><%= order.userId ? order.userId.name : 'Guest' %><br>
-                        <%=order.userId? order.userId.email:'Guest'%></td>
-                    <td>
-                        <% if (order.status === 'return') { %>
-                    <div class="action-buttons">
-                        <button onclick="changeStatus('<%= order._id %>', 'approve')" class="btn-approve">Approve</button>
-                        <button onclick="changeStatus('<%= order._id %>', 'reject')" class="btn-reject">Reject</button>
+                        </form>
+                       
                     </div>
-                <% } else { %>
-                        <select onchange="changeStatus('<%= order._id %>', this.value)" class="status-select">
-                            <% 
-                             const statusFlow = ['pending', 'processing','cancelled','shipped', 'delivered','return','approve','reject'];
-                             const currentIndex = statusFlow.indexOf(order.status);
-                             statusFlow.forEach((s, index) => {
-                                if (index >= currentIndex) {
-                                    %>
-                                <option value="<%= s %>" <%= order.status === s ? 'selected' : '' %>><%= s %></option>
-                               <%}%>
-                                <% }) %>
-                        </select>
-                        <%}%>
-                    </td>
-                    <td>
-                        <a href="/admin/Views/<%= order._id %>" class="btn-view">View Detail</a>
+                    <a href="/admin/addOffer"><button class="btn-add">Add new Offer</button></a>
+                </div>
+                <table class="inventory-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Discount</th>
+                <th>Type</th>
+                <th>Expiry</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% offers.forEach(offer => { %>
+                <tr>
+                    <td><%= offer.offerName %></td>
+                    <td><%= offer.discountPercentage %>%</td>
+                    <td><%= offer.offerType %></td>
+                    <td><%= offer.expiryDate.toLocaleDateString('en-us') %></td>
+                    <td class="actions">
+                     <% if(offer.isActive === false) { %>
+                <a href="/admin/activeOffer?id=<%=offer._id%>">
+                    <button class="btn-block">UnActive</button>
+                </a>
+            <% } else { %>
+                <a href="/admin/unactiveOffer?id=<%=offer._id%>">
+                    <button class="btn-unblock">Active</button>
+                </a>
+            <% } %>
+            <a href="/admin/editOffer/<%=offer._id%>">
+    <i class="fa-regular fa-pen-to-square" style="color: black; margin-top: 5px;"></i>
+</a>
+             <a href="/admin/deleteOffer?id=<%=offer._id%>" onclick="return confirmDelete(event, '<%=offer.offerName%>')">
+             <i class="fa-regular fa-trash-can" style="color:red;margin-top: 5px;"></i>
+           </a>
                     </td>
                 </tr>
             <% }) %>
-    
-</tbody>
-                </table>
+        </tbody>
+    </table>
+        
                 <div class="container">
                     <nav aria-label="page navigation">
                         <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
@@ -167,30 +155,12 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-function changeStatus(orderId, newStatus) {
-    Swal.fire({
-        title: 'Update Status?',
-        text: `Change order status to ${newStatus}?`,
-        icon: 'question',
-        showCancelButton: true
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch(`/admin/updateStatus/${orderId}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: newStatus })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire('Updated!', data.message, 'success');
-                    location.reload();
-                } else {
-                    Swal.fire('Error', data.message, 'error');
-                }
-            });
-        }
-    });
+    function confirmDelete(event, name) {
+    if (!confirm(`Are you sure you want to delete "${name}"?`)) {
+        event.preventDefault(); 
+        return false;
+    }
+    return true;
 }
 </script>
 </body>

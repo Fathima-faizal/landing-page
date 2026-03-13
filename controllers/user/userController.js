@@ -7,14 +7,14 @@ const nodemailer=require('nodemailer');
 const bcrypt=require('bcrypt');
 const user = require('../../models/userSchema');
 const product = require('../../models/productSchema');
-const Cart=require('../../models/cartSchema')
-// const { search } = require('../../route/userRouter');
-// const user = require('../../models/userSchema');
+const Cart=require('../../models/cartSchema');
+const Banner=require('../../models/bannerSchema')
 
 
 const loadLandingpage=async(req,res)=>{
     try{
-      return res.render('landing')
+      const banner=await Banner.findOne().sort({_id:-1})
+      return res.render('landing',{banner})
     }catch(error){
         console.log('landing page not found')
         res.status(500).send('server error')
@@ -35,7 +35,8 @@ const loginPage=async(req,res)=>{
 }
 const signupPage=async(req,res)=>{
     try{
-    return res.render('signup');
+       const referralCode = req.query.ref || ""; 
+        return res.render('signup', { referralCode });
     }catch(error){
         console.log('signup pag not found');
         res.status(500).send('server error')
@@ -72,7 +73,7 @@ async function sendVerificationEmail(email,otp){
 }
 const signup=async(req,res)=>{
     try{
-      const {name,email,password,ConformPassword}=req.body;
+      const {name,email,password,ConformPassword,referralCode}=req.body;
       const findUser=await User.findOne({email});
       if(findUser){
         return res.render('signup',{message:'User with this email alreday exists'})
@@ -86,7 +87,7 @@ const signup=async(req,res)=>{
         return res.json('Email error')
       }
       req.session.userOtp=otp;
-      req.session.userData={name,email,password,ConformPassword};
+      req.session.userData={name,email,password,ConformPassword,referralCode: referralCode || null};
 
       res.render('verify_otp');
       console.log('OTP sent',otp)
@@ -103,35 +104,71 @@ const securePassword=async(password)=>{
 
     }
 }
-const verifyOtp=async(req,res)=>{
-  try{
-    const {otp}=req.body;
-    console.log(otp);
-    if(otp===req.session.userOtp){
-        const user=req.session.userData;
-        const passwordHash=await securePassword(user.password);
-        const saveUserdata=new User({
-            name:user.name,
-            email:user.email,
-            password:passwordHash,
-        })
-        await saveUserdata.save();
-        req.session.user=saveUserdata._id;
-        res.json({ success: true, redirectUrl: '/login' });
-    }else{
-        res.status(400).json({success:false,message:'Invalid OTP,please try again'})
+const verifyOtp = async (req, res) => {
+  try {
+    const { otp } = req.body;
+    
+    if (otp === req.session.userOtp) {
+      const { name, email, password, referralCode } = req.session.userData;
+      const passwordHash = await securePassword(password);
+      const saveUserdata = new User({
+        name: name,
+        email: email,
+        password: passwordHash,
+        referralCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
+        wallet: (referralCode && referralCode !== 'null') ? 50 : 0,
+        history: (referralCode && referralCode !== 'null') ? [{
+          amount: 50,
+          type: 'credit',
+          description: 'Signup Referral Bonus',
+          date: new Date()
+        }] : []
+      });
+      if (referralCode && referralCode !== 'null' && referralCode !== 'undefined') {
+        const updateReferrer = await User.findOneAndUpdate(
+          { referralCode: referralCode },
+          { 
+            $inc: { wallet: 100 }, 
+            $set: { redeemed: true },
+            $push: {
+              redeemedUser: { 
+                name: name, 
+                email: email, 
+                date: new Date() 
+              },
+              history: { 
+                amount: 100, 
+                type: 'credit',
+                description: `Referral Bonus from ${name}`,
+                date: new Date()
+              } 
+            } 
+          },
+          { new: true }
+        );
+        console.log("Referrer Update Status:", updateReferrer ? "Success" : "Referrer Not Found");
+      }
+
+      await saveUserdata.save();
+      req.session.userData = null;
+      req.session.userOtp = null;
+      req.session.user = saveUserdata._id;
+
+      res.json({ success: true, redirectUrl: '/login' });
+    } else {
+      res.status(400).json({ success: false, message: 'Invalid OTP, please try again' });
     }
-  }catch(error){
-     console.error('Error verify OTP',error)
-     res.status(500).json({success:false,message:'An error occured'})
+  } catch (error) {
+    console.error('Error verify OTP', error);
+    res.status(500).json({ success: false, message: 'An error occurred' });
   }
- };
+};
 const resendOtp=async(req,res)=>{
    try{
-     const {email}=req.session.userData;
-     if(!email){
-        return res.status(400).json({success:false,message:'email not found session'})
-     }
+    if (!req.session.userData || !req.session.userData.email) {
+            return res.status(400).json({success: false,message: 'Session expired. Please signup again.'});
+        }
+      const email = req.session.userData.email;
      const otp=generateOtp();
      req.session.userOtp=otp;
      const emailSent=await sendVerificationEmail(email,otp);
@@ -167,6 +204,9 @@ const homepage=async(req,res)=>{
     console.log("BODY:", req.body);
 
     const {email,password}=req.body;
+    if (!password) {
+      return res.render('login', { message: 'Password is required' });
+    }
     const findUser=await User.findOne({isAdmin:false,email:email});
 
     if(!findUser){
@@ -400,6 +440,21 @@ const sortproducts=async(req,res)=>{
     res.status(500).send('Internal server error')
   }
 }
+const loadrefer=async(req,res)=>{
+  try {
+     const userId=req.session.user;
+     const user=await User.findById(userId);
+     if (!user.referralCode) {
+            user.referralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+            await user.save();
+        }
+        const referralLink = `${req.protocol}://${req.get('host')}/signup?ref=${user.referralCode}`;
+        res.render('refer', { user, referralLink });
+  } catch (error) {
+    console.log('error',error);
+    res.status(500).send('Internal server error')
+  }
+}
 
 module.exports={
     loadLandingpage,
@@ -414,4 +469,5 @@ module.exports={
     filterproduct,
     searchproducts,
     sortproducts,
+    loadrefer,
 }

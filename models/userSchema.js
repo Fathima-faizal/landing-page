@@ -70,16 +70,16 @@ const userSchema=new Schema({
     },
     referralCode:{
         type:String,
-        //required:true//
+        required:false
     },
     redeemed:{
         type:Boolean,
-        //default:false//
+        default:false
     },
-    redeemedUser:[{
-        type:Schema.Types.ObjectId,
-        ref:'user'
-       //required:true//
+    redeemedUser: [{
+    name: String,
+    email: String,
+    date: { type: Date, default: Date.now }
     }],
     searchHistory:[{
       category:{

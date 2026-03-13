@@ -1,0 +1,243 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #2e7d32; /* Main dark green background */
+}
+
+/* Navbar */
+.navbar {
+    background: white;
+    padding: 15px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    margin-right: 20px;
+    font-size: 17px;
+   
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.nav-icons {
+    display: flex;
+    gap: 20px;
+    font-size: 1.1rem;
+}
+.nav-icons a{
+    color: #0a1f0d;
+}
+
+
+/* Main Profile Layout */
+.profile-container {
+    padding: 40px 10%;
+    color: white;
+}
+
+.profile-container h1 {
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+.content-wrapper {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+.profile-card{
+    margin-left: 40px;
+}
+.sidebar {
+    background: white;
+    color: #333;
+    width: 200px;
+    padding: 30px 0;
+}
+
+.sidebar h3 {
+    padding: 0 20px 15px;
+    border-bottom: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar li {
+    padding: 10px 20px;
+    font-size: 13px;
+    cursor: pointer;
+}
+.sidebar  a {
+  text-decoration: none;
+  color:#0a1f0d
+}
+
+.sidebar li.active {
+    background: #f0f0f0;
+}
+:root {
+    --primary-green: #1a4d2e;
+    --accent-green: #49ad65;
+    --bg-light: #f4f7f5;
+    --text-dark: #2d3436;
+    --shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+body {
+    background-color: var(--bg-light); /* Changed to light for better readability */
+    color: var(--text-dark);
+}
+
+/* Container Adjustments */
+.profile-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    color: var(--text-dark);
+}
+
+.profile-container h1 {
+    font-size: 2rem;
+    color: var(--primary-green);
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    background: white;
+    width: 280px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    padding: 20px 0;
+    overflow: hidden;
+}
+
+.sidebar h3 {
+    padding: 0 25px 15px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #999;
+}
+
+.sidebar ul li {
+    padding: 15px 25px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sidebar li:hover {
+    background: #f0faf2;
+    color: var(--accent-green);
+}
+
+.sidebar li.active {
+    background: var(--primary-green);
+    color: white;
+}
+.refer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 20px;
+}
+
+.refer-card {
+    background: #fff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    text-align: center;
+    max-width: 450px;
+    width: 100%;
+}
+
+.icon-box {
+    font-size: 50px;
+    color: #1a4d2e;
+    margin-bottom: 20px;
+}
+
+.referral-box {
+    display: flex;
+    background: #f4f4f4;
+    padding: 5px;
+    border-radius: 10px;
+    margin: 25px 0;
+    border: 1px solid #ddd;
+}
+
+.referral-box input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px;
+    font-size: 14px;
+    outline: none;
+}
+
+.referral-box button {
+    background: #1a4d2e;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.referral-box button:hover {
+    background: #143a22;
+}
+
+.stats {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.footer {
+    background: #558b2f; /* Muted olive green */
+    color: white;
+    padding: 40px 10% 20px;
+    margin-top: 50px;
+}
+
+.footer-columns {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.footer h4 {
+    margin-bottom: 15px;
+}
+
+.copyright {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 11px;
+    opacity: 0.8;
+}
+

@@ -111,6 +111,11 @@ router.get('/Coupon',userAuth,couponControllers.loadedCoupon);
 router.post('/applyCoupon',userAuth,couponControllers.applycoupon);
 router.post('/removeCoupon',userAuth,couponControllers.removecoupon);                        
 
+                       // refer&earn //
+
+router.get('/refer',userAuth,userControllers.loadrefer);
+
+                           
 
 
 

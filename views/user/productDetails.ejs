@@ -50,18 +50,22 @@
                 <span class="brand-badge"><%=product.brand%></span>
                 <h1 class="product-main-title"><%=product.productName%></h1>
                 <p class="category-path"><%=product.category.name%> / Eye Wear</p>
-            </div>
-
+            </div> 
             <div class="price-card">
-                <div class="price-row">
-                    <span class="current-price">₹<%=product.salesPrice%></span>
-                    <span class="old-price">₹<%=product.regularPrice%></span>
-                    <span class="discount-tag">
-                        <%= Math.round((product.regularPrice - product.salesPrice) / product.regularPrice * 100) %>% OFF
-                    </span>
-                </div>
-                <p class="tax-info">Inclusive of all taxes</p>
-            </div>
+    <div class="price-row">
+        <% if (product.salesPrice < product.regularPrice) { %>
+            <span class="current-price">₹<%= product.salesPrice %></span>
+            <span class="old-price">₹<%= product.regularPrice %></span>
+            <% let discountPercent = Math.round(((product.regularPrice - product.salesPrice) / product.regularPrice) * 100); %>
+            <span class="discount-tag">
+                (<%= discountPercent %>% OFF)
+            </span>
+        <% } else { %>
+            <span class="current-price">₹<%= product.regularPrice %></span>
+        <% } %> 
+    </div>
+    <p class="tax-info">Inclusive of all taxes</p>
+</div>
 
             <div class="description-box">
                 <h3>Product Description</h3>
@@ -130,17 +134,13 @@
     </footer>
     
    <script>
-    // 1. തംബ്നെയിൽ ക്ലിക്ക് ചെയ്യുമ്പോൾ മെയിൻ ഇമേജ് മാറ്റാൻ
 function changeImage(imagePath, element) {
     const mainImg = document.getElementById('mainProductImage');
     mainImg.src = imagePath;
-
-    // ആക്റ്റീവ് ബോർഡർ മാറ്റാൻ
     document.querySelectorAll('.thumb-card').forEach(card => card.classList.remove('active-thumb'));
     element.classList.add('active-thumb');
 }
 
-// 2. സൂമിംഗ് ഫങ്ക്ഷൻ (പുതിയ ക്ലാസ്സ് നേയിമുകൾ അനുസരിച്ച്)
 const container = document.getElementById('zoomContainer');
 const img = document.getElementById('mainProductImage');
 
@@ -158,11 +158,10 @@ container.addEventListener('mouseleave', () => {
     img.style.transform = "scale(1)";
 });
 
-// 3. ക്വാണ്ടിറ്റി കൂട്ടാനും കുറയ്ക്കാനും (Update Qty)
 function updateQty(val) {
     const qtyInput = document.getElementById('quantity');
     let currentQty = parseInt(qtyInput.value);
-    let maxQty = 3; // നിങ്ങൾ സെറ്റ് ചെയ്ത ലിമിറ്റ്
+    let maxQty = 3; 
 
     let newQty = currentQty + val;
 
@@ -178,8 +177,6 @@ function updateQty(val) {
         });
     }
 }
-
-// 4. Add to Cart (Ajax)
 function addToCart(productId) {
     const quantity = parseInt(document.getElementById('quantity').value);
 

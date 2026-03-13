@@ -1,10 +1,32 @@
 const Product=require('../../models/productSchema')
 const Category=require('../../models/categorySchema');
-const Brand=require('../../models/brandSchema')
+const Brand=require('../../models/brandSchema');
+const Offer=require('../../models/offerSchema')
 const fs=require('fs')
 const path=require('path');
 const sharp=require('sharp');
 
+async function applyBestOffer(product) {
+    try {
+        const activeOffers = await Offer.find({ isActive: true });
+        let productDiscount = 0;
+        let categoryDiscount = 0;
+        const pOffer = activeOffers.find(o => o.offerType === 'Product' && o.productId?.toString() === product._id.toString());
+        if (pOffer) productDiscount = pOffer.discountPercentage;
+        const cOffer = activeOffers.find(o => 
+            o.offerType === 'Category' && 
+            o.categoryId?.toString() === (product.category._id ? product.category._id.toString() : product.category.toString())
+        );
+        if (cOffer) categoryDiscount = cOffer.discountPercentage;
+        const bestDiscount = Math.max(productDiscount, categoryDiscount);
+        const discountAmount = Math.floor(product.regularPrice * (bestDiscount / 100));
+        product.salesPrice = product.regularPrice - discountAmount;
+        await Product.findByIdAndUpdate(product._id, { salesPrice: product.salesPrice });
+        return bestDiscount;
+    } catch (err) {
+        console.log("Offer calculation error:", err);
+    }
+}
 const loadproduct = async (req, res) => {
     try {
         let search = req.query.search || '';
@@ -86,7 +108,7 @@ const addproducts=async(req,res)=>{
         brand:products.brand,
         category:categoryid._id,
         regularPrice:products.regularPrice,
-        salesPrice:products.salesPrice,
+        salesPrice:products.regularPrice,
         createdOn:new Date(),
         quantity:products.quantity,
         color:products.color,
@@ -95,7 +117,8 @@ const addproducts=async(req,res)=>{
         status:'Available',
 
       })
-      await newProduct.save();
+      const savedProduct = await newProduct.save();
+      await applyBestOffer(savedProduct);
       return res.redirect('/admin/product')
     }else{
      return res.status(400).json('Product already Exist please try with another name')
@@ -179,7 +202,7 @@ const posteditProduct = async (req, res) => {
             category: data.category,
             brand:data.brand,
             regularPrice: data.regularPrice,
-            salesPrice: data.salesPrice,
+            salesPrice: data.regularPrice,
             quantity: data.quantity,
             color:data.color,
             productimage: images,
@@ -204,8 +227,45 @@ try {
   res.status(500).send('Internal server error')
 }
 }
-
+const getinventory=async(req,res)=>{
+  const page=parseInt(req.query.page)||1;
+  let search=req.query.search||'';
+  const limit=5;
+  const skip=(page-1)*limit;
+   let query={};
+        if(search){
+            query.productName={$regex:search,$options:'i'}
+        }
+  const totalorder=await Product.countDocuments(query)
+   const products=await Product.find(query)
+   .populate('category')
+   .sort({createdOn:-1})
+   .skip(skip)
+  .limit(limit)
+   res.render('inventory',{
+    products,
+    currentPage:page,
+    totalPages:Math.ceil(totalorder/limit),
+    search,
+  })
+}
+ const updateStock=async(req,res)=>{
+  try {
+    const { productId, newQuantity } = req.body;
+    if (newQuantity < 0) {
+            return res.json({ status: false, message: 'Stock cannot be negative' });
+        }
+        await Product.findByIdAndUpdate(productId, {
+            $set: { quantity: newQuantity }
+        });
+        res.json({ status: true, message: 'Stock updated successfully!' });
+  } catch (error) {
+    console.log('error',error);
+    res.status(500).send('server internal error')
+  }
+ }
 module.exports={
+    applyBestOffer,
     loadproduct,
     getaddProduct,
     addproducts,
@@ -214,4 +274,6 @@ module.exports={
     editProduct,
     posteditProduct,
     deleteProduct,
+    getinventory,
+    updateStock,
 }

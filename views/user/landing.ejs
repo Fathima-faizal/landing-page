@@ -19,8 +19,12 @@
     </header>
 
     <section class="hero-image">
-        <img src="/image/landing image.png" alt="Woman trying on glasses">
-    </section>
+    <% if (banner) { %>
+        <img src="/uploads/<%= banner.image %>" alt="<%= banner.title %>">
+    <% } else { %>
+        <img src="/image/landing image.png" alt="Default Banner">
+    <% } %>
+</section>
 
     <section class="cta-section">
         <h1>VisionVogue</h1>

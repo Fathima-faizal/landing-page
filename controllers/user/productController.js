@@ -3,13 +3,14 @@ const Category=require('../../models/categorySchema');
 const  User=require('../../models/userSchema');
 const product = require('../../models/productSchema');
 const Order=require('../../models/orderSchema')
-
+const {applyBestOffer}=require('../../controllers/admin/productConroller')
 const productdetails=async(req,res)=>{
     try {
         const userId=req.session.user;
         const userData=await User.findById(userId);
         const productId=req.query.id;
         const productData=await Product.findById(productId).populate('category');
+        await applyBestOffer(productData);
         const findCategory=productData.category;
         res.render('productDetails',{
             userData:userData,

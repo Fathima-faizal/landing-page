@@ -59,14 +59,13 @@ body {
 .nav-item.active {
     background-color: #7cfc00; /* Bright Green */
     color: #1a4d2e;
-    font-weight: bold;
+  font-weight: 700;
 }
 
 .nav-divider {
     border: 0.5px solid rgba(255, 255, 255, 0.2);
     margin: 10px 0;
 }
-
 
 .logout-btn {
     margin-top: auto;
@@ -145,48 +144,87 @@ body {
     padding: 0 15px;
     cursor: pointer;
 }
-
-
-
-/* Table Styling */
-.user-table {
-    width: 100%;
+.table-wrapper {
     background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+}
+
+.banner-table {
+    width: 100%;
     border-collapse: collapse;
 }
 
-.user-table th, .user-table td {
-    border: 1px solid #eee;
+.banner-table th {
+    background-color: #f1f3f5;
     padding: 15px;
-    text-align: center;
+    text-align: left;
+    color: var(--dark);
+    font-weight: 600;
 }
 
-.user-table th {
-    font-size: 14px;
-    color: #555;
+.banner-table td {
+    padding: 15px;
+    border-bottom: 1px solid #edf2f4;
+    vertical-align: middle;
 }
 
-/* Action Buttons */
-.actions {
+.banner-thumb {
+    width: 120px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.link-code {
+    background: #e9ecef;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-badge.active {
+    background-color: #d8f3dc;
+    color: var(--success);
+}
+
+.action-btns {
     display: flex;
     gap: 10px;
+}
+
+.btn-edit, .btn-delete {
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
 }
 
-.btn-block {
-    background-color: #ff3b30;
-    color: white;
-    border: none;
-    padding: 5px 15px;
-    border-radius: 4px;
-}
+.btn-edit { background: #caf0f8; color: var(--primary); }
+.btn-delete { background: #ffccd5; color: var(--danger); }
 
-.btn-unblock {
-    background-color: #1b5135;
-    color: white;
-    border: none;
-    padding: 5px 15px;
-    border-radius: 4px;
+.btn-edit:hover { background: var(--primary); color: white; }
+.btn-delete:hover { background: var(--danger); color: white; }
+
+.no-data {
+    text-align: center;
+    padding: 40px !important;
+    color: #888;
 }
 
 .pagination {

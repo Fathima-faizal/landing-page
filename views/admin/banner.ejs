@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional Admin Dashboard</title>
-    <link rel="stylesheet" href="/css/category.css">
+    <link rel="stylesheet" href="/css/banner.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
@@ -36,7 +36,7 @@
                 <i class="fas fa-layer-group"></i> <span>Category Management</span>
                 </a>
             </div>
-           <div class="nav-item">
+           <div class="nav-item active">
                 <a href="/admin/banner">
                 <i class="fas fa-image"></i> <span>Banner Management</span>
                 </a>
@@ -49,8 +49,8 @@
             
             <hr class="nav-divider">
 
-            <div class="nav-item active">
-                <a href="/admin/coupon">
+            <div class="nav-item">
+                <a href="/admin/couponManagement">
                 <i class="fas fa-ticket-alt"></i> <span>Coupon</span>
                 </a>
             </div>
@@ -73,66 +73,61 @@
 
         <main class="main-content">
             <header class="top-header">
-                <h2>Coupon Management</h2>
+                <h2>Banner Management</h2>
                 <a href="/admin/logout">
                 <button class="logout-top">Log out</button>
                 </a>
             </header>
             <section class="content-body">
-                <div class="toolbar"> 
-                    <form action="/admin/coupon" method="get">
+                <div class="toolbar">
+                    <form action="/admin/banner" method="get">
                     <div class="search-box">
                         <input type="text" name="search" placeholder="Search">
                         <button class="btn-clear">Clear</button>
                         </form>
                        
                     </div>
-                     <a href="/admin/addCoupon"><button class="btn-add">Add new Coupon</button></a>
+                     <a href="/admin/addBanner"><button class="btn-add">Add new Banner</button></a>
                 </div>
 
-                <table class="user-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Coupon code</th>
-                            <th>Start date</th>
-                            <th>End date</th>
-                            <th>Minimum price</th>
-                            <th>Discount price</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                   <tbody>   
-                    <%for(let i=0;i<coupons.length;i++){%>    
-            <tr>
-        <td><%=coupons[i].name%></td>
-        <td><%=coupons[i].couponCode%></td>
-        <td><%=new Date(coupons[i].createdOn).toLocaleDateString('en-us')%></td>
-        <td><%=new Date(coupons[i].expireOn).toLocaleDateString('en-us')%></td>
-        <td><%=coupons[i].minimumPrice%></td>
-        <td><%=coupons[i].discountPercentage%></td>
-        <td class="actions">
-            <% if(coupons[i].islisted === false) { %>
-                <a href="/admin/listCoupon?id=<%=coupons[i]._id%>">
-                    <button class="btn-block">list</button>
-                </a>
-            <% } else { %>
-                <a href="/admin/unlistCoupon?id=<%=coupons[i]._id%>">
-                    <button class="btn-unblock">unlist</button>
-                </a>
-            <% } %>
-            <a href="/admin/editCoupon/<%=coupons[i]._id%>">
-    <i class="fa-regular fa-pen-to-square" style="color: black; margin-top: 5px;"></i>
-</a>
-             <a href="/admin/deleteCoupon?id=<%=coupons[i]._id%>" onclick="return confirmDelete(event, '<%=coupons[i].name%>')">
+                <div class="table-wrapper">
+            <table class="banner-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Target Link</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (banners && banners.length > 0) { %>
+                        <% banners.forEach(banner => { %>
+                            <tr>
+                                <td>
+                                    <img src="/uploads/<%= banner.image %>" alt="Banner" class="banner-thumb">
+                                </td>
+                                <td><strong><%= banner.title %></strong></td>
+                                <td class="text-muted"><%= banner.description %></td>
+                                <td><code class="link-code"><%= banner.link %></code></td>
+                                <td>
+                                    <span class="status-badge active">Active</span>
+                                </td>
+                                <td>
+                                    <div class="action-btns">
+                                        <a href="/admin/deleteBanner?id=<%=banner._id%>" onclick="return confirmDelete(event, '<%=banner.title%>')">
              <i class="fa-regular fa-trash-can" style="color:red;margin-top: 5px;"></i>
            </a>
-        </td>
-       
-    </tr>
-    <%}%>
-</tbody>
-                </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% }%>
+                </tbody>
+            </table>
+        </div>
                 <div class="container">
                     <nav aria-label="page navigation">
                         <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
@@ -160,6 +155,7 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
+
 function confirmDelete(event, name) {
     if (!confirm(`Are you sure you want to delete "${name}"?`)) {
         event.preventDefault(); 
@@ -167,7 +163,6 @@ function confirmDelete(event, name) {
     }
     return true;
 }
-
 
 </script>
 </body>
