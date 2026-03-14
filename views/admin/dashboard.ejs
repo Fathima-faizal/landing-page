@@ -6,6 +6,10 @@
     <title>Professional Admin Dashboard</title>
     <link rel="stylesheet" href="/css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 </head>
 <body>
 
@@ -72,15 +76,67 @@
         </aside>
 
         <main class="main-content">
-            <header class="top-header">
-                <h2>Admin Dashboard</h2>
-                <a href="/admin/logout">
-                <button class="logout-top">Log out</button>
-                </a>
-            </header>
+    <header class="top-header">
+        <h2>Admin Dashboard</h2>
+        <div>
+            <a href="/admin/logout"><button class="logout-top">Log out</button></a>
+        </div>
+    </header>
 
-           
-        </main>
+    <div class="content-body">
+        <div class="stats-grid">
+            <div class="stat-card"><i class="fas fa-users"></i><div><p>Users</p><h3><%= userCount %></h3></div></div>
+            <div class="stat-card"><i class="fas fa-shopping-cart"></i><div><p>Orders</p><h3><%= orderCount %></h3></div></div>
+            <div class="stat-card"><i class="fas fa-wallet"></i><div><p>Revenue</p><h3>₹<%= revenue %></h3></div></div>
+        </div>
+
+         <div class="report-section">
+    <div class="report-header">
+        <h3 style="margin: 0;">Sales Report</h3>
+        
+        <div class="filter-group">
+            <select id="filterType" onchange="applyFilter()">
+                <option value="">Custom Range</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="yearly">Yearly</option>
+            </select>
+            
+            <input type="date" id="startDate">
+            <input type="date" id="endDate">
+            
+            <button class="filter-btn" onclick="applyFilter()">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+        </div>
+    </div>
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Order ID</th>
+                        <th>Price</th>
+                        <th>Discount</th>
+                        <th>Final Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% salesReport.forEach(order => { %>
+                    <tr>
+                        <td><%= order.createdOn.toLocaleDateString() %></td>
+                        <td>#<%= order._id.toString().slice(-6) %></td>
+                        <td>₹<%= order.totalPrice %></td>
+                        <td>₹<%= order.discount %></td>
+                        <td>₹<%= order.finalAmount %></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+             <button class="download-btn" onclick="downloadPDF()" style="background: #e74c3c; margin-left: 90%; margin-top: 34px;">PDF</button>
+        </div>
+        
+    </div>
+</main>
     </div>
      <script>
     window.addEventListener("pageshow", function (event) {
@@ -95,6 +151,75 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
+    function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text("Sales Report", 14, 15);
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    const rows = [];
+    const tableRows = document.querySelectorAll(".report-table tbody tr");
+    tableRows.forEach(row => {
+        const rowData = [];
+        const cells = row.querySelectorAll("td");
+        cells.forEach((cell, index) => {
+            let text = cell.innerText;
+            if (index >= 2) {
+                text = text.replace('₹', '').replace(/\s+/g, '').trim();
+            }
+            rowData.push(text);
+        });
+        rows.push(rowData);
+    });
+    doc.autoTable({
+        head: [['Date', 'Order ID', 'Price', 'Discount', 'Final Amount']],
+        body: rows,
+        startY: 25,
+        theme: 'grid',
+        styles: { 
+            fontSize: 10, 
+            cellPadding: 3,
+            halign: 'center' 
+        },
+        headStyles: { 
+            fillColor: [26, 77, 46],
+            halign: 'center' 
+        },
+        columnStyles: {
+            2: { halign: 'right' },
+            3: { halign: 'right' },
+            4: { halign: 'right' }
+        }
+    });
+
+    doc.save("Sales_Report.pdf");
+}
+    async function applyFilter() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const filterType = document.getElementById('filterType').value;
+
+    const response = await fetch(`/admin/salesReport?startDate=${startDate}&endDate=${endDate}&filterType=${filterType}`);
+    const data = await response.json();
+    
+    const tbody = document.querySelector('.report-table tbody');
+    tbody.innerHTML = data.map(order => {
+        const price = String(order.totalPrice).replace(/\s+/g, '');
+        const discount = String(order.discount).replace(/\s+/g, '');
+        const final = String(order.finalAmount).replace(/\s+/g, '');
+
+        return `
+            <tr>
+                <td>${new Date(order.createdOn).toLocaleDateString()}</td>
+                <td>#${order._id.toString().slice(-6)}</td>
+                <td>₹${price}</td>
+                <td>₹${discount}</td>
+                <td>₹${final}</td>
+            </tr>
+        `;
+    }).join('');
+}
 </script>
 </body>
 </html>

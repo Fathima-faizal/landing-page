@@ -19,6 +19,7 @@ const uploads=multer({storage:storage})
 router.get('/login',adminController.adminLoginloaded);
 router.post('/login',adminController.adminlogin);
 router.get('/dashboard',adminAuth,adminController.loaddashboard);
+router.get('/salesReport',adminAuth,adminController.salesreport)
 router.get('/logout',adminController.admilogout)
 
               //customer Management//

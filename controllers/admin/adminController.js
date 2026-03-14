@@ -1,4 +1,5 @@
 const User=require('../../models/userSchema');
+const Order=require('../../models/orderSchema')
 const mongoose=require('mongoose');
 const bcrypt=require('bcrypt');
 
@@ -38,11 +39,46 @@ const adminlogin=async(req,res)=>{
 const loaddashboard=async(req,res)=>{
       if(req.session.admin){
         try{
-            res.render('dashboard');
+          const userCount = await User.countDocuments({ isAdmin: false });
+          const orderCount = await Order.countDocuments()
+           const totalRevenue = await Order.aggregate([
+            { $match: { status: 'delivered' } },
+            { $group: { _id: null, total: { $sum: "$finalAmount" } } }
+        ]);
+        const salesReport = await Order.find({ status: 'delivered' })
+            .sort({ createdOn: -1 })
+            .limit(5);
+            res.render('dashboard',{
+              userCount,
+              orderCount,
+              revenue:totalRevenue[0]?totalRevenue[0].total:0,
+              salesReport
+            });
         }catch(error){
         res.status(500).send('Internal server error')
       }
     }
+}
+const salesreport=async(req,res)=>{
+  try {
+    let {startDate,endDate,filterType}=req.query;
+    let query={status:'delivered'};
+    const now=new Date();
+    if(filterType==='daily'){
+      query.createdOn={$gte:new Date(now.setHours(0,0,0,0))}
+    }else if(filterType==='weekly'){
+      query.createdOn={$gte:new Date(now.setDate(now.getDate()-7))}
+    }else if(filterType==='yearly'){
+      query.createdOn={$gte:new Date(now.getFullYear(),0,1)}
+    }else if(startDate&&endDate){
+      query.createdOn={$gte:new Date(startDate),$lte:new Date(endDate)}
+    }
+    const report=await Order.find(query).sort({createdOn:-1});
+    res.json(report)
+  } catch (error) {
+    console.log('error',error);
+    res.status(500).send('Internal server error')
+  }
 }
 const admilogout=async(req,res)=>{
   try {
@@ -62,5 +98,6 @@ module.exports={
     adminLoginloaded,
     adminlogin,
     loaddashboard,
+    salesreport,
     admilogout,
 }

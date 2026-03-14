@@ -5,7 +5,7 @@ const Product=require('../../models/productSchema')
 const getorders=async(req,res)=>{
     try {
         const page=parseInt(req.query.page)||1;
-        const limit=3;
+        const limit=4;
         const skip=(page-1)*limit;
         let search=req.query.search||'';
         let statusFilter=req.query.status||'';
