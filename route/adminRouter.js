@@ -82,7 +82,7 @@ router.get('/deleteProduct',adminAuth,productController.deleteProduct);
  router.get('/unlistCoupon',adminAuth,couponController.unlistCoupon)
  router.get('/deleteCoupon',adminAuth,couponController.deleteCoupon)
 
-                        //Inventory Management//
+                     //Inventory Management//
 
 router.get('/inventory',adminAuth,productController.getinventory)
 router.post('/updateStock', adminAuth,productController.updateStock);

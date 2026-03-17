@@ -112,8 +112,8 @@
             <label>Brand</label>
     <select name="brand" >
     <%for(let i=0;i<brand.length;i++){%>
-    <option value="<%=brand[i].name%>">
-        
+    <option value="<%=brand[i].name%>"
+        <%= product.brand === brand[i].name ? 'selected' : '' %>>
          <%=brand[i].name%>
     </option>
     <%}%>

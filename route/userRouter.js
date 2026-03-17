@@ -64,7 +64,7 @@ router.get('/defaultAddress',userAuth,profileControllers.defaultAddress);
 router.get('/shop',userAuth,userControllers.loadshoppingpage)
 router.get('/filter',userAuth,userControllers.filterproduct);
 router.get('/search',userAuth,userControllers.searchproducts);
-router.post('/sort',userAuth,userControllers.sortproducts);
+router.post('/shop',userAuth,userControllers.sortproducts);
 router.get('/productDetails',userAuth,productController.productdetails);
 
                        //wishlist//

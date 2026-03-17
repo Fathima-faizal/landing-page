@@ -36,7 +36,6 @@
         <aside class="sidebar-premium">
             <div class="filter-header">
                 <h3><i class="fa-solid fa-sliders"></i> Filters</h3>
-                <a href="/shop" class="reset-link">Reset All</a>
             </div>
 
             <form action="/filter" method="get" id="filterForm">
@@ -89,7 +88,7 @@
                 </div>
 
                 <div class="sort-premium">
-                    <form action="/sort" method="post">
+                    <form action="/shop" method="post">
                         <select name="sortOption" onchange="this.form.submit()">
                             <option value="default">Sort by: Default</option>
                             <option value="az" <%= locals.selectedSort === 'az' ? 'selected' : '' %>>Name: A to Z</option>

@@ -176,10 +176,7 @@ const posteditProduct = async (req, res) => {
     try {
         const id = req.params.id;
         const data = req.body;
-        
-        const product = await Product.findById(id);
-        
-  
+        const product = await Product.findById(id)
         let images = product.productimage || []; 
 
         if (data.removedImages) {
