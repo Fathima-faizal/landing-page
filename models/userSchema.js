@@ -13,6 +13,10 @@ const userSchema=new Schema({
         required:true,
         unique:true,
     },
+    profileImage: { 
+        type: String,
+        default: "default-avatar.png" 
+    },
     phone:{
         type:String,
         require:false,

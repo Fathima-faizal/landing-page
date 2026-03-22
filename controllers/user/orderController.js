@@ -156,13 +156,31 @@ const cancelOrderItem = async (req, res) => {
         const itemIndex = order.orderedItems.findIndex(item => item.productId.toString() === productId);
         if (itemIndex > -1) {
             const item = order.orderedItems[itemIndex];
+            const refundAmount = item.price * item.quantity;
             await Product.findByIdAndUpdate(productId, {
                 $inc: { quantity: item.quantity }
             });
+            if (order.paymentMethod !== 'COD') {
+                const user = await User.findById(order.userId);
+                if (user) {
+                    user.wallet = (Number(user.wallet) || 0) + Number(refundAmount);
+                    
+                    user.history.push({
+                        description: `Refund for Cancelled Item in Order #${order.orderId.toString().slice(-6)}`,
+                        amount: refundAmount,
+                        type: 'credit',
+                        status: 'Completed',
+                        date: new Date()
+                    });
+                    await user.save();
+                }
+            }
             order.orderedItems.splice(itemIndex, 1);
             if (order.orderedItems.length === 0) {
                 order.status = 'cancelled';
             }
+            order.finalAmount -= refundAmount;
+            order.totalPrice -= refundAmount;
             await order.save();
             return res.json({ success: true, message: "Item cancelled and stock updated" });
         }

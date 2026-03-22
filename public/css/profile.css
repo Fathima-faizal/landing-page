@@ -226,6 +226,16 @@ body {
     font-weight: 600;
     transition: 0.3s;
 }
+.edit-btns {
+    text-decoration: none;
+    background:white ;
+    color: var(--primary-green);
+    border: 1px solid var(--primary-green);
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: 0.3s;
+}
 
 .change-btn {
     text-decoration: none;
@@ -266,4 +276,21 @@ body {
     margin-top: 40px;
     font-size: 11px;
     opacity: 0.8;
+}
+.cart-icon-container {
+    position: relative;
+    display: inline-block;
+}
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 2px 6px;
+    min-width: 15px;
+    text-align: center;
 }

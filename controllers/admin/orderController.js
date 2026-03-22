@@ -1,7 +1,7 @@
 const User=require('../../models/userSchema');
 const Order=require('../../models/orderSchema');
 const Address=require('../../models/addressSchema');
-const Product=require('../../models/productSchema')
+const Product=require('../../models/productSchema');
 const getorders=async(req,res)=>{
     try {
         const page=parseInt(req.query.page)||1;

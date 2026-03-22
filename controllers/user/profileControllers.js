@@ -1,10 +1,12 @@
 const User=require('../../models/userSchema');
 const Address=require('../../models/addressSchema')
+const Cart=require('../../models/cartSchema')
 const nodemailer=require('nodemailer');
 const bcrypt=require('bcrypt');
 const env=require('dotenv').config();
 const session=require('express-session');
-
+const path = require('path'); 
+const fs = require('fs');
 
 function generateOtp(){
     const digits='1234567890';
@@ -150,10 +152,18 @@ const postNewPassword=async(req,res)=>{
  try {
    const userId=req.session.user;
    const userData=await User.findById(userId);
+  let cartCount = 0;
+          if (userId) {
+              const cart = await Cart.findOne({ userId: userId });
+              if (cart) {
+                  cartCount = cart.items.length; 
+              }
+          }
    const addressData=await Address.findOne({userId:userId});
    res.render('profile',{
     user:userData,
     userAddress:addressData,
+    cartCount:cartCount,
    })
  } catch (error) {
      console.error('Error for retrieve Profile data',error);
@@ -178,6 +188,45 @@ const postNewPassword=async(req,res)=>{
   }
 
  }
+  const editprofile=async(req,res)=>{
+    try {
+       const userId=req.session.user;
+       if(!userId){
+        return res.redirect('/login')
+       }
+       const userData=await User.findById(userId);
+       res.render('editProfile',{user:userData,error: null, success: null})
+    } catch (error) {
+      console.log('error',error);
+      res.status(500).send('Internal server error')
+    }
+  }
+  const updateprofile=async(req,res)=>{
+    try {
+      const userId=req.session.user;
+      const {name}=req.body;
+      let query={name:name};
+      if (req.file) {
+        query.profileImage = req.file.filename;
+      const oldUser = await User.findById(userId);
+            if (oldUser && oldUser.profileImage && oldUser.profileImage !== 'default-avatar.png') {
+                const oldImagePath = path.join(__dirname, '../public/uploads/profileImage', oldUser.profileImage);
+                if (fs.existsSync(oldImagePath)) {
+                    fs.unlinkSync(oldImagePath);
+                }
+            }
+          }
+      const updateuser=await User.findByIdAndUpdate(userId,query,{new:true})
+      res.render('profile',{
+        user:updateuser,
+        error: null,
+        success:'successfully updated'
+      })
+    } catch (error) {
+      console.log('error',error);
+      res.status(500).send('Internal server error')
+    }
+  }
   const changeEmail=async(req,res)=>{
   try {
      res.render('change-email')
@@ -313,6 +362,40 @@ const changePasswordValid=async(req,res)=>{
      res.status(500).send('Internal server error')
   }
  }
+ const getpassword=async(req,res)=>{
+  try {
+    const userId=req.session.user;
+    if(!userId){
+      res.redirect('/login')
+    }
+    res.render('password')
+  } catch (error) {
+    console.log('error',error);
+    res.status(500).send('Internal server error')
+  }
+}
+const updatepassword=async(req,res)=>{
+  try {
+    const {newPass1,newPass2}=req.body;
+    const userId=req.session.user;
+    if(!userId){
+      return res.redirect('/login')
+    }
+    if(newPass1!==newPass2){
+    return  res.render('password',{message:`Password do not matching`})
+    }
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPass1, saltRounds);
+    await User.updateOne(
+    {_id:userId},
+    { $set: { password: hashedPassword } }
+     );
+     res.redirect('/profile')
+  } catch (error) {
+    console.log('error',error);
+    res.status(500).send('Internal server error')
+  }
+}
  const address=async(req,res)=>{
   try {
     const userId=req.session.user;
@@ -527,6 +610,8 @@ module.exports={
     postNewPassword,
     userProfile,
     logout,
+    editprofile,
+    updateprofile,
     changeEmail,
     changeEmailValid,
     verifyEmailotp,
@@ -536,6 +621,8 @@ module.exports={
     changePassword,
     changePasswordValid,
     verifyChangePasswordOtp,
+    getpassword,
+    updatepassword,
     address,
     addAddress,
     postaddAddress,

@@ -19,7 +19,10 @@
         <div class="logo">VisionVogue</div>
         <div class="nav-icons">
              <a href="/wishlist" ><i class="fa-regular fa-heart"></i></a>
-               <a href="/cart"> <i class="fa-solid fa-cart-shopping"></i></a>
+               <a href="/cart" class="cart-icon-container"> <i class="fa-solid fa-cart-shopping"></i>
+            <% if (locals.cartCount > 0) { %>
+            <span class="cart-badge"><%= cartCount %></span>
+        <% } %></a>
               <a href="/profile" > <i class="fa-regular fa-user"></i></a>
     </header>
 
@@ -36,8 +39,7 @@
                    <a href="/wallet"><li>Wallet</li> </a>
                    <a href="/Coupon"> <li>Coupon</li> </a>
                    <a href="/refer" ><li>Refer & Earn</li> </a>
-                   <a href="/changePassword"><li>Change Password</li> </a>
-                   <a href="/Contact"><li>Contact us</li> </a>
+                   <a href="/password"><li>Change Password</li> </a>
                    <a href="/logout"><li>Log out</li> </a>
                 </ul>
             </aside>
@@ -45,7 +47,14 @@
             <section class="profile-card">
     <div class="profile-header">
         <div class="avatar-circle">
-            <i class="fa-solid fa-user"></i>
+            <div class="avatar-circle">
+    <% if (user.profileImage && user.profileImage !== 'default-avatar.png') { %>
+        <img src="/uploads/profileImage/<%= user.profileImage %>" alt="Profile" 
+             style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+    <% } else { %>
+        <i class="fa-solid fa-user"></i>
+    <% } %>
+</div>
         </div>
         <h2>Personal Information</h2>
     </div>
@@ -59,8 +68,8 @@
         <label>Email Address</label>
         <div class="info-value"><%=user.email%></div>
     </div>
-
-    <div class="profile-actions">
+      <div class="profile-actions">
+        <a href="/editProfile" class="edit-btns">Edit Profile</a>
         <a href="/changeEmail" class="edit-btn">Change Email</a>
     </div>
 </section>

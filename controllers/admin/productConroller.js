@@ -8,14 +8,12 @@ const sharp=require('sharp');
 
 async function applyBestOffer(product) {
     try {
-        const activeOffers = await Offer.find({ isActive: true });
+        const activeOffers = await Offer.find({ isActive: true ,expiryDate: {$gte:new Date()}});
         let productDiscount = 0;
         let categoryDiscount = 0;
         const pOffer = activeOffers.find(o => o.offerType === 'Product' && o.productId?.toString() === product._id.toString());
         if (pOffer) productDiscount = pOffer.discountPercentage;
-        const cOffer = activeOffers.find(o => 
-            o.offerType === 'Category' && 
-            o.categoryId?.toString() === (product.category._id ? product.category._id.toString() : product.category.toString())
+        const cOffer = activeOffers.find(o =>o.offerType === 'Category' && o.categoryId?.toString() === (product.category._id ? product.category._id.toString() : product.category.toString())
         );
         if (cOffer) categoryDiscount = cOffer.discountPercentage;
         const bestDiscount = Math.max(productDiscount, categoryDiscount);

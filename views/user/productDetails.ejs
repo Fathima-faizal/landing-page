@@ -22,7 +22,10 @@
             <div class="logo">VisionVogue</div>
             <div class="nav-icons">
                <a href="/wishlist" ><i class="fa-regular fa-heart"></i></a>
-               <a href="/cart"> <i class="fa-solid fa-cart-shopping"></i></a>
+              <a href="/cart" class="cart-icon-container"> <i class="fa-solid fa-cart-shopping"></i>
+            <% if (locals.cartCount > 0) { %>
+            <span class="cart-badge"><%= cartCount %></span>
+        <% } %></a>
               <a href="/profile" > <i class="fa-regular fa-user"></i></a>
             </div>
         </nav>
@@ -35,7 +38,7 @@
                     <img id="mainProductImage" src="/uploads/<%=product.productimage[0]%>" alt="<%= product.ProductName %>">
                 </div>
             </div>
-            
+            <p class="category-paths" style="color: white;">Similar Product</p>
             <div class="thumbnail-grid">
                 <% product.productimage.forEach((img, index) => { %>
                     <div class="thumb-card <%= index === 0 ? 'active-thumb' : '' %>" onclick="changeImage('/uploads/<%= img %>', this)">

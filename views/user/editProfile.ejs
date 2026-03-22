@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionVogue - Profile</title>
+    <link rel="stylesheet" href="/css/editProfile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">shop</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact us</a></li>
+            </ul>
+            <div class="logo">VisionVogue</div>
+            <div class="nav-icons">
+                <i class="fa-regular fa-heart"></i>
+                <i class="fa-solid fa-cart-shopping"></i>
+                <i class="fa-regular fa-user"></i>
+            </div>
+        </nav>
+    </header>
+    <main class="signup-container">
+    <div class="edit-profile-card">
+        <form action="/editProfile" method="POST" enctype="multipart/form-data">
+            <div class="card-header">
+                <div class="profile-image-section">
+                    <div class="profile-image-container" id="imageWrapper">
+                        <% if (user.profileImage && user.profileImage !== 'default-avatar.png') { %>
+                            <img src="/uploads/profileImage/<%= user.profileImage %>" alt="Profile" id="profileImagePreview">
+                        <% } else { %>
+                            <div class="default-user-icon" id="defaultIcon">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <img src="" alt="Profile" id="profileImagePreview" style="display:none;">
+                        <% } %>
+                        
+                        <button class="change-photo-btn" onclick="document.getElementById('profileImageInput').click();" type="button">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                    </div>
+                </div>
+                <h2>Personal Information</h2>
+            </div>
+
+            <input type="file" name="profileImage" id="profileImageInput" style="display: none;" accept="image/*" onchange="previewImage(this)">
+
+            <div class="form-body">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="name" class="form-control" value="<%= user.name %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <div class="email-box">
+                        <input type="text" class="form-control readonly-input" value="<%= user.email %>" readonly>
+                        <a href="/changeEmail" class="change-link">Change Email</a>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-save">Save Changes</button>
+                    <a href="/profile" class="btn btn-cancel">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>About Us:</h4>
+                <a href="#">Our Story</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms</a>
+                <a href="#">FAQ</a>
+            </div>
+            <div class="footer-column">
+                <h4>Support:</h4>
+                <a href="#">Shipping Policy</a>
+                <a href="#">Returns</a>
+                <a href="#">Order Tracking</a>
+                <a href="#">Help</a>
+            </div>
+            <div class="footer-column">
+                <h4>My Account:</h4>
+                <a href="#">Profile</a>
+                <a href="#">My Orders</a>
+                <a href="#">Wishlist</a>
+                <a href="#">Refer & Earn</a>
+            </div>
+            <div class="footer-column">
+                <h4>Contact:</h4>
+                <p>Email: visionvogue@gmail.com</p>
+                <p>Phone: 8923457190</p>
+            </div>
+        </div>
+        <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
+    </footer>
+
+    <script >
+       function previewImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            const preview = document.getElementById('profileImagePreview');
+            const defaultIcon = document.getElementById('defaultIcon');
+            
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            if(defaultIcon) defaultIcon.style.display = 'none';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+    </script>
+</body>
+</html>

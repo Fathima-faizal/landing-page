@@ -11,7 +11,7 @@ const offerController=require('../controllers/admin/offerController');
 const bannerController=require('../controllers/admin/bannerController')
 const {userAuth,adminAuth}=require('../middleware/auth')
 const multer=require('multer');
-const storage=require('../helpers/multer');
+const {storage}=require('../helpers/multer');
 const uploads=multer({storage:storage})
 
                //Admin login//

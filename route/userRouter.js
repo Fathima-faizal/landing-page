@@ -10,6 +10,10 @@ const checkoutControllers=require('../controllers/user/checkoutController')
 const orderControllers=require('../controllers/user/orderController');
 const couponControllers=require('../controllers/user/couponController')
 const {userAuth,adminAuth}=require('../middleware/auth');
+const multer=require('multer');
+const {profilestorage}=require('../helpers/multer');
+const uploads=multer({storage:profilestorage})
+
 
       // user Authentication//
 router.get('/landing',userControllers. loadLandingpage)
@@ -33,6 +37,11 @@ router.post('/resendForgotOTP',profileControllers.getresndOtp)
 router.post('/resetPassword',profileControllers.postNewPassword)
 router.get('/profile',userAuth,profileControllers.userProfile)
 router.get('/logout',profileControllers.logout)
+
+               //Edit Profile//
+
+router.get('/editProfile',userAuth,profileControllers.editprofile);
+router.post('/editProfile',userAuth,uploads.single('profileImage'),profileControllers.updateprofile)               
    
              //Email Change//
 
@@ -44,10 +53,8 @@ router.post('/updateEmail',userAuth,profileControllers.updateEmail);
          
                 //Password Change//
 
-router.post('/resendEmailOTP',userAuth,profileControllers.resetEmail)
-router.get('/changePassword',userAuth,profileControllers.changePassword)
-router.post('/changePassword',userAuth,profileControllers.changePasswordValid)
-router.post('/verifyChangePasswordOTP',userAuth,profileControllers.verifyChangePasswordOtp);
+router.get('/password',userAuth,profileControllers.getpassword);
+router.post('/password',userAuth,profileControllers.updatepassword)
 
                  //Address Management//
 
@@ -61,10 +68,10 @@ router.get('/defaultAddress',userAuth,profileControllers.defaultAddress);
 
                       //Shop Page//
 
-router.get('/shop',userAuth,userControllers.loadshoppingpage)
-router.get('/filter',userAuth,userControllers.filterproduct);
-router.get('/search',userAuth,userControllers.searchproducts);
-router.post('/shop',userAuth,userControllers.sortproducts);
+router.get('/shop', userAuth, userControllers.loadShop);
+ 
+                       //product details//
+                
 router.get('/productDetails',userAuth,productController.productdetails);
 
                        //wishlist//

@@ -36,9 +36,10 @@
         <aside class="sidebar-premium">
             <div class="filter-header">
                 <h3><i class="fa-solid fa-sliders"></i> Filters</h3>
+                <a href="/shop" style="text-decoration: none;color: black;">Reset all</a>
             </div>
 
-            <form action="/filter" method="get" id="filterForm">
+            <form action="/shop" method="get" id="filterForm">
                 <div class="filter-section">
                     <h4 class="filter-title">Categories</h4>
                     <div class="filter-list custom-scrollbar">
@@ -80,7 +81,7 @@
         <section class="shop-content">
             <div class="top-bar">
                 <div class="search-premium">
-                    <form action="/search" method="get">
+                    <form action="/shop" method="get">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <input type="text" name="search" placeholder="Search for eyewear...">
                         <button type="submit">Search</button>
@@ -88,9 +89,9 @@
                 </div>
 
                 <div class="sort-premium">
-                    <form action="/shop" method="post">
-                        <select name="sortOption" onchange="this.form.submit()">
-                            <option value="default">Sort by: Default</option>
+                    <form action="/shop" method="get">
+                        <select name="sort" onchange="this.form.submit()">
+                            <option value="default"<%= selectedSort === 'default' ? 'selected' : '' %>>Default</option>
                             <option value="az" <%= locals.selectedSort === 'az' ? 'selected' : '' %>>Name: A to Z</option>
                             <option value="za" <%= locals.selectedSort === 'za' ? 'selected' : '' %>>Name: Z to A</option>
                             <option value="low-high" <%= locals.selectedSort === 'low-high' ? 'selected' : '' %>>Price: Low to High</option>
@@ -128,7 +129,7 @@
 
             <div class="pagination-container">
                 <%for(let i=1;i<=totalpages;i++){%>
-                    <a href="?page=<%= i %>&search=<%= search %>" 
+                    <a href="?page=<%= i %>&search=<%= search %>&&category=<%= selectedCategory %>&brand=<%= selectedBrand %>&sort=<%= selectedSort %>&minPrice=<%= minPrice %>&maxPrice=<%= maxPrice %>" 
                        class="page-num <%=(i===currentPage)? 'active':''%>"><%= i %></a>
                 <%}%>
             </div>
