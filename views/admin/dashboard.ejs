@@ -6,16 +6,17 @@
     <title>Professional Admin Dashboard</title>
     <link rel="stylesheet" href="/css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
 </head>
 <body>
 
-    <div class="dashboard-container">
-        <aside class="sidebar">
-            <div class="nav-item active">
+<div class="dashboard-container">
+    <aside class="sidebar">
+        <div class="nav-item active">
                 <a href="/admin/dashboard">
                 <i class="fas fa-th-large"></i> <span>Dashboard</span>
                 </a>
@@ -35,11 +36,11 @@
                 <i class="fas fa-user"></i> <span>User Management</span>
                 </a>
             </div>
-             <div class="nav-item">
+            <div class="nav-item">
                 <a href="/admin/category">
                 <i class="fas fa-layer-group"></i> <span>Category Management</span>
                 </a>
-            </div>
+            </div> 
             <div class="nav-item">
                 <a href="/admin/banner">
                 <i class="fas fa-image"></i> <span>Banner Management</span>
@@ -59,10 +60,10 @@
             </div>
             <div class="nav-item">
                 <a href="/admin/brand">
-                <i class="fa-solid fa-tags"></i> <span>Brand</span>
+               <i class="fa-solid fa-tags"></i><span>Brand</span>
                 </a>
             </div>
-              <div class="nav-item">
+            <div class="nav-item">
                 <a href="/admin/Reviews">
                 <i class="fas fa-comment-alt"></i> <span>Review</span>
                 </a>
@@ -72,153 +73,222 @@
                <i class="fas fa-tag"></i> <span>Offers</span>
                 </a>
             </div>
-            
         </aside>
 
-        <main class="main-content">
-    <header class="top-header">
-        <h2>Admin Dashboard</h2>
-        <div>
+    <main class="main-content">
+        <header class="top-header">
+            <h2>Admin Dashboard</h2>
             <a href="/admin/logout"><button class="logout-top">Log out</button></a>
-        </div>
-    </header>
+        </header>
 
-    <div class="content-body">
-        <div class="stats-grid">
-            <div class="stat-card"><i class="fas fa-users"></i><div><p>Users</p><h3><%= userCount %></h3></div></div>
-            <div class="stat-card"><i class="fas fa-shopping-cart"></i><div><p>Orders</p><h3><%= orderCount %></h3></div></div>
-            <div class="stat-card"><i class="fas fa-wallet"></i><div><p>Revenue</p><h3>₹<%= revenue %></h3></div></div>
-        </div>
+        <div class="content-body">
+            
+            <div class="stats-grid">
+                <div class="stat-card"><i class="fas fa-users"></i><div><p>Users</p><h3><%= userCount %></h3></div></div>
+                <div class="stat-card"><i class="fas fa-shopping-cart"></i><div><p>Orders</p><h3><%= orderCount %></h3></div></div>
+                <div class="stat-card"><i class="fas fa-wallet"></i><div><p>Revenue</p><h3>₹<%= revenue %></h3></div></div>
+            </div>
 
-         <div class="report-section">
-    <div class="report-header">
-        <h3 style="margin: 0;">Sales Report</h3>
-        
-        <div class="filter-group">
-            <select id="filterType" onchange="applyFilter()">
-                <option value="">Custom Range</option>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="yearly">Yearly</option>
-            </select>
-            
-            <input type="date" id="startDate">
-            <input type="date" id="endDate">
-            
-            <button class="filter-btn" onclick="applyFilter()">
-                <i class="fas fa-filter"></i> Filter
-            </button>
+            <div style="margin: 20px 0; display: flex; justify-content: flex-end;">
+                <button id="toggleBtn" onclick="toggleDashboard()" class="filter-btn" style="min-width: 150px; background-color: #3498db; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">
+                    Show Sales Report
+                </button>
+            </div>
+
+            <div id="revenueSection" class="charts-container" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <h3>Revenue Analytics (Monthly)</h3>
+                <div style="height: 300px;">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <div id="salesSection" class="report-section" style="margin-top: 20px; display: none;">
+                <div class="report-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Sales Report</h3>
+                    <div class="filter-group">
+                        <select id="filterType" onchange="toggleDateInputs()">
+                            <option value="custom">Custom Range</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                        <input type="date" id="startDate">
+                        <input type="date" id="endDate">
+                        <button class="filter-btn" onclick="applyFilter()"><i class="fas fa-filter"></i> Filter</button>
+                    </div>
+                </div>
+
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Order ID</th>
+                            <th>Price</th>
+                            <th>Discount</th>
+                            <th>Final Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% salesReport.forEach(order => { %>
+                        <tr>
+                            <td><%= order.createdOn.toLocaleDateString() %></td>
+                            <td>#<%= order._id.toString() %></td>
+                            <td>₹<%= order.totalPrice %></td>
+                            <td>₹<%= order.discount %></td>
+                            <td>₹<%= order.finalAmount %></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button class="download-btn" onclick="downloadPDF()" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </button>
+                    <button class="download-btn" onclick="downloadExcel()" style="background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                        <i class="fas fa-file-excel"></i> Excel (CSV)
+                    </button>
+                </div>
+            </div>
         </div>
-    </div>
-            <table class="report-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Order ID</th>
-                        <th>Price</th>
-                        <th>Discount</th>
-                        <th>Final Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% salesReport.forEach(order => { %>
-                    <tr>
-                        <td><%= order.createdOn.toLocaleDateString() %></td>
-                        <td>#<%= order._id.toString().slice(-6) %></td>
-                        <td>₹<%= order.totalPrice %></td>
-                        <td>₹<%= order.discount %></td>
-                        <td>₹<%= order.finalAmount %></td>
-                    </tr>
-                    <% }) %>
-                </tbody>
-            </table>
-             <button class="download-btn" onclick="downloadPDF()" style="background: #e74c3c; margin-left: 90%; margin-top: 34px;">PDF</button>
-        </div>
-        
-    </div>
-</main>
-    </div>
-     <script>
-    window.addEventListener("pageshow", function (event) {
-        var historyTraversal = event.persisted || 
-                               (typeof window.performance != "undefined" && 
-                                window.performance.navigation.type === 2);
-        if (historyTraversal) {
-            window.location.reload();
+    </main>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('startDate').setAttribute('max', today);
+    document.getElementById('endDate').setAttribute('max', today);
+});
+    function toggleDashboard() {
+        const revenue = document.getElementById('revenueSection');
+        const sales = document.getElementById('salesSection');
+        const btn = document.getElementById('toggleBtn');
+
+        if (revenue.style.display === 'none') {
+            revenue.style.display = 'block';
+            sales.style.display = 'none';
+            btn.innerText = 'Show Sales Report';
+            btn.style.backgroundColor = '#3498db';
+        } else {
+            revenue.style.display = 'none';
+            sales.style.display = 'block';
+            btn.innerText = 'Show Revenue Analytics';
+            btn.style.backgroundColor = '#2c3e50';
+        }
+    }
+
+    const rawData = JSON.parse('<%- chartData %>'); 
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const labels = rawData.map(item => months[item._id - 1]);
+    const values = rawData.map(item => item.revenue);
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(52, 152, 219, 0.2)'); 
+    gradient.addColorStop(1, 'rgba(52, 152, 219, 0)');  
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Growth Analytics',
+                data: values,
+                borderColor: 'rgba(52, 152, 219, 0.8)', 
+                borderWidth: 4,                        
+                backgroundColor: gradient, 
+                fill: true,
+                tension: 0, 
+                pointRadius: 6,                        
+                pointBackgroundColor: '#3498db',
+                showLine: true                        
+            }]
+        },
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                x: { grid: { display: false } }
+            }
         }
     });
-    window.history.pushState(null, null, window.location.href);
-    window.onpopstate = function () {
-        window.history.go(1);
-    };
+    async function applyFilter() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const filterType = document.getElementById('filterType').value;
+       if (filterType === 'custom') {
+        if (!startDate || !endDate) return alert("Please select both dates");
+        const today = new Date().setHours(0,0,0,0);
+        if (new Date(startDate) > today || new Date(endDate) > today) {
+            return alert("Future dates are not allowed");
+        }
+        
+        if (new Date(startDate) > new Date(endDate)) {
+            return alert("Start date cannot be after end date");
+        }
+    }
+        const response = await fetch(`/admin/salesReport?startDate=${startDate}&endDate=${endDate}&filterType=${filterType}`);
+        const data = await response.json();
+        updateTable(data);
+    }
+
+    function updateTable(data) {
+        const tbody = document.querySelector('.report-table tbody');
+        tbody.innerHTML = data.map(order => `
+            <tr>
+                <td>${new Date(order.createdOn).toLocaleDateString()}</td>
+                <td>#${order._id.toString()}</td>
+                <td>₹${order.totalPrice}</td>
+                <td>₹${order.discount}</td>
+                <td>₹${order.finalAmount}</td>
+            </tr>
+        `).join('');
+    }
+
+
+    function downloadExcel() {
+        const table = document.querySelector(".report-table");
+        const ws = XLSX.utils.table_to_sheet(table);
+         const wscols = [
+        {wch: 15},
+        {wch: 30}, 
+        {wch: 12}, 
+        {wch: 12}, 
+        {wch: 15} 
+        ];
+        ws['!cols'] = wscols;
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Sales Report");
+        XLSX.writeFile(wb, "Sales_Report.xlsx");
+    }
+
     function downloadPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    doc.setFontSize(18);
+    
     doc.text("Sales Report", 14, 15);
-    doc.setFontSize(11);
-    doc.setTextColor(100);
-    const rows = [];
-    const tableRows = document.querySelectorAll(".report-table tbody tr");
-    tableRows.forEach(row => {
-        const rowData = [];
-        const cells = row.querySelectorAll("td");
-        cells.forEach((cell, index) => {
-            let text = cell.innerText;
-            if (index >= 2) {
-                text = text.replace('₹', '').replace(/\s+/g, '').trim();
-            }
-            rowData.push(text);
-        });
-        rows.push(rowData);
-    });
+
     doc.autoTable({
-        head: [['Date', 'Order ID', 'Price', 'Discount', 'Final Amount']],
-        body: rows,
-        startY: 25,
+        html: '.report-table',
+        startY: 20,
         theme: 'grid',
         styles: { 
-            fontSize: 10, 
-            cellPadding: 3,
-            halign: 'center' 
+            fontSize: 9, 
+            font: "helvetica" 
         },
-        headStyles: { 
-            fillColor: [26, 77, 46],
-            halign: 'center' 
-        },
-        columnStyles: {
-            2: { halign: 'right' },
-            3: { halign: 'right' },
-            4: { halign: 'right' }
+        headStyles: { fillColor: [46, 204, 113] }, 
+        didParseCell: function (data) {
+            if (data.section === 'body' && (data.column.index === 2 || data.column.index === 3 || data.column.index === 4)) {
+                let text = data.cell.raw.innerText || data.cell.raw.textContent;
+                data.cell.text = text.replace('₹', '').trim();
+            }
         }
     });
 
     doc.save("Sales_Report.pdf");
-}
-    async function applyFilter() {
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    const filterType = document.getElementById('filterType').value;
-
-    const response = await fetch(`/admin/salesReport?startDate=${startDate}&endDate=${endDate}&filterType=${filterType}`);
-    const data = await response.json();
-    
-    const tbody = document.querySelector('.report-table tbody');
-    tbody.innerHTML = data.map(order => {
-        const price = String(order.totalPrice).replace(/\s+/g, '');
-        const discount = String(order.discount).replace(/\s+/g, '');
-        const final = String(order.finalAmount).replace(/\s+/g, '');
-
-        return `
-            <tr>
-                <td>${new Date(order.createdOn).toLocaleDateString()}</td>
-                <td>#${order._id.toString().slice(-6)}</td>
-                <td>₹${price}</td>
-                <td>₹${discount}</td>
-                <td>₹${final}</td>
-            </tr>
-        `;
-    }).join('');
 }
 </script>
 </body>

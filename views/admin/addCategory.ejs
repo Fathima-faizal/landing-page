@@ -127,7 +127,7 @@
         window.location.href = '/admin/category';
     })
     .catch(error => {
-        if (error.message === 'Category already Exists') {
+        if (error.message.toLowerCase().includes('already exists')) {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops',

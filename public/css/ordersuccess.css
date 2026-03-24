@@ -1,6 +1,6 @@
-/* മധ്യഭാഗത്ത് അലൈൻ ചെയ്യാൻ */
+
 body {
-    background-color: #f4f7f6; /* ലളിതമായ ഒരു ബാക്ക്ഗ്രൗണ്ട് */
+    background-color: #f4f7f6; 
     margin: 0;
     display: flex;
     justify-content: center;
@@ -44,7 +44,6 @@ p {
     line-height: 1.6;
 }
 
-/* ബട്ടണുകൾക്കുള്ള സ്റ്റൈൽ */
 .buttons {
     display: flex;
     gap: 15px;

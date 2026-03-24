@@ -36,29 +36,42 @@ const adminlogin=async(req,res)=>{
       return res.status(400).send('page not found')
      }
 }
-const loaddashboard=async(req,res)=>{
-      if(req.session.admin){
-        try{
-          const userCount = await User.countDocuments({ isAdmin: false });
-          const orderCount = await Order.countDocuments()
-           const totalRevenue = await Order.aggregate([
-            { $match: { status: 'delivered' } },
-            { $group: { _id: null, total: { $sum: "$finalAmount" } } }
-        ]);
-        const salesReport = await Order.find({ status: 'delivered' })
-            .sort({ createdOn: -1 })
-            .limit(5);
-            res.render('dashboard',{
-              userCount,
-              orderCount,
-              revenue:totalRevenue[0]?totalRevenue[0].total:0,
-              salesReport
-            });
-        }catch(error){
-        res.status(500).send('Internal server error')
-      }
+const loaddashboard = async (req, res) => {
+  if (req.session.admin) {
+   try {
+    const userCount = await User.countDocuments({ isAdmin: false });
+    const orderCount = await Order.countDocuments();
+    const totalRevenue = await Order.aggregate([
+    { $match: { status: 'delivered' } },
+    { $group: { _id: null, total: { $sum: "$finalAmount" } } }
+    ]);
+    const monthlySales = await Order.aggregate([
+    { $match: { status: 'delivered' } },
+    {
+    $group: {
+    _id: { $month: "$createdOn" },
+    revenue: { $sum: "$finalAmount" }
     }
-}
+    },
+    { $sort: { "_id": 1 } }
+    ]);
+
+   const salesReport = await Order.find({ status: 'delivered' })
+  .sort({ createdOn: -1 })
+  .limit(5);
+
+  res.render('dashboard', {
+  userCount,
+  orderCount,
+  revenue: totalRevenue[0] ? totalRevenue[0].total : 0,
+  salesReport,
+  chartData: JSON.stringify(monthlySales) 
+  });
+  } catch (error) {
+  res.status(500).send('Internal server error');
+  }
+    }
+};
 const salesreport=async(req,res)=>{
   try {
     let {startDate,endDate,filterType}=req.query;
