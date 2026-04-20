@@ -112,6 +112,16 @@
     const error1 = document.getElementById("error1");
     const error2 = document.getElementById("error2");
     const loginform = document.getElementById("loginForm"); 
+    const togglePassword = document.getElementById("togglePassword"); 
+    const passwordField = document.getElementById("passwordField");
+
+
+    togglePassword.addEventListener("click", function () {
+     const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+    passwordField.setAttribute("type", type);
+    this.classList.toggle("fa-eye");
+    this.classList.toggle("fa-eye-slash");
+});
 
     function emailValidateChecking() {
         const emailval = emailid.value;

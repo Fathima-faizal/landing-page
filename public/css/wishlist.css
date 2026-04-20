@@ -126,6 +126,25 @@ body { background-color: var(--light-bg); }
 
 /* Details Section */
 .product-details { padding: 20px; }
+.wishlist-icon-container {
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+}
+
+.wishlist-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ff4d4d; /* ചുവപ്പ് നിറം */
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 50%;
+    min-width: 15px;
+    text-align: center;
+}
 
 .brand-name { 
     font-size: 0.75rem; 

@@ -16,8 +16,9 @@
                     <input type="email" id="email" name="email" placeholder="Email" autocomplete="none">
                 </div>
                 <div class="input-group" style="position: relative;">
+                    <i class="fa-solid fa-shield-check"></i>
                     <input type="password" id="password" name="password" placeholder="Password"  autocomplete="new-password">
-                 <i class="fa-solid fa-eye" id="togglePassword" style="position: absolute; right: 10px; top: 15px; cursor: pointer; color: #777;"></i>
+                    <i class="fa-solid fa-eye-slash toggle-password" data-target="password" style="position: absolute; right: 10px; top:30px; cursor: pointer; color: #777;"></i>
                 </div>
                 <div id="formError" class="error-message full-width" style="color:red"></div>
                 <button type="submit" class="login-btn">Log in</button>
@@ -25,10 +26,23 @@
         </div>
     </div>
     <script>
-        addlogin=document.querySelector('form')
+       const addlogin=document.querySelector('form')
         const email=document.getElementById('email');
         const password=document.getElementById('password');
          const formError = document.getElementById('formError');
+         document.querySelectorAll('.toggle-password').forEach(icon => {
+        icon.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.classList.replace('fa-eye-slash', 'fa-eye');
+            } else {
+                input.type = 'password';
+                this.classList.replace('fa-eye', 'fa-eye-slash');
+            }
+        });
+    });
      addlogin.addEventListener('submit',function(e){
        if(
         email.value.trim()===''||

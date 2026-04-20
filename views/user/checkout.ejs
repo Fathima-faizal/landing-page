@@ -120,23 +120,23 @@
         <p id="couponMessage"></p>
     </div>
             <div class="price-breakdown">
-                <div class="price-row">
-                    <span>Subtotal</span>
-                    <span>₹<%= grandTotal %></span>
-                </div>
-                <div class="price-row">
-                  <span>Discount</span>
-                <span>- ₹<%= discount %></span>
-                 </div>
-                <div class="price-row text-success">
-                    <span>Shipping</span>
-                    <span class="free">FREE</span>
-                </div>
-                <div class="price-row total">
-                    <span>Total Amount</span>
-                    <span>₹<%= finalAmount %></span>
-                </div>
-            </div>
+    <div class="price-row">
+        <span>Subtotal</span>
+        <span id="subtotal">₹<%= grandTotal %></span>
+    </div>
+    <div class="price-row">
+        <span>Discount</span>
+        <span id="discountValue">- ₹<%= discount %></span>
+    </div>
+    <div class="price-row text-success">
+        <span>Shipping</span>
+        <span class="free">FREE</span>
+    </div>
+    <div class="price-row total">
+        <span>Total Amount</span>
+        <span id="finalTotal">₹<%= finalAmount %></span>
+    </div>
+</div>
 
             <button class="place-order-btn" onclick="placeOrder()">
                 CONFIRM ORDER <i class="fa-solid fa-arrow-right"></i>
@@ -190,9 +190,14 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-    function applyCoupon() {
+   function applyCoupon() {
     const code = document.getElementById('couponCode').value;
     const total = Number("<%= grandTotal %>");
+
+    if (!code) {
+        Swal.fire("Error", "Please enter a code", "error");
+        return;
+    }
 
     $.ajax({
         url: '/applyCoupon',
@@ -200,10 +205,25 @@
         data: { couponCode: code, totalAmount: total },
         success: (res) => {
             if (res.success) {
-                Swal.fire("Success", res.message, "success").then(() => location.reload());
+                Swal.fire({
+                    title: "Success",
+                    text: res.message,
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    // Update the UI manually before/during reload
+                    document.getElementById('discountValue').innerText = "- ₹" + res.discountAmount;
+                    document.getElementById('finalTotal').innerText = "₹" + res.finalAmount;
+                    location.reload(); // Refresh to ensure session-based EJS variables update
+                });
             } else {
                 Swal.fire("Error", res.message, "error");
             }
+        },
+        error: (err) => {
+            console.error("Coupon error:", err);
+            Swal.fire("Error", "Internal server error", "error");
         }
     });
 }
@@ -263,7 +283,7 @@ function removeCoupon() {
 
 function razorpayPayment(order) {
     const options = {
-        "key": "rzp_test_SPYRCHxOuTkjkU",
+        "key": "rzp_test_SesqziujsCZTrM",
         "amount": order.razorpayOrder.amount,
         "currency": "INR",
         "name": "VisionVogue",

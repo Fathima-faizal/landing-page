@@ -42,31 +42,49 @@ const loaddashboard = async (req, res) => {
     const userCount = await User.countDocuments({ isAdmin: false });
     const orderCount = await Order.countDocuments();
     const totalRevenue = await Order.aggregate([
-    { $match: { status: 'delivered' } },
-    { $group: { _id: null, total: { $sum: "$finalAmount" } } }
+    { 
+    $match: { 
+    $or: [
+    { paymentMethod: { $in: ['Wallet', 'Razorpay'] } },
+     { paymentMethod: 'COD', status: 'delivered' }
+     ]
+    } 
+     },
+     { $group: { _id: null, total: { $sum: "$finalAmount" } } }
     ]);
     const monthlySales = await Order.aggregate([
-    { $match: { status: 'delivered' } },
-    {
-    $group: {
-    _id: { $month: "$createdOn" },
-    revenue: { $sum: "$finalAmount" }
-    }
-    },
-    { $sort: { "_id": 1 } }
-    ]);
-
-   const salesReport = await Order.find({ status: 'delivered' })
+      { 
+      $match: { 
+      $or: [
+      { paymentMethod: { $in: ['Wallet', 'Razorpay'] } },
+   { paymentMethod: 'COD', status: 'delivered' }          
+   ]
+  } 
+  },
+  {
+  $group: {
+  _id: { $month: "$createdOn" },
+  revenue: { $sum: "$finalAmount" }
+   }
+  },
+  { $sort: { "_id": 1 } }
+  ]);
+   const salesReport = await Order.find({
+   $or: [
+   { paymentMethod: { $in: ['Wallet', 'Razorpay'] } },
+  { paymentMethod: 'COD', status: 'delivered' }
+  ]
+  })
   .sort({ createdOn: -1 })
   .limit(5);
 
-  res.render('dashboard', {
+   res.render('dashboard', {
   userCount,
   orderCount,
   revenue: totalRevenue[0] ? totalRevenue[0].total : 0,
   salesReport,
-  chartData: JSON.stringify(monthlySales) 
-  });
+ chartData: JSON.stringify(monthlySales)
+   });
   } catch (error) {
   res.status(500).send('Internal server error');
   }
@@ -75,7 +93,12 @@ const loaddashboard = async (req, res) => {
 const salesreport=async(req,res)=>{
   try {
     let {startDate,endDate,filterType}=req.query;
-    let query={status:'delivered'};
+   let query = {
+    $or: [
+     { paymentMethod: { $in: ['Wallet', 'Razorpay'] } },
+     { paymentMethod: 'COD', status: { $in: ['delivered', 'cancelled', 'returned'] } }
+    ]
+    };
     const now=new Date();
     if(filterType==='daily'){
       query.createdOn={$gte:new Date(now.setHours(0,0,0,0))}
@@ -95,13 +118,8 @@ const salesreport=async(req,res)=>{
 }
 const admilogout=async(req,res)=>{
   try {
-     req.session.destroy(error=>{
-       if(error){
-        console.log('session distruction error',error);
-        return res.status(400).send('Admin error')
-       }
-       return res.redirect('/admin/login')
-     })
+     req.session.admin = null; 
+        res.redirect('/admin/login')
   } catch (error) {
     console.log('Admin logout error ',error);
     res.status(500).send('Internal server error')

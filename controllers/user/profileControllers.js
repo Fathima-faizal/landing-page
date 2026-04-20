@@ -153,17 +153,23 @@ const postNewPassword=async(req,res)=>{
    const userId=req.session.user;
    const userData=await User.findById(userId);
   let cartCount = 0;
+  let wishlistCount=0
           if (userId) {
               const cart = await Cart.findOne({ userId: userId });
               if (cart) {
                   cartCount = cart.items.length; 
               }
+              const userData = await User.findById(userId);
+      if (userData && userData.wishlist) {
+        wishlistCount = userData.wishlist.length;
+      }
           }
    const addressData=await Address.findOne({userId:userId});
    res.render('profile',{
     user:userData,
     userAddress:addressData,
     cartCount:cartCount,
+    wishlistCount:wishlistCount
    })
  } catch (error) {
      console.error('Error for retrieve Profile data',error);

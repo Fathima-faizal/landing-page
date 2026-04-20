@@ -88,9 +88,16 @@
                             <small id="name-error" class="error-message" style="color: red;"></small>
                         </div>
                         <div>
-                            <label for="code">Coupon Code</label>
-                            <input type="text" id="code" name="couponCode" placeholder="Enter Coupon code" value="<%=coupons.couponCode%>" style="text-transform: uppercase;">
-                            <small id="code-error" class="error-message" style="color: red;"></small>
+                            <label for="name">Coupon Code</label>
+                            <input type="text" id="code" name="couponCode" placeholder="Enter Coupon code" value="<%=coupons.couponCode%>">
+                            <small id="name-error" class="error-message" style="color: red;"></small>
+                        </div>
+                        <div>
+                           <label for="couponType">Coupon Type</label>
+                           <select id="couponType" name="couponType" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                           <option value="fixed" <%= coupons.couponType === 'fixed' ? 'selected' : '' %>>Fixed Amount</option>
+                          <option value="percentage" <%= coupons.couponType === 'percentage' ? 'selected' : '' %>>Percentage</option>
+                         </select>
                         </div>
                         <div>
                             <label for="Startdate">Start Date</label>
@@ -143,6 +150,7 @@ function setDefaultDates() {
     const id = "<%=coupons._id%>";
     const name = document.getElementsByName('name')[0].value;
     const couponCode = document.getElementsByName('couponCode')[0].value;
+    const couponType = document.getElementById('couponType').value;
     const startdate = document.getElementsByName('startdate')[0].value;
     const Enddate = document.getElementsByName('Enddate')[0].value;
     const Minimumprice = document.getElementsByName('Minimumprice')[0].value;
@@ -156,6 +164,7 @@ function setDefaultDates() {
         body: JSON.stringify({
             name,
             couponCode,
+            couponType,
             startdate,
             Enddate,
             Minimumprice,

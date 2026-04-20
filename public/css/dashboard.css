@@ -160,7 +160,10 @@ body {
     font-weight: 500;
     transition: background 0.3s;
 }
-
+.status-red { color: red; }
+.status-green { color: green;}
+.status-yellow { color: #e1ad01; }
+.status-black { color: black; }
 .filter-btn:hover {
     background-color: #143d24;
 }

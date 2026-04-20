@@ -29,11 +29,19 @@ const getcheckout=async(req,res)=>{
         if (!cart || cart.items.length === 0) {
             return res.redirect('/cart');
         }
-        for(const item of cart.items){
-            if(!item.proudctId||item.proudctId.isBlocked===true||item.proudctId.quantity<item.quantity){
-                return res.redirect('/cart?message=Out of stock')
-            }
-        }
+        for (const item of cart.items) {
+    const productName = item.proudctId ? item.proudctId.productName : "Product";
+
+    if (!item.proudctId || item.proudctId.isBlocked === true) {
+         req.session.errorMessage = productName + " is currently unavailable";
+        return res.redirect('/cart');
+    }
+
+    if (item.proudctId.quantity < item.quantity) {
+        req.session.errorMessage = productName + " is Out of stock";
+        return res.redirect('/cart');
+    }
+}
         let grandTotal = 0;
         if (cart && cart.items && cart.items.length > 0) {
         cart.items.forEach(item => {
@@ -41,7 +49,8 @@ const getcheckout=async(req,res)=>{
         });
     }
       const discount = req.session.coupon ? req.session.coupon.discount : 0;
-        const finalAmount = grandTotal - discount;
+       const finalAmount = grandTotal - discount;
+        const appliedCoupon = req.session.coupon ? req.session.coupon.code : null;
 
         res.render('checkout',{
             user,
@@ -50,7 +59,7 @@ const getcheckout=async(req,res)=>{
            grandTotal,
            discount,
            finalAmount,
-            appliedCoupon: req.session.coupon ? req.session.coupon.code : null
+            appliedCoupon
         })
     } catch (error) {
         console.log('error',error);

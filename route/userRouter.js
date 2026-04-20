@@ -81,6 +81,7 @@ router.post('/addtoWishlist',userAuth,wishlistController.addwishlist)
 router.get('/wishlist/delete',userAuth,wishlistController.deleteWishlist)
 
                    //cart//
+                    
 router.get('/cart',userAuth,cartControllers.getcartpage);
 router.post('/cart',userAuth,cartControllers.addcart); 
 router.post('/changeQuantity', userAuth,cartControllers.changeQuantity);

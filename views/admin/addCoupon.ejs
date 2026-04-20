@@ -88,9 +88,16 @@
                             <small id="name-error" class="error-message" style="color: red;"></small>
                         </div>
                         <div>
-                            <label for="code">Coupon Code</label>
-                            <input type="text" id="code" name="couponCode" placeholder="Enter Coupon code" style="text-transform: uppercase;">
-                            <small id="code-error" class="error-message" style="color: red;"></small>
+                        <label for="code">Coupon Code</label>
+                        <input type="text" id="code" name="couponCode" placeholder="Enter Coupon code" style="text-transform: uppercase;">
+                        <small id="code-error" class="error-message" style="color: red;"></small>
+                       </div>
+                        <div>
+                            <label for="couponType">Coupon Type</label>
+                            <select id="couponType" name="couponType" style="width: 100%; padding: 8px; border-radius: 4px;">
+                            <option value="fixed">Fixed Amount</option>
+                            <option value="percentage">Percentage</option>
+                           </select>
                         </div>
                         <div>
                             <label for="Startdate">Start Date</label>
@@ -108,9 +115,9 @@
                             <small id="maxprice-error" class="error-message" style="color: red;"></small>
                         </div>
                         <div>
-                            <label for="discountPercentage"> Discount Price</label>
-                            <input type="number" id="discountPercentage" name=" discountPercentage" placeholder="Enter Discount price">
-                            <small id="maxprice-error" class="error-message" style="color: red;"></small>
+                            <label for="discountPercentage">Discount Value (Amount/%)</label>
+                            <input type="number" id="discountPercentage" name="discountPercentage" placeholder="Enter Value">
+                            <small id="discount-error" class="error-message" style="color: red;"></small>
                         </div>
                     </div>
 
@@ -142,13 +149,13 @@ function setDefaultDates() {
     document.getElementById('Enddate').setAttribute('min', formattedDate);
 }
 
-// 2. വാലിഡേഷൻ ലോജിക്
 function validateForm() {
     clearErrorMessages();
     let isValid = true;
 
     const name = document.getElementById('name').value.trim();
     const code = document.getElementById('code').value.trim();
+    const couponType= document.getElementById('couponType').value;
     const startDate = document.getElementById('Startdate').value;
     const endDate = document.getElementById('Enddate').value;
     const minPrice = document.getElementById('Minimumprice').value;

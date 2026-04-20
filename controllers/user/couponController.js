@@ -29,40 +29,33 @@ const loadedCoupon=async(req,res)=>{
         res.status(500).send('Internal server error')
     }
 }
-const applycoupon=async(req,res)=>{
+const applycoupon = async (req, res) => {
     try {
-       const {couponCode,totalAmount}=req.body;
-        const coupon = await Coupon.findOne({ 
-            couponCode: couponCode, 
-            islisted: true 
-        });
-        if (!coupon) {
-            return res.json({ success: false, message: "Invalid Coupon Code" });
+        const { couponCode, totalAmount } = req.body;
+        const coupon = await Coupon.findOne({ couponCode, islisted: true });
+        if (!coupon) return res.json({ success: false, message: "Invalid Coupon" });
+        let discountAmount = 0;
+        if (coupon.couponType === 'percentage') {
+            discountAmount = (totalAmount * coupon.discountPercentage) / 100;
+            if (coupon.minimumPrice > 0 && discountAmount > coupon.minimumPrice) {
+            }
+        } else {
+            discountAmount = coupon.discountPercentage;
         }
-        const today = new Date();
-        if (coupon.expireOn < today) {
-            return res.json({ success: false, message: "Coupon has expired" });
-        }
-        if (totalAmount < coupon.minimumPrice) {
-            return res.json({ 
-                success: false, 
-                message: `Minimum purchase of ₹${coupon.minimumPrice} required` 
-            });
-        }
-        const finalAmount = totalAmount - coupon.discountPercentage;
-        req.session.coupon = {
+        if (discountAmount >= totalAmount) discountAmount = totalAmount;
+        const finalAmount = totalAmount - discountAmount; 
+            req.session.coupon = {
             code: couponCode,
-            discount: coupon.discountPercentage
+            discount: discountAmount
         };
         return res.json({ 
             success: true, 
-            discountAmount: coupon.discountPercentage, 
-            finalAmount: finalAmount,
-            message: "Coupon applied successfully!" 
+            discountAmount, 
+            finalAmount,  
+            message: "Applied!" 
         });
     } catch (error) {
-        console.log('error',error);
-        res.status(500).send('Internal server error')
+        res.status(500).send('Internal error');
     }
 }
 const removecoupon=async(req,res)=>{

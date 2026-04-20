@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VisionVogue - Profile</title>
+    <title>VisionVogue - profile</title>
     <link rel="stylesheet" href="/css/orderDetails.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -48,9 +48,9 @@
             <h2>Order Details</h2>
             <p>ID: <span class="order-id-text">#<%= order.orderId %></span> | Placed on <%= new Date(order.createdOn).toLocaleDateString() %></p>
         </div>
-        <a href="/downloadInvoice/<%= order._id %>" class="btn-invoice-premium">
-            <i class="fa-solid fa-file-pdf"></i> Download Invoice
-        </a>
+        <button type="button" class="btn-invoice-premium" onclick="checkInvoiceStatus('<%= order.status %>', '<%= order._id %>')">
+    <i class="fa-solid fa-file-pdf"></i> Download Invoice
+</button>
     </div>
      <div class="status-card-premium">
     <h3>Order Status</h3>
@@ -190,15 +190,26 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-    async function handleCancel(orderId, productId) {
+    function checkInvoiceStatus(status, orderId) {
+    if (status.toLowerCase() !== 'delivered') {
+        Swal.fire({
+            title: 'Invoice Unavailable',
+            text: 'You can only download the invoice once the order has been delivered.',
+            icon: 'info',
+            confirmButtonColor: '#1a4d2e'
+        });
+    } else {
+        window.location.href = `/downloadInvoice/${orderId}`;
+    }
+}
+   async function handleCancel(orderId, productId) {
     const result = await Swal.fire({
-        title: 'Are you sure?',
-        text: "Do you want to cancel this item and return it to stock?",
+        title: 'Cancel Item?',
+        text: "Are you sure you want to cancel this item? .",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, Cancel it!'
+        confirmButtonText: 'Yes, Cancel'
     });
 
     if (result.isConfirmed) {
@@ -210,15 +221,17 @@
             });
 
             const data = await response.json();
-
+            
             if (data.success) {
-                await Swal.fire('Cancelled!', data.message, 'success');
-                window.location.reload(); 
+                Swal.fire('Cancelled!', data.message, 'success').then(() => {
+                    // This reloads the page to show updated prices and removed items
+                    window.location.reload(); 
+                });
             } else {
                 Swal.fire('Error', data.message, 'error');
             }
-        } catch (error) {
-            Swal.fire('Error', 'Something went wrong!', 'error');
+        } catch (error) { 
+            Swal.fire('Error', 'Internal server error', 'error');
         }
     }
 }

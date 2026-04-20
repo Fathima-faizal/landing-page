@@ -6,7 +6,8 @@ const mongoose = require('mongoose');
 const getcartpage = async (req, res) => {
     try {
         const userId = req.session.user;
-        let cartCount=0
+        let cartCount=0;
+        let wishlistCount=0
         const user = await User.findById(userId);
     const fullCart = await Cart.findOne({ userId: userId }).populate({
         path:'items.proudctId',
@@ -15,6 +16,11 @@ const getcartpage = async (req, res) => {
       if(fullCart){
         cartCount = fullCart.items.length;
       }
+const userData = await User.findById(userId);
+      if (userData && userData.wishlist) {
+        wishlistCount = userData.wishlist.length;
+      }
+    
        let grandtotal = 0;
        if (fullCart && fullCart.items) {
             fullCart.items.forEach(item => {
@@ -45,14 +51,16 @@ const getcartpage = async (req, res) => {
             },
             { $unwind: { path: '$categoryDetails', preserveNullAndEmptyArrays: true } }
         ]);
-        const message = req.query.message || null;
+        const message = req.session.errorMessage;
+        req.session.errorMessage = null;
         req.session.grandtotal = grandtotal;
         res.render('cart', {
             user,
             data,
             message,
             grandtotal,
-            cartCount: cartCount
+            cartCount: cartCount,
+            wishlistCount:wishlistCount
         });
 
     } catch (error) {
@@ -70,7 +78,7 @@ const addcart = async (req, res) => {
     return res.json({ status: false, message: "Product not available" });
      }
         if (product.quantity <= 0) {
-            return res.json({status:false,message: "Out Of Stock" });
+            return res.json({status:false,message:"is Out Of Stock"});
         }
         let userCart = await Cart.findOne({ userId: userId });
         if (!userCart) {

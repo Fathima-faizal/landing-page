@@ -6,12 +6,18 @@ const getwishlist=async(req,res)=>{
     try {
         const userId=req.session.user;
         let cartCount=0
+        let wishlistCount=0
         if (userId) {
             const cart = await Cart.findOne({ userId: userId });
             if (cart) {
                 cartCount = cart.items.length; 
             }
+            const userData = await User.findById(userId);
+      if (userData && userData.wishlist) {
+        wishlistCount = userData.wishlist.length;
+      }
         }
+
         const page = parseInt(req.query.page) || 1; 
         const limit = 4;
         const skip = (page - 1) * limit;
@@ -27,7 +33,8 @@ const getwishlist=async(req,res)=>{
            wishlist:proudcts,
            currentPage: page,
         totalPages: totalPages,
-        cartCount: cartCount
+        cartCount: cartCount,
+        wishlistCount:wishlistCount,
         })
 
     } catch (error) {

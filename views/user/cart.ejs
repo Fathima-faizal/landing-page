@@ -20,7 +20,12 @@
             </ul>
             <div class="logo">VisionVogue</div>
             <div class="nav-icons">
-               <a href="/wishlist"><i class="fa-regular fa-heart"></i></a>
+               <a href="/wishlist" class="wishlist-icon-container" style="position: relative; display: inline-block;">
+        <i class="fa-regular fa-heart"></i>
+        <% if (locals.wishlistCount > 0) { %>
+            <span class="wishlist-badge"><%= wishlistCount %></span>
+        <% } %>
+    </a>
                <a href="/cart" class="cart-icon-container"><i class="fa-solid fa-cart-shopping"></i>
                 <% if (locals.cartCount > 0) { %>
             <span class="cart-badge"><%= cartCount %></span>
@@ -182,6 +187,10 @@
         }
     });
 }
+if (window.location.search.includes('message')) {
+        const newUrl = window.location.pathname; 
+        window.history.replaceState({}, document.title, newUrl);
+    }
     function confirmRemove(event,name){
  if (!confirm(`Are you sure you want to delete "${name}"?`)) {
         event.preventDefault(); 

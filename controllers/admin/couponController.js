@@ -45,6 +45,7 @@ const postcoupon=async(req,res)=>{
     const data={
         name:req.body.name,
         couponCode:req.body.couponCode,
+        couponType:req.body.couponType,
         startdate:new Date(req.body.startdate+'T00:00:00'),
         enddate:new Date(req.body.Enddate+'T00:00:00'),
         Minimumprice:parseInt(req.body.Minimumprice),
@@ -53,6 +54,7 @@ const postcoupon=async(req,res)=>{
     const newCoupon= new Coupon({
         name:data.name,
         couponCode:data.couponCode,
+        couponType:data.couponType,
         createdOn:data.startdate,
         expireOn:data.enddate,
         minimumPrice:data.Minimumprice,
@@ -78,7 +80,7 @@ const editcoupon=async(req,res)=>{
 const posteditCoupon=async(req,res)=>{
     try {
         const id=req.params.id;
-        const {name,couponCode,startdate,Enddate,Minimumprice,discountPercentage}=req.body;
+        const {name,couponCode,couponType,startdate,Enddate,Minimumprice,discountPercentage}=req.body;
         const ExistingCoupon=await Coupon.findOne(
             {$or:[
                 {name:name},
@@ -95,6 +97,7 @@ const posteditCoupon=async(req,res)=>{
             {
                 name:name,
                 couponCode:couponCode,
+                couponType:couponType,
                 createdOn:new Date(startdate),
                 expireOn:new Date(Enddate),
                 minimumPrice:parseInt(Minimumprice),

@@ -44,44 +44,48 @@
             </aside>
             <section>
             <div class="coupon-grid">
-    <% if (coupons.length > 0) { %>
-        <% coupons.forEach(coupon => { %>
-            <div class="coupon-card">
-                <div class="coupon-left">
-                    <div class="discount-box">
-                        <span class="amount">₹<%= coupon.minimumPrice %></span>
-                    </div>
-                    <p>MIN. SPEND</p>
-                    <div class="notch notch-top"></div>
-                    <div class="notch notch-bottom"></div>
-                </div>
-
-                <div class="coupon-right">
-                    <div class="coupon-info">
-                        <h4 class="coupon-name"><%= coupon.name %></h4>
-                        <p class="coupon-expiry">
-                            <i class="fa-regular fa-clock"></i> Expires: <%= new Date(coupon.expireOn).toLocaleDateString() %>
-                        </p>
-                    </div>
-                    <div class="code-container">
-                        <div class="code-box">
-                            <span class="code-text" id="code-<%= coupon._id %>"><%= coupon.couponCode %></span>
+        <% if (coupons.length > 0) { %>
+            <% coupons.forEach(coupon => { %>
+                <div class="coupon-card">
+                    <div class="coupon-left">
+                        <div class="discount-box">
+                            <span class="amount">
+                                <%= coupon.couponType === 'percentage' ? coupon.discountPercentage + '%' : '₹' + coupon.discountPercentage %>
+                            </span>
+                            <span class="off-text">OFF</span>
                         </div>
-                        <button class="copy-btn" onclick="copyCode('<%= coupon._id %>')">
-                            <i class="fa-regular fa-copy"></i> Copy
-                        </button>
+                        <p class="min-spend">Min Spend: ₹<%= coupon.minimumPrice %></p>
+                        <div class="notch notch-top"></div>
+                        <div class="notch notch-bottom"></div>
+                    </div>
+
+                    <div class="coupon-right">
+                        <div class="coupon-info">
+                            <h4 class="coupon-name"><%= coupon.name %></h4>
+                            <p class="coupon-expiry">
+                                <i class="fa-regular fa-clock"></i> Expires: <%= new Date(coupon.expireOn).toLocaleDateString() %>
+                            </p>
+                        </div>
+                        <div class="code-container">
+                            <div class="code-box">
+                                <span class="code-text" id="code-<%= coupon._id %>"><%= coupon.couponCode %></span>
+                            </div>
+                            <button class="copy-btn" onclick="copyCode('<%= coupon._id %>')">
+                                <i class="fa-regular fa-copy"></i> Copy
+                            </button>
+                        </div>
                     </div>
                 </div>
+            <% }) %>
+        <% } else { %>
+            <div class="no-coupons">
+                <i class="fa-solid fa-ticket"></i>
+                <p>No coupons available at the moment.</p>
             </div>
-        <% }) %>
-    <% } else { %>
-        <div class="no-coupons">
-            <i class="fa-solid fa-ticket"></i>
-            <p>No coupons available at the moment. Stay tuned!</p>
-        </div>
-    <% } %>
+        <% } %>
+    </div>
     
-</div>
+
 <div class="container">
                     <nav aria-label="page navigation">
                         <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>

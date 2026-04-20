@@ -126,6 +126,7 @@
                             <th>Price</th>
                             <th>Discount</th>
                             <th>Final Amount</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -136,6 +137,16 @@
                             <td>₹<%= order.totalPrice %></td>
                             <td>₹<%= order.discount %></td>
                             <td>₹<%= order.finalAmount %></td>
+                            <% 
+    let statusClass = 'status-black';
+    if(order.status === 'cancelled') statusClass = 'status-red';
+    else if(order.status === 'delivered') statusClass = 'status-green';
+    else if(order.status === 'pending') statusClass = 'status-yellow';
+%>
+
+<td class="<%= statusClass %>">
+    <%= order.status.toUpperCase() %>
+</td>
                         </tr>
                         <% }) %>
                     </tbody>
@@ -156,9 +167,18 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('startDate').setAttribute('max', today);
-    document.getElementById('endDate').setAttribute('max', today);
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); 
+    const yyyy = today.getFullYear();
+    const todayFormatted = yyyy + '-' + mm + '-' + dd;
+    const startInput = document.getElementById('startDate');
+    const endInput = document.getElementById('endDate');
+    startInput.setAttribute('max', todayFormatted);
+    endInput.setAttribute('max', todayFormatted)
+    startInput.addEventListener('change', function() {
+        endInput.setAttribute('min', startInput.value);
+    });
 });
     function toggleDashboard() {
         const revenue = document.getElementById('revenueSection');
@@ -217,15 +237,17 @@
     });
     async function applyFilter() {
         const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
-        const filterType = document.getElementById('filterType').value;
-       if (filterType === 'custom') {
+    const endDate = document.getElementById('endDate').value;
+    const filterType = document.getElementById('filterType').value;
+        if (filterType === 'custom') {
         if (!startDate || !endDate) return alert("Please select both dates");
-        const today = new Date().setHours(0,0,0,0);
-        if (new Date(startDate) > today || new Date(endDate) > today) {
+
+        const today = new Date();
+        today.setHours(23, 59, 59, 999);
+       if (new Date(startDate) > today || new Date(endDate) > today) {
             return alert("Future dates are not allowed");
         }
-        
+
         if (new Date(startDate) > new Date(endDate)) {
             return alert("Start date cannot be after end date");
         }
@@ -244,6 +266,9 @@
                 <td>₹${order.totalPrice}</td>
                 <td>₹${order.discount}</td>
                 <td>₹${order.finalAmount}</td>
+                <span style="color: ${order.status === 'cancelled' ? 'red' : order.status === 'delivered' ? 'green' : 'orange'}">
+                    ${order.status.toUpperCase()}
+                </span>
             </tr>
         `).join('');
     }
@@ -265,30 +290,57 @@
         XLSX.writeFile(wb, "Sales_Report.xlsx");
     }
 
-    function downloadPDF() {
+    function updateTable(data) {
+    const tbody = document.querySelector('.report-table tbody');
+    tbody.innerHTML = data.map(order => `
+        <tr>
+            <td>${new Date(order.createdOn).toLocaleDateString()}</td>
+            <td>#${order._id.toString()}</td>
+            <td>₹${order.totalPrice}</td>
+            <td>₹${order.discount}</td>
+            <td>₹${order.finalAmount}</td>
+            <td>
+                <span style="color: ${order.status === 'cancelled' ? 'red' : order.status === 'delivered' ? 'green' : 'orange'}">
+                    ${order.status.toUpperCase()}
+                </span>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function downloadPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    
-    doc.text("Sales Report", 14, 15);
-
+    doc.setFontSize(18);
+    doc.text("VisionVogue Sales Report", 14, 15);
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 22);
     doc.autoTable({
         html: '.report-table',
-        startY: 20,
+        startY: 30,
         theme: 'grid',
         styles: { 
-            fontSize: 9, 
-            font: "helvetica" 
+            fontSize: 8, 
+            cellPadding: 3 
         },
-        headStyles: { fillColor: [46, 204, 113] }, 
+        headStyles: { 
+            fillColor: [46, 204, 113], 
+            textColor: [255, 255, 255],
+            fontStyle: 'bold'
+        },
         didParseCell: function (data) {
-            if (data.section === 'body' && (data.column.index === 2 || data.column.index === 3 || data.column.index === 4)) {
+            if (data.section === 'body' && [2, 3, 4].includes(data.column.index)) {
                 let text = data.cell.raw.innerText || data.cell.raw.textContent;
                 data.cell.text = text.replace('₹', '').trim();
+            }
+            if (data.section === 'body' && data.column.index === 5) {
+                let status = data.cell.raw.innerText || data.cell.raw.textContent;
+                data.cell.text = status.trim().toUpperCase();
             }
         }
     });
 
-    doc.save("Sales_Report.pdf");
+    doc.save("Sales_Report_VisionVogue.pdf");
 }
 </script>
 </body>

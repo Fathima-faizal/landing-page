@@ -154,125 +154,133 @@ body {
     background: var(--primary-green);
     color: white;
 }
-/* Coupon Content Area */
-/* Coupon Grid Layout */
+/* Coupon Card Container */
 .coupon-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 25px;
-    padding: 20px 0;
+   grid-template-columns: 1fr 1fr; 
     width: 100%;
+    gap: 20px;
+    padding: 20px;
 }
 
-/* The Ticket Card */
 .coupon-card {
     display: flex;
     background: #fff;
-    filter: drop-shadow(0 4px 15px rgba(0,0,0,0.1));
     border-radius: 12px;
     overflow: hidden;
-    transition: transform 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    height: 140px;
+    border: 1px solid #eee;
 }
 
-.coupon-card:hover {
-    transform: translateY(-5px);
-}
-
-/* Left Side (The 'Stub') */
+/* Left Section: The "Ticket" part */
 .coupon-left {
-    background: #1a4d2e; /* VisionVogue Theme Green/Black */
-    color: white;
-    padding: 20px;
+    background: #000; /* Matching VisionVogue theme */
+    color: #fff;
     width: 120px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     position: relative;
-    border-right: 2px dashed rgba(255,255,255,0.3);
+    padding: 10px;
+    border-right: 2px dashed #eee;
 }
 
-.discount-box .currency { font-size: 1rem; vertical-align: top; }
-.discount-box .amount { font-size: 1.8rem; font-weight: 800; }
-.coupon-left p { font-size: 0.7rem; margin-top: 5px; opacity: 0.8; }
+.discount-box {
+    text-align: center;
+    line-height: 1;
+}
 
-/* Ticket Notches */
+.amount {
+    font-size: 1.8rem;
+    font-weight: 800;
+    display: block;
+}
+
+.off-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.min-spend {
+    font-size: 0.65rem;
+    margin-top: 8px;
+    opacity: 0.8;
+    text-align: center;
+}
+
+/* Notches for ticket effect */
 .notch {
     position: absolute;
     width: 20px;
     height: 20px;
-    background: #f8f9fa; /* Matches your main background color */
+    background: #f4f7f6; /* Match your page background color */
     border-radius: 50%;
-    right: -10px;
+    right: -11px;
 }
+
 .notch-top { top: -10px; }
 .notch-bottom { bottom: -10px; }
 
-/* Right Side (Content) */
+/* Right Section: Info & Copy */
 .coupon-right {
     flex: 1;
-    padding: 20px;
-    background: white;
+    padding: 15px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
 .coupon-name {
+    margin: 0;
     font-size: 1.1rem;
-    font-weight: 700;
     color: #333;
-    margin-bottom: 5px;
 }
 
 .coupon-expiry {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: #777;
+    margin-top: 5px;
 }
 
-/* Code & Copy Area */
 .code-container {
     display: flex;
-    margin-top: 15px;
-    border: 1px dashed #1a4d2e;
-    border-radius: 6px;
-    overflow: hidden;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .code-box {
+    background: #f8f9fa;
+    border: 1px dashed #ccc;
+    padding: 5px 10px;
+    border-radius: 4px;
     flex: 1;
-    padding: 8px;
-    background: #f1f8f4;
-    text-align: center;
 }
 
 .code-text {
-    font-family: 'Monospace', sans-serif;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: #1a4d2e;
+    font-family: monospace;
+    font-weight: bold;
+    color: #000;
 }
 
 .copy-btn {
-    background: #1a4d2e;
-    color: white;
+    background: #000;
+    color: #fff;
     border: none;
-    padding: 0 15px;
+    padding: 6px 12px;
+    border-radius: 4px;
     cursor: pointer;
-    font-weight: 600;
-    font-size: 0.85rem;
-    transition: 0.2s;
+    font-size: 0.8rem;
+    transition: 0.3s;
 }
 
-.copy-btn:hover { background: #143b23; }
-
-/* Empty State */
-.no-coupons {
-    text-align: center;
-    padding: 50px;
-    grid-column: 1/-1;
+.copy-btn:hover {
+    background: #333;
 }
-.no-coupons i { font-size: 3rem; color: #ccc; margin-bottom: 15px; }
 
 .footer {
     background: #558b2f; /* Muted olive green */

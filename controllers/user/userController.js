@@ -187,13 +187,19 @@ const homepage=async(req,res)=>{
   try{
     const user = req.session.user;
         let cartCount = 0;
+        let wishlistCount=0;
         if (user) {
             const cart = await Cart.findOne({ userId: user });
             if (cart) {
                 cartCount = cart.items.length; 
             }
+            const userData = await User.findById(user);
+      if (userData && userData.wishlist) {
+        wishlistCount = userData.wishlist.length;
+      }
+            
         }
-   return res.render('home',{cartCount: cartCount})
+   return res.render('home',{cartCount: cartCount,wishlistCount: wishlistCount})
   }catch(error){
      console.log('home page not found')
         res.status(500).send('server error')
@@ -234,6 +240,7 @@ const loadShop = async (req, res) => {
     try {
         const user = req.session.user;
         const userData = user ? await User.findById(user) : null;
+
         let { category, brand, minPrice, maxPrice, search, sort, page } = req.query;
         page = parseInt(page) || 1;
         search=req.query.search||''
@@ -264,10 +271,15 @@ const loadShop = async (req, res) => {
             if (maxPrice) query.salesPrice.$lte = parseFloat(maxPrice);
         }
         let sortQuery = { CreatedOn: -1 };
-        if (sort === 'az') sortQuery = { productName: 1 };
-        else if (sort === 'za') sortQuery = { productName: -1 };
-        else if (sort === 'low-high') sortQuery = { salesPrice: 1 };
-        else if (sort === 'high-low') sortQuery = { salesPrice: -1 };
+        if (sort === 'az'){
+        sortQuery = { productName: 1 };
+        }else if (sort === 'za'){
+        sortQuery = { productName: -1 };
+        }else if (sort === 'low-high'){
+        sortQuery = { salesPrice: 1 };
+        }else if (sort === 'high-low'){
+         sortQuery = { salesPrice: -1 };
+        }
         const products = await Product.find(query)
             .populate('category')
             .sort(sortQuery)
@@ -283,9 +295,14 @@ const loadShop = async (req, res) => {
             p.isWishlisted = userWishlist.includes(p._id.toString());
         });
         let cartCount = 0;
+        let wishlistCount=0;
         if (user) {
             const cart = await Cart.findOne({ userId: user });
             cartCount = cart ? cart.items.length : 0;
+            const userDatas = await User.findById(user);
+      if (userDatas && userDatas.wishlist) {
+        wishlistCount = userDatas.wishlist.length;
+      }
         }
 
         res.render('shop', {
@@ -301,7 +318,8 @@ const loadShop = async (req, res) => {
             minPrice: minPrice || '',
             maxPrice: maxPrice || '',
             selectedSort: sort || 'default',
-            cartCount
+            cartCount,
+            wishlistCount
         });
 
     } catch (error) {

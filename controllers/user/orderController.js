@@ -3,6 +3,7 @@ const Product=require('../../models/productSchema');
 const Cart=require('../../models/cartSchema');
 const Address=require('../../models/addressSchema');
 const Order=require('../../models/orderSchema');
+const Coupon=require('../../models/couponSchema')
 const PDFdocument=require('pdfkit')
   
 const getorder = async(req, res) => {
@@ -43,7 +44,7 @@ const postorder = async (req, res) => {
         const cart = await Cart.findOne({ userId }).populate('items.proudctId'); 
         
         if (!cart) return res.status(400).json({ status: false, message: "Cart not found" });
-
+ 
         const orderItems = cart.items.map(item => ({
             productId: item.proudctId._id, 
             quantity: item.quantity,
@@ -150,21 +151,39 @@ const submitReturn = async (req, res) => {
 };
 const cancelOrderItem = async (req, res) => {
     try {
-        const { orderId, productId } = req.body
+        const { orderId, productId } = req.body;
         const order = await Order.findById(orderId);
-        if (!order) return res.status(404).json({ success: false, message: "Order not found" });
+        if (!order) {
+            return res.status(404).json({ success: false, message: "Order not found" });
+        }
         const itemIndex = order.orderedItems.findIndex(item => item.productId.toString() === productId);
         if (itemIndex > -1) {
             const item = order.orderedItems[itemIndex];
-            const refundAmount = item.price * item.quantity;
             await Product.findByIdAndUpdate(productId, {
                 $inc: { quantity: item.quantity }
             });
-            if (order.paymentMethod !== 'COD') {
+            const oldFinalAmount = order.finalAmount;
+            order.orderedItems.splice(itemIndex, 1);
+            let newSubtotal = order.orderedItems.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0);
+            const coupon = await Coupon.findOne({ couponCode: order.couponCode });
+            if (coupon && (newSubtotal < coupon.minimumPrice || order.orderedItems.length === 0)) {
+                order.discount = 0;
+                order.couponapplied = false;
+            }
+            order.totalPrice = newSubtotal;
+            if (order.orderedItems.length === 0) {
+                order.totalPrice = 0;
+                order.discount = 0;
+                order.finalAmount = 0;
+                order.status = 'cancelled';
+            } else {
+                order.finalAmount = newSubtotal - order.discount;
+            }
+            const refundAmount = oldFinalAmount - order.finalAmount;
+            if (order.paymentMethod !== 'COD' && refundAmount > 0) {
                 const user = await User.findById(order.userId);
                 if (user) {
                     user.wallet = (Number(user.wallet) || 0) + Number(refundAmount);
-                    
                     user.history.push({
                         description: `Refund for Cancelled Item in Order #${order.orderId.toString().slice(-6)}`,
                         amount: refundAmount,
@@ -175,24 +194,23 @@ const cancelOrderItem = async (req, res) => {
                     await user.save();
                 }
             }
-            order.orderedItems.splice(itemIndex, 1);
             if (order.orderedItems.length === 0) {
                 order.status = 'cancelled';
             }
-            order.finalAmount -= refundAmount;
-            order.totalPrice -= refundAmount;
             await order.save();
-            return res.json({ success: true, message: "Item cancelled and stock updated" });
+            return res.json({ success: true, message: "Item cancelled and Order Summary updated successfully" });
         }
+
         res.json({ success: false, message: "Item not found" });
     } catch (error) {
-        console.error(error);
+        console.error("Error in cancelOrderItem:", error);
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
 const getreview = async (req, res) => {
     try {
          const {orderId,productId}=req.params;
+        
     const order=await Order.findById(orderId).populate({
             path:'orderedItems.productId',
             populate: {
@@ -238,10 +256,13 @@ const downloadInvoice = async (req, res) => {
             .populate('orderedItems.productId')
             .populate('userId');
         if (!order) return res.status(404).send('Order not found');
+        if (order.status.toLowerCase() !== 'delivered') {
+            return res.status(403).send('Invoice is only available for delivered orders.');
+        }
         const addressData = await Address.findOne({ "address._id": order.address });
         const addr = addressData ? addressData.address.find(a => a._id.toString() === order.address.toString()) : null;
         const doc = new PDFdocument({ margin: 50, size: 'A4' });
-        const fileName = `VisionVogue_Invoice_${order._id}.pdf`;
+        const fileName = `Invoice_${order.orderId}.pdf`;
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
         doc.pipe(res);
@@ -249,36 +270,27 @@ const downloadInvoice = async (req, res) => {
         doc.fillColor('#444444').fontSize(10).text('Your Vision, Our Style', { align: 'left' });
         doc.fillColor('#444444')
            .text('VisionVogue Eyewear Ltd.', 400, 50, { align: 'right' })
+           .text('GSTIN: 32AAAAA0000A1Z5', { align: 'right' })
            .text('Email: support@visionvogue.com', { align: 'right' })
            .text('Phone: +91 8923457190', { align: 'right' });
         doc.moveDown();
-        doc.moveTo(50, 100).lineTo(550, 100).strokeColor('#eeeeee').stroke();
-        doc.moveDown();
-        doc.fillColor('#1a4d2e').fontSize(20).text('INVOICE', 50, 120);
+        doc.moveTo(50, 110).lineTo(550, 110).strokeColor('#eeeeee').stroke();
+        doc.fillColor('#1a4d2e').fontSize(18).text('TAX INVOICE', 50, 130);
         doc.fillColor('#444444').fontSize(10);
-        doc.text(`Invoice Number: INV-${order._id.toString().slice(-6).toUpperCase()}`, 50, 145);
-        doc.text(`Order Date: ${new Date(order.createdOn).toLocaleDateString()}`, 50, 160);
-        doc.text(`Payment Method: ${order.paymentMethod || 'Cash on delivery'}`, 50, 175);
-        doc.fontSize(12).fillColor('#1a4d2e').text('Bill To:', 350, 120);
+        doc.text(`Invoice No: INV-${order.orderId}`, 50, 155);
+        doc.text(`Order ID: #${order.orderId}`, 50, 170);
+        doc.text(`Date: ${new Date().toLocaleDateString()}`, 50, 185);
+        doc.text(`Payment: ${order.paymentMethod}`, 50, 200);
+        doc.fontSize(12).fillColor('#1a4d2e').text('Bill To:', 350, 130);
         doc.fontSize(10).fillColor('#444444');
-        const userName = order.userId ? order.userId.name : 'Customer';
-        doc.text(userName, 350, 140);
-        doc.fontSize(12).fillColor('#1a4d2e').text('Bill To:', 350, 120);
-        doc.fontSize(10).fillColor('#444444');
-        doc.text(order.userId ? order.userId.name : 'Customer', 350, 140);
+        doc.text(order.userId ? order.userId.name : 'Customer', 350, 150);
         if (addr) {
-            let currentY = 155;
-            doc.text(`${addr.houseName || ''}`, 350, currentY);
-            currentY += 15;
-            doc.text(`${addr.street || ''}`, 350, currentY);
-            currentY += 15;
-            doc.text(`${addr.city}, ${addr.country} - ${addr.zipCode}`, 350, currentY);
-            currentY += 15;
-            doc.text(`Tel: ${addr.phoneNumber}`, 350, currentY);
-        } else {
-            doc.text('Address details unavailable', 350, 155);
+            doc.text(`${addr.houseName}`, 350, 165);
+            doc.text(`${addr.city}, ${addr.state || ''}`, 350, 180);
+            doc.text(`${addr.zipCode}`, 350, 195);
+            doc.text(`Phone: ${addr.phoneNumber}`, 350, 210);
         }
-        const tableTop = 230;
+        const tableTop = 250;
         doc.rect(50, tableTop, 500, 25).fill('#1a4d2e');
         doc.fillColor('#ffffff').fontSize(10);
         doc.text('Item Description', 60, tableTop + 8);
@@ -287,18 +299,14 @@ const downloadInvoice = async (req, res) => {
         doc.text('Total', 480, tableTop + 8);
         let y = tableTop + 30;
         order.orderedItems.forEach((item, index) => {
-            if (index % 2 === 0) {
-                doc.rect(50, y - 5, 500, 20).fill('#f9f9f9');
-            }
             doc.fillColor('#444444');
             doc.text(item.productId.productName, 60, y);
             doc.text(item.quantity.toString(), 280, y);
             doc.text(`Rs. ${item.price.toLocaleString()}`, 350, y);
             doc.text(`Rs. ${(item.quantity * item.price).toLocaleString()}`, 480, y);
             y += 20;
+            doc.moveTo(50, y - 5).lineTo(550, y - 5).strokeColor('#eeeeee').stroke();
         });
-        y += 20;
-        doc.moveTo(50, y).lineTo(550, y).strokeColor('#eeeeee').stroke();
         y += 15;
         doc.fontSize(10).fillColor('#444444').text('Subtotal:', 350, y);
         doc.text(`Rs. ${order.totalPrice.toLocaleString()}`, 480, y);
@@ -308,17 +316,25 @@ const downloadInvoice = async (req, res) => {
             doc.text(`- Rs. ${order.discount.toLocaleString()}`, 480, y);
             y += 20;
         }
-        doc.fillColor('#1a4d2e').fontSize(14).text('Grand Total:', 350, y, { bold: true });
+        doc.fillColor('#444444').text('Tax (GST Incl.):', 350, y);
+        doc.text(`Rs. 0.00`, 480, y); 
+        y += 25;
+        doc.rect(340, y - 5, 210, 30).fill('#f1f1f1');
+        doc.fillColor('#1a4d2e').fontSize(12).text('Grand Total:', 350, y, { bold: true });
         doc.text(`Rs. ${order.finalAmount.toLocaleString()}`, 480, y, { bold: true });
-        y += 30;
-        doc.fontSize(10).fillColor('#999999').text('This is a computer generated invoice and does not require a physical signature.', 50, 750, { align: 'center' });
+        doc.fontSize(10).fillColor('#777777')
+           .text('Terms & Conditions:', 50, 700)
+           .fontSize(8)
+           .text('1. Goods once sold will not be taken back unless defective.', 50, 715)
+           .text('2. This is a computer-generated document, no signature required.', 50, 725);
+
         doc.end();
 
     } catch (error) {
         console.error('Invoice Error:', error);
         res.status(500).send('Internal Server Error');
     }
-};
+}
 
 module.exports={
     getorder,

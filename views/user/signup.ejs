@@ -67,8 +67,8 @@
                 <label for="ConfirmPassword">Confirm Password</label>
                 <div class="input-wrapper">
                     <i class="fa-solid fa-shield-check"></i>
-                    <input type="password" id="ConformPassword" name="ConformPassword" placeholder="Repeat password" autocomplete="new-password">
-                    <i class="fa-solid fa-eye-slash toggle-password" data-target="ConfirmPassword"></i>
+                    <input type="password" id="ConformPassword" name="ConformPassword" placeholder="Repeat password">
+                    <i class="fa-solid fa-eye-slash toggle-password" data-target="ConformPassword"></i>
                 </div>
                 <div id="error4" class="error-message"></div>
             </div>
@@ -135,6 +135,22 @@
         const error4=document.getElementById('error4');
         const signform=document.getElementById('signform');
         const mainError = document.getElementById('main-error');
+        document.querySelectorAll('.toggle-password').forEach(icon => {
+        icon.addEventListener('click', function() {
+        const targetId = this.getAttribute('data-target');
+        const input = document.getElementById(targetId);
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            this.classList.remove('fa-eye-slash');
+            this.classList.add('fa-eye');
+        } else {
+            input.type = 'password';
+            this.classList.remove('fa-eye');
+            this.classList.add('fa-eye-slash');
+        }
+    });
+});
         
 
         function nameValidateChacking(e){
