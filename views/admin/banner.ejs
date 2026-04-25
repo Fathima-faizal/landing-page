@@ -6,6 +6,7 @@
     <title>Professional Admin Dashboard</title>
     <link rel="stylesheet" href="/css/banner.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -117,9 +118,9 @@
                                 </td>
                                 <td>
                                     <div class="action-btns">
-                                        <a href="/admin/deleteBanner?id=<%=banner._id%>" onclick="return confirmDelete(event, '<%=banner.title%>')">
-             <i class="fa-regular fa-trash-can" style="color:red;margin-top: 5px;"></i>
-           </a>
+                                        <a href="javascript:void(0)" onclick="confirmDeleteBanner('<%=banner._id%>', '<%=banner.title%>')">
+    <i class="fa-regular fa-trash-can" style="color:red;margin-top: 5px;"></i>
+</a>
                                     </div>
                                 </td>
                             </tr>
@@ -156,13 +157,24 @@
         window.history.go(1);
     };
 
-function confirmDelete(event, name) {
-    if (!confirm(`Are you sure you want to delete "${name}"?`)) {
-        event.preventDefault(); 
-        return false;
-    }
-    return true;
+// Banner Delete
+function confirmDeleteBanner(id, title) {
+    Swal.fire({
+        title: 'Delete Banner?',
+        text: `Are you sure you want to remove "${title}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, Delete!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/admin/deleteBanner?id=${id}`;
+        }
+    });
 }
+
+
 
 </script>
 </body>

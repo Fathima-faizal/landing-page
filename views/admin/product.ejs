@@ -6,6 +6,7 @@
     <title>Professional Admin Dashboard</title>
     <link rel="stylesheet" href="/css/product.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -120,9 +121,9 @@
             <a href="/admin/editProduct/<%= data[i]._id %>">
     <i class="fa-regular fa-pen-to-square" style="color: black; margin-top: 5px;"></i>
 </a>
-             <a href="/admin/deleteProduct?id=<%=data[i]._id%>" onclick="return confirmDelete(event, '<%=data[i].productName%>')">
-             <i class="fa-regular fa-trash-can" style="color:red;margin-top: 5px;"></i>
-           </a>
+           <a href="javascript:void(0)" onclick="confirmDelete('<%=data[i]._id%>', '<%=data[i].productName%>')">
+    <i class="fa-regular fa-trash-can" style="color:red;margin-top: 5px;"></i>
+</a>
         </td>
        
     </tr>
@@ -157,12 +158,21 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-function confirmDelete(event, productName) {
-    if (!confirm(`Are you sure you want to delete "${productName}"?`)) {
-        event.preventDefault(); // Stops the link from opening
-        return false;
-    }
-    return true;
+function confirmDelete(productId, productName) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: `Do you want to permanently delete "${productName}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33', 
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/admin/deleteProduct?id=${productId}`;
+        }
+    });
 }
 
 </script>

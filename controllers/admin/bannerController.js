@@ -59,7 +59,7 @@ const postbanner=async(req,res)=>{
     try {
         let id=req.query.id;
         await Banner.findByIdAndDelete(id);
-        res.redirect('/admin/banner')
+        res.redirect(`/admin/banner?message=Item removed successfully`)
     } catch (error) {
         console.log('error',error);
         res.status(500).send('Internal server error')

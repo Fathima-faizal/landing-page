@@ -152,7 +152,7 @@ const deleteCoupon=async(req,res)=>{
     try {
         let id=req.query.id;
         await Coupon.findByIdAndDelete(id);
-        res.redirect('/admin/couponManagement')
+        res.redirect(`/admin/couponManagement?message=Item removed successfully`)
     } catch (error) {
        console.log('error',error);
        res.status(500).send('Internal server error') 

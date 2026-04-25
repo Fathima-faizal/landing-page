@@ -120,10 +120,9 @@
                                 </td>
                                 <td><%= item.review.comment %></td>
                                 <td>
-                                <a href="/admin/deletereview?orderId=<%= rev._id %>&itemId=<%= item._id %>" 
-                                onclick="return confirmDelete(event, 'this review')">
-                           <i class="fa-regular fa-trash-can" style="color:red; margin-top: 5px;"></i>
-                              </a>
+                               <a href="javascript:void(0)" onclick="confirmDeleteReview('<%= rev._id %>', '<%= item._id %>')">
+    <i class="fa-regular fa-trash-can" style="color:red; margin-top: 5px;"></i>
+</a>
                                 </td>
                             </tr>
                         <% } %>
@@ -162,12 +161,20 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-function confirmDelete(event, productName) {
-    if (!confirm(`Are you sure you want to delete "${productName}"?`)) {
-        event.preventDefault(); // Stops the link from opening
-        return false;
-    }
-    return true;
+function confirmDeleteReview(orderId, itemId) {
+    Swal.fire({
+        title: 'Delete Review?',
+        text: "Are you sure you want to remove this customer review?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, Delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/admin/deletereview?orderId=${orderId}&itemId=${itemId}`;
+        }
+    });
 }
 
 </script>

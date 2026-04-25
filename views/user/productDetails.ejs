@@ -30,15 +30,18 @@
             </div>
         </nav>
     </header>
-     <main class="product-page-wrapper">
+    <main class="product-page-wrapper">
     <div class="product-container">
         <div class="gallery-section">
-            <div class="main-display-area">
+            <div class="main-display-card">
                 <div class="image-zoom-container" id="zoomContainer">
-                    <img id="mainProductImage" src="/uploads/<%=product.productimage[0]%>" alt="<%= product.ProductName %>">
+                    <img id="mainProductImage" src="/uploads/<%=product.productimage[0]%>" alt="<%= product.productName %>">
                 </div>
+                <% if (product.quantity <= 5 && product.quantity > 0) { %>
+                    <span class="stock-badge low-stock">Only <%= product.quantity %> left!</span>
+                <% } %>
             </div>
-            <p class="category-paths" style="color: white;">Similar Product</p>
+            
             <div class="thumbnail-grid">
                 <% product.productimage.forEach((img, index) => { %>
                     <div class="thumb-card <%= index === 0 ? 'active-thumb' : '' %>" onclick="changeImage('/uploads/<%= img %>', this)">
@@ -49,60 +52,103 @@
         </div>
 
         <div class="info-section-glass">
-            <div class="header-info">
-                <span class="brand-badge"><%=product.brand%></span>
-                <h1 class="product-main-title"><%=product.productName%></h1>
-                <p class="category-path"><%=product.category.name%> / Eye Wear</p>
-            </div> 
-            <div class="price-card">
-    <div class="price-row">
-        <% if (product.salesPrice < product.regularPrice) { %>
-            <span class="current-price">₹<%= product.salesPrice %></span>
-            <span class="old-price">₹<%= product.regularPrice %></span>
-            <% let discountPercent = Math.round(((product.regularPrice - product.salesPrice) / product.regularPrice) * 100); %>
-            <span class="discount-tag">
-                (<%= discountPercent %>% OFF)
-            </span>
-        <% } else { %>
-            <span class="current-price">₹<%= product.regularPrice %></span>
-        <% } %> 
-    </div>
-    <p class="tax-info">Inclusive of all taxes</p>
-</div>
+            <nav class="breadcrumb">
+                <a href="/home">Home</a> / <a href="/shop">Shop</a> / <span><%= product.category.name %></span>
+            </nav>
 
-            <div class="description-box">
-                <h3>Product Description</h3>
+            <div class="product-header">
+                <h1 class="product-title"><%= product.productName %></h1>
+                <div class="brand-tag"><%= product.brand %></div>
+            </div>
+
+            <div class="price-section">
+                <div class="price-wrapper">
+                    <% if (product.salesPrice < product.regularPrice) { %>
+                        <span class="sale-price">₹<%= product.salesPrice %></span>
+                        <span class="mrp-price">₹<%= product.regularPrice %></span>
+                        <% let discount = Math.round(((product.regularPrice - product.salesPrice) / product.regularPrice) * 100); %>
+                        <span class="discount-percent"><%= discount %>% OFF</span>
+                    <% } else { %>
+                        <span class="sale-price">₹<%= product.regularPrice %></span>
+                    <% } %>
+                </div>
+                <p class="tax-note">Price inclusive of all taxes</p>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="description-section">
+                <h3>Overview</h3>
                 <p><%= product.description %></p>
             </div>
 
-            <div class="action-area">
-                <div class="quantity-selector">
-                    <label>Quantity</label>
-                    <div class="q-controls">
-                        <button onclick="updateQty(-1)">-</button>
+            <div class="purchase-zone">
+                <div class="qty-container">
+                    <span class="label">Quantity</span>
+                    <div class="qty-picker">
+                        <button type="button" onclick="updateQty(-1)">-</button>
                         <input type="number" id="quantity" value="1" readonly>
-                        <button onclick="updateQty(1)">+</button>
+                        <button type="button" onclick="updateQty(1)">+</button>
                     </div>
                 </div>
 
-                <div class="btn-group">
+                <div class="button-actions">
                     <% if (product.quantity > 0) { %>
-                        <button class="add-cart-premium" onclick="addToCart('<%=product._id%>')">
-                            <i class="fa-solid fa-bag-shopping"></i> ADD TO CART
+                        <button class="btn-primary add-to-cart" onclick="addToCart('<%=product._id%>')">
+                            <i class="fa-solid fa-cart-plus"></i> Add to Cart
                         </button>
                     <% } else { %>
-                        <button class="out-of-stock-btn" disabled>OUT OF STOCK</button>
+                        <button class="btn-out-of-stock" disabled>Currently Unavailable</button>
                     <% } %>
                 </div>
             </div>
 
-            <div class="trust-badges">
-                <div class="badge"><i class="fa-solid fa-truck-fast"></i> <span>Fast Delivery</span></div>
-                <div class="badge"><i class="fa-solid fa-rotate-left"></i> <span>30 Days Return</span></div>
-                <div class="badge"><i class="fa-solid fa-shield-halved"></i> <span>Secure Payment</span></div>
+            <div class="service-features">
+                <div class="feature-item">
+                    <i class="fa-solid fa-truck-moving"></i>
+                    <span>Free Shipping</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fa-solid fa-arrow-rotate-left"></i>
+                    <span>7 Days Return</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fa-solid fa-certificate"></i>
+                    <span>100% Authentic</span>
+                </div>
             </div>
         </div>
     </div>
+<section class="related-wrapper">
+    <div class="section-header">
+        <h2>You May Also Like</h2>
+        <div class="underline"></div>
+    </div>
+    
+    <div class="related-grid">
+        <% if (relatedProducts && relatedProducts.length > 0) { %>
+            <% relatedProducts.slice(0, 3).forEach(item => { %> <div class="product-card-mini">
+                    <a href="/productDetails?id=<%= item._id %>">
+                        <div class="img-wrapper">
+                            <img src="/uploads/<%= item.productimage[0] %>" alt="<%= item.productName %>">
+                        </div>
+                        <div class="mini-info">
+                            <h4 class="mini-name"><%= item.productName %></h4>
+                            <div class="mini-price-row">
+                                <span class="mini-price">₹<%= item.salesPrice %></span>
+                                <% if (item.regularPrice > item.salesPrice) { %>
+                                    <span class="mini-old-price">₹<%= item.regularPrice %></span>
+                                <% } %>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p class="no-results">No similar items found.</p>
+        <% } %>
+    </div>
+</section>
 </main>
      <footer>
         <div class="footer-content">

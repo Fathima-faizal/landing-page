@@ -98,7 +98,7 @@ const deleteCategory=async(req,res)=>{
     try {
         let id=req.query.id;
         await Category.findByIdAndDelete(id);
-        res.redirect('/admin/category')
+        res.redirect(`/admin/category?message=Item removed successfully`)
     } catch (error) {
         console.log('error',error);
         res.status(500).send('Internal server error')

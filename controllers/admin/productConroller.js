@@ -216,7 +216,7 @@ const deleteProduct=async(req,res)=>{
 try {
   let id=req.query.id;
   await Product.findByIdAndDelete(id);
-  res.redirect('/admin/product')
+  res.redirect(`/admin/product?message=Item removed successfully`)
 } catch (error) {
   console.log('delete error',error);
   res.status(500).send('Internal server error')

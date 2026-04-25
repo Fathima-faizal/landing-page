@@ -69,7 +69,7 @@ const deleteWishlist=async(req,res)=>{
         if (redirectPath === 'cart') {
             return res.redirect('/cart');
         }
-       res.redirect('/wishlist') 
+       res.redirect('/wishlist?message=Item removed successfully') 
     } catch (error) {
         console.log('error',error);
         res.status(500).send('Internal Server error')

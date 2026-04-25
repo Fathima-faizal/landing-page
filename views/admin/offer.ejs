@@ -119,9 +119,9 @@
             <a href="/admin/editOffer/<%=offer._id%>">
     <i class="fa-regular fa-pen-to-square" style="color: black; margin-top: 5px;"></i>
 </a>
-             <a href="/admin/deleteOffer?id=<%=offer._id%>" onclick="return confirmDelete(event, '<%=offer.offerName%>')">
-             <i class="fa-regular fa-trash-can" style="color:red;margin-top: 5px;"></i>
-           </a>
+             <a href="javascript:void(0)" onclick="confirmDeleteOffer('<%=offer._id%>', '<%=offer.offerName%>')">
+    <i class="fa-regular fa-trash-can" style="color:red;margin-top: 5px;"></i>
+</a>
                     </td>
                 </tr>
             <% }) %>
@@ -155,12 +155,20 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-    function confirmDelete(event, name) {
-    if (!confirm(`Are you sure you want to delete "${name}"?`)) {
-        event.preventDefault(); 
-        return false;
-    }
-    return true;
+    function confirmDeleteOffer(id, name) {
+    Swal.fire({
+        title: 'Remove Offer?',
+        text: `Are you sure you want to delete the offer "${name}"? This will revert the prices of associated products.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, Delete Offer!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/admin/deleteOffer?id=${id}`;
+        }
+    });
 }
 </script>
 </body>

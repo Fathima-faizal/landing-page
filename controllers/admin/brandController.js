@@ -95,7 +95,7 @@ const deletebrand=async(req,res)=>{
     try {
        const id=req.query.id;
        await Brand.findByIdAndDelete(id);
-       res.redirect('/admin/brand') 
+       res.redirect(`/admin/brand?message=Item removed successfully`) 
     } catch (error) {
         console.log('error',error);
         res.status(500).send('Internal Server error')

@@ -6,6 +6,7 @@
     <title>Professional Admin Dashboard</title>
     <link rel="stylesheet" href="/css/category.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -124,9 +125,9 @@
             <a href="/admin/editCoupon/<%=coupons[i]._id%>">
     <i class="fa-regular fa-pen-to-square" style="color: black; margin-top: 5px;"></i>
 </a>
-             <a href="/admin/deleteCoupon?id=<%=coupons[i]._id%>" onclick="return confirmDelete(event, '<%=coupons[i].name%>')">
-             <i class="fa-regular fa-trash-can" style="color:red;margin-top: 5px;"></i>
-           </a>
+            <a href="javascript:void(0)" onclick="confirmDeleteCoupon('<%=coupons[i]._id%>', '<%=coupons[i].name%>')">
+    <i class="fa-regular fa-trash-can" style="color:red;margin-top: 5px;"></i>
+</a>
         </td>
        
     </tr>
@@ -160,12 +161,20 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-function confirmDelete(event, name) {
-    if (!confirm(`Are you sure you want to delete "${name}"?`)) {
-        event.preventDefault(); 
-        return false;
-    }
-    return true;
+function confirmDeleteCoupon(id, name) {
+    Swal.fire({
+        title: 'Delete Coupon?',
+        text: `Are you sure you want to remove the coupon "${name}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, Delete!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/admin/deleteCoupon?id=${id}`;
+        }
+    });
 }
 
 

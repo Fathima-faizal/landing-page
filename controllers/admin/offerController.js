@@ -121,7 +121,7 @@ const deleteoffer=async(req,res)=>{
     try {
         let id=req.query.id;
         await Offer.findByIdAndDelete(id);
-        res.redirect('/admin/offer')
+        res.redirect(`/admin/offer?message=Item removed successfully`)
     } catch (error) {
         console.log('error',error);
         res.status(500).send('Internal server erro')

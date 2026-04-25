@@ -6,6 +6,7 @@
     <title>Professional Admin Dashboard</title>
     <link rel="stylesheet" href="/css/category.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -116,9 +117,9 @@
             <a href="/admin/editCategory/<%=category._id %>">
     <i class="fa-regular fa-pen-to-square" style="color: black; margin-top: 5px;"></i>
 </a>
-             <a href="/admin/deleteCategory?id=<%=category._id%>" onclick="return confirmDelete(event, '<%=category.name%>')">
-             <i class="fa-regular fa-trash-can" style="color:red;margin-top: 5px;"></i>
-           </a>
+             <a href="javascript:void(0)" onclick="confirmDeleteCategory('<%=category._id%>', '<%=category.name%>')">
+    <i class="fa-regular fa-trash-can" style="color:red;margin-top: 5px;"></i>
+</a>
         </td>
        
     </tr>
@@ -153,12 +154,20 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-function confirmDelete(event, name) {
-    if (!confirm(`Are you sure you want to delete "${name}"?`)) {
-        event.preventDefault(); 
-        return false;
-    }
-    return true;
+function confirmDeleteCategory(id, name) {
+    Swal.fire({
+        title: 'Remove Category?',
+        text: `Are you sure you want to delete "${name}"? This might affect products in this category.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, Delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/admin/deleteCategory?id=${id}`;
+        }
+    });
 }
 
 

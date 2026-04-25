@@ -6,6 +6,7 @@
     <title>Professional Admin Dashboard</title>
     <link rel="stylesheet" href="/css/brand.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -116,9 +117,9 @@
             <a href="/admin/editbrand/<%=brand[i]._id%>">
     <i class="fa-regular fa-pen-to-square" style="color: black; margin-top: 5px;"></i>
 </a>
-             <a href="/admin/deleteBrand?id=<%=brand[i]._id%>" onclick="return confirmDelete(event,'<%=brand[i].name%>')">
-             <i class="fa-regular fa-trash-can" style="color:red;margin-top: 5px;"></i>
-           </a>
+             <a href="javascript:void(0)" onclick="confirmDeleteBrand('<%=brand[i]._id%>', '<%=brand[i].name%>')">
+    <i class="fa-regular fa-trash-can" style="color:red;margin-top: 5px;"></i>
+</a>
         </td>
        
     </tr>
@@ -152,14 +153,22 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-function confirmDelete(event, name) {
-    if (!confirm(`Are you sure you want to delete "${name}"?`)) {
-        event.preventDefault(); 
-        return false;
-    }
-    return true;
-}
 
+function confirmDeleteBrand(id, name) {
+    Swal.fire({
+        title: 'Delete Brand?',
+        text: `Are you sure you want to remove "${name}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, Delete!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/admin/deleteBrand?id=${id}`;
+        }
+    });
+}
 
 </script>
 </body>

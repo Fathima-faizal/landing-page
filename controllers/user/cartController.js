@@ -176,7 +176,7 @@ const deletecart=async(req,res)=>{
         { userId: userId },
             { $pull: { items: { proudctId: productId } } }
        );
-       res.redirect('/cart') 
+       res.redirect('/cart?message=Item removed successfully') 
     } catch (error) {
         console.log('error',error);
         res.status(500).send('Internal Server error')
