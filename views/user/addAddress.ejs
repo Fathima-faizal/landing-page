@@ -18,8 +18,17 @@
         </nav>
         <div class="logo">VisionVogue</div>
         <div class="nav-icons">
-             <a href="" ><i class="fa-regular fa-heart"></i></a>
-               <a href=""> <i class="fa-solid fa-cart-shopping"></i></a>
+              <a href="/wishlist" class="wishlist-icon-container" style="position: relative; display: inline-block;">
+        <i class="fa-regular fa-heart"></i>
+        <% if (locals.wishlistCount > 0) { %>
+            <span class="wishlist-badge"><%= wishlistCount %></span>
+        <% } %>
+    </a>
+               <a href="/cart" class="cart-icon-container"><i class="fa-solid fa-cart-shopping"></i>
+                <% if (locals.cartCount > 0) { %>
+            <span class="cart-badge"><%= cartCount %></span>
+        <% } %>
+            </a>
               <a href="" > <i class="fa-regular fa-user"></i></a>
     </header>
 
@@ -132,36 +141,44 @@
         <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
     </footer>
 <script>
-const addressForm = document.querySelector('form');
+document.getElementById('addressForm').addEventListener('submit', function(e) {
+    const addressType = document.getElementById('addressType').value.trim();
+    const houseName = document.getElementById('houseName').value.trim();
+    const street = document.getElementById('street').value.trim();
+    const landmark = document.getElementById('landmark').value.trim();
+    const city = document.getElementById('city').value.trim();
+    const zipCode = document.getElementById('zipCode').value.trim();
+    const country = document.getElementById('country').value.trim();
+    const phoneNumber = document.getElementById('phoneNumber').value.trim();
+    const formError = document.getElementById('formError');
 
-const addressid = document.getElementById('addressType');
-const houseNameid = document.getElementById('houseName');
-const streetid = document.getElementById('street');
-const landmarkid = document.getElementById('landmark');
-const cityid = document.getElementById('city');
-const zipCodeid = document.getElementById('zipCode');
-const countryid = document.getElementById('country');
-const phoneNumberid=document.getElementById('phoneNumber')
-const formError = document.getElementById('formError');
+    const phoneRegex = /^[6-9]\d{9}$/; 
+    const zipRegex = /^\d{6}$/;       
+    
+    let errorMessage = "";
 
-addressForm.addEventListener('submit', function(e){
-  if (
-    addressid.value.trim() === '' ||
-    houseNameid.value.trim() === '' ||
-    streetid.value.trim() === '' ||
-    landmarkid.value.trim() === '' ||
-    cityid.value.trim() === '' ||
-    zipCodeid.value.trim() === '' ||
-    phoneNumberid.value.trim()===''||
-    countryid.value.trim() === ''
-  ) {
-    e.preventDefault();
-    formError.innerText = "Please fill the details";
-    formError.style.display = "block";
-  } else {
-    formError.innerText = "";
-    formError.style.display = "none";
-  }
+    // 1. Check for empty fields first
+    if (!addressType || !houseName || !street || !landmark || !city || !zipCode || !country || !phoneNumber) {
+        errorMessage = "All fields are required. Please fill in every detail.";
+    } 
+    // 2. Then check Zip Code
+    else if (!zipRegex.test(zipCode)) {
+        errorMessage = "Please enter a valid 6-digit Zip Code.";
+    }
+    // 3. Then check Phone Number
+    else if (!phoneRegex.test(phoneNumber)) {
+        errorMessage = "Please enter a valid 10-digit phone number starting with 6-9.";
+    }
+
+    if (errorMessage) {
+        e.preventDefault(); 
+        formError.innerText = errorMessage;
+        formError.style.display = "block";
+        formError.style.color = "#ff4d4d";
+        window.scrollTo({ top: formError.offsetTop - 100, behavior: 'smooth' });
+    } else {
+        formError.style.display = "none";
+    }
 });
 </script>
 

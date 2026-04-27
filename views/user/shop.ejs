@@ -22,11 +22,13 @@
             <div class="logo">VisionVogue</div>
             <div class="nav-icons">
                <a href="/wishlist" class="wishlist-icon-container" style="position: relative; display: inline-block;">
-        <i class="fa-regular fa-heart"></i>
+    <i class="fa-regular fa-heart"></i>
+    <span id="wishlist-count-badge">
         <% if (locals.wishlistCount > 0) { %>
             <span class="wishlist-badge"><%= wishlistCount %></span>
         <% } %>
-    </a>
+    </span>
+</a>
                <a href="/cart" class="cart-icon-container"> <i class="fa-solid fa-cart-shopping">
                 <% if (locals.cartCount > 0) { %>
             <span class="cart-badge"><%= cartCount %></span>
@@ -197,42 +199,41 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-    
-    function addtoWishlist(productId){
-        $.ajax({
-            url:'/addtoWishlist',
-            method:'POST',
-            data:{productId:productId},
-            success:(response)=>{
-                if(response.status){
-                    const icon = document.getElementById(`wishlist-icon-${productId}`);
-                    icon.classList.remove('fa-regular');
-                icon.classList.add('fa-solid', 'is-wishlisted');
-                    swal.fire({
-                        icon:'success',
-                        title:'Added to wishlist',
-                        text:'The product has been added to your Wishlist',
-                        timer:2000
-                    })
-                }else{
-                    swal.fire({
-                        icon:'info',
-                        title:'Already in wishlist',
-                        text:response.message,
-                        timer:2000
-                    })
+    function addtoWishlist(productId) {
+    $.ajax({
+        url: '/addtoWishlist',
+        method: 'POST',
+        data: { productId: productId },
+        success: (response) => {
+            if (response.status) {
+                const icon = document.getElementById(`wishlist-icon-${productId}`);
+                 if (icon) {
+                 icon.classList.remove('fa-regular');
+                 icon.classList.add('fa-solid', 'active');
+                  }
+                const badgeContainer = document.getElementById('wishlist-count-badge');
+                if (response.count > 0) {
+                    badgeContainer.innerHTML = `<span class="wishlist-badge">${response.count}</span>`;
                 }
-            },
-            error:(error)=>{
-                swal.fire({
-                    icon:'error',
-                    title:'Error',
-                    text:'There are was error adding the product to your wishlist',
-                    timer:2000
-                })
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to wishlist',
+                    text: 'The product has been added to your Wishlist',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Already in wishlist',
+                    text: response.message,
+                    timer: 1500,
+                    showConfirmButton: false
+                });
             }
-        })
-    }
+        }
+    });
+}
 </script>
 </body>
 </html>

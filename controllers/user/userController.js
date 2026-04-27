@@ -246,7 +246,7 @@ const loadShop = async (req, res) => {
         search=req.query.search||''
         const limit = 6;
         const skip = (page - 1) * limit;
-        let query = {
+        let query = { 
             isBlocked: false,
             quantity: { $gt: 0 }
         };
@@ -331,12 +331,21 @@ const loadrefer=async(req,res)=>{
   try {
      const userId=req.session.user;
      const user=await User.findById(userId);
+      let cartCount = 0;
+        let wishlistCount=0;
+        if (user) {
+            const cart = await Cart.findOne({ userId: user });
+            cartCount = cart ? cart.items.length : 0;
+      if (user && user.wishlist) {
+        wishlistCount = user.wishlist.length;
+      }
+        }
      if (!user.referralCode) {
             user.referralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
             await user.save();
         }
         const referralLink = `${req.protocol}://${req.get('host')}/signup?ref=${user.referralCode}`;
-        res.render('refer', { user, referralLink });
+        res.render('refer', { user, referralLink, cartCount, wishlistCount });
   } catch (error) {
     console.log('error',error);
     res.status(500).send('Internal server error')

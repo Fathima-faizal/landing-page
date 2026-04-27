@@ -6,6 +6,7 @@
     <title>VisionVogue - Profile</title>
     <link rel="stylesheet" href="css/address.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -18,8 +19,17 @@
         </nav>
         <div class="logo">VisionVogue</div>
         <div class="nav-icons">
-             <a href="/wishlist" ><i class="fa-regular fa-heart"></i></a>
-               <a href="/cart"> <i class="fa-solid fa-cart-shopping"></i></a>
+             <a href="/wishlist" class="wishlist-icon-container" style="position: relative; display: inline-block;">
+        <i class="fa-regular fa-heart"></i>
+        <% if (locals.wishlistCount > 0) { %>
+            <span class="wishlist-badge"><%= wishlistCount %></span>
+        <% } %>
+    </a>
+               <a href="/cart" class="cart-icon-container"><i class="fa-solid fa-cart-shopping"></i>
+                <% if (locals.cartCount > 0) { %>
+            <span class="cart-badge"><%= cartCount %></span>
+        <% } %>
+            </a>
               <a href="/profile" > <i class="fa-regular fa-user"></i></a>
     </header>
    <main class="profile-container">
@@ -66,7 +76,7 @@
 
                         <div class="card-actions">
                             <a href="/editAddress?id=<%=address._id%>" class="action-link edit"><i class="fa-regular fa-pen-to-square"></i> Edit</a>
-                            <a href="/deleteAddress?id=<%=address._id%>" class="action-link delete" onclick="return confirm('Delete this address?')"><i class="fa-regular fa-trash-can"></i> Delete</a>
+                           <a href="#" class="action-link delete" onclick="confirmDelete(event, '<%= address._id %>')"><i class="fa-regular fa-trash-can"></i> Delete</a>
                             <% if(!address.isDefault) { %>
                                 <a href="/defaultAddress?id=<%=address._id%>" class="set-default">Set as Default</a>
                             <% } %>
@@ -114,6 +124,25 @@
         <p class="copyright">© 2026 Eyewear Store. All rights reserved.</p>
     </footer>
   <script>
+    function confirmDelete(event, addressId) {
+    // Prevent the page from following the link or reloading immediately
+    event.preventDefault();
+
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This address will be permanently removed from your profile.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#ff4d4d", // Red color to match your delete theme
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // If confirmed, redirect to the delete route
+            window.location.href = `/deleteAddress?id=${addressId}`;
+        }
+    });
+}
     window.addEventListener( "pageshow", function ( event ) {
         var historyTraversal = event.persisted || 
                                ( typeof window.performance != "undefined" && 

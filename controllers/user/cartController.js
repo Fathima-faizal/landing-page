@@ -2,48 +2,45 @@ const User = require('../../models/userSchema');
 const Product = require('../../models/productSchema');
 const Cart = require('../../models/cartSchema');
 const mongoose = require('mongoose');
+const {applyBestOffer}=require('../../controllers/admin/productConroller')
 
 const getcartpage = async (req, res) => {
     try {
         const userId = req.session.user;
         let cartCount=0;
         let wishlistCount=0
-        const user = await User.findById(userId);
-    const fullCart = await Cart.findOne({ userId: userId }).populate({
+        const userData=await User.findById(userId);
+        if (userData && userData.wishlist) {
+            wishlistCount = userData.wishlist.length;
+        }
+    const userCart = await Cart.findOne({ userId: userId }).populate({
         path:'items.proudctId',
         model:'product'
     })
-      if(fullCart){
-        cartCount = fullCart.items.length;
-      }
-const userData = await User.findById(userId);
-      if (userData && userData.wishlist) {
-        wishlistCount = userData.wishlist.length;
-      }
-    
-       let grandtotal = 0;
-       if (fullCart && fullCart.items) {
-            fullCart.items.forEach(item => {
-                if (item.proudctId&& item.proudctId.salesPrice) {
-                    grandtotal += (item.proudctId.salesPrice * item.quantity);
+      if (userCart) {
+            cartCount = userCart.items.length;
+            for (let item of userCart.items) {
+                if (item.proudctId) {
+                    await applyBestOffer(item.proudctId);
                 }
-            });
-        }
-        const data = await Cart.aggregate([
+            }
+      }
+     
+      const data = await Cart.aggregate([
             { $match: { userId: new mongoose.Types.ObjectId(userId) } },
             { $unwind: '$items' },
             {
                 $lookup: {
                     from: 'products',
-                    localField: 'items.proudctId', 
+                    localField: 'items.proudctId',
                     foreignField: '_id',
                     as: 'productDetails'
                 }
             },
-            { $unwind: '$productDetails' }, 
+            { $unwind: '$productDetails' },
             {
                 $lookup: {
-                    from: 'categories', 
+                    from: 'categories',
                     localField: 'productDetails.category',
                     foreignField: '_id',
                     as: 'categoryDetails'
@@ -51,14 +48,21 @@ const userData = await User.findById(userId);
             },
             { $unwind: { path: '$categoryDetails', preserveNullAndEmptyArrays: true } }
         ]);
+       let grandtotal = 0;
+       data.forEach(item => {
+            if (item.productDetails && item.productDetails.salesPrice) {
+                grandtotal += (item.productDetails.salesPrice * item.items.quantity);
+            }
+        });
+
         const message = req.session.errorMessage;
         req.session.errorMessage = null;
         req.session.grandtotal = grandtotal;
         res.render('cart', {
-            user,
-            data,
-            message,
-            grandtotal,
+            user:userData,
+            data:data,
+            message:message,
+            grandtotal:grandtotal,
             cartCount: cartCount,
             wishlistCount:wishlistCount
         });

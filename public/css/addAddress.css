@@ -168,7 +168,43 @@ body {
     opacity: 0.8;
     transition: opacity 0.3s;
 }
+.cart-icon-container {
+    position: relative;
+    display: inline-block;
+}
 
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 2px 6px;
+    min-width: 15px;
+    text-align: center;
+}
+.wishlist-icon-container {
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+}
+
+.wishlist-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ff4d4d; /* ചുവപ്പ് നിറം */
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 50%;
+    min-width: 15px;
+    text-align: center;
+}
 .back-to-list:hover { opacity: 1; }
 
 /* The Card */

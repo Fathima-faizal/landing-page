@@ -200,8 +200,20 @@ const postNewPassword=async(req,res)=>{
        if(!userId){
         return res.redirect('/login')
        }
-       const userData=await User.findById(userId);
-       res.render('editProfile',{user:userData,error: null, success: null})
+        const userData=await User.findById(userId);
+         let cartCount = 0;
+         let wishlistCount=0
+          if (userId) {
+              const cart = await Cart.findOne({ userId: userId });
+              if (cart) {
+                  cartCount = cart.items.length; 
+              }
+              const userData = await User.findById(userId);
+      if (userData && userData.wishlist) {
+        wishlistCount = userData.wishlist.length;
+      }
+          }
+       res.render('editProfile',{user:userData, cartCount, wishlistCount,error: null, success: null})
     } catch (error) {
       console.log('error',error);
       res.status(500).send('Internal server error')
@@ -235,8 +247,23 @@ const postNewPassword=async(req,res)=>{
   }
   const changeEmail=async(req,res)=>{
   try {
-     res.render('change-email')
+    const userId = req.session.user;
+     if(!userId){
+      return res.redirect('/login')
+     }
+     let cartCount = 0;
+        let wishlistCount=0;
+        const user = await User.findById(userId);
+    const cart = await Cart.findOne({ userId: userId });
+       if (cart) {
+      cartCount = cart.items.length;
+    }
+    if (user && user.wishlist) {
+      wishlistCount = user.wishlist.length;
+    }
+     res.render('change-email',{ cartCount, wishlistCount,user: user})
   } catch (error) {
+   console.error(error);
     res.status(500).send('Internal server error')
   }
 
@@ -284,7 +311,26 @@ const postNewPassword=async(req,res)=>{
  }
  const newEmail=async(req,res)=>{
    try {
-       res.render('newEmail')
+      const userId = req.session.user;
+      if (!userId) {
+        return res.redirect('/login');
+      }
+      let cartCount = 0;
+    let wishlistCount = 0;
+      const user = await User.findById(userId);
+    const cart = await Cart.findOne({ userId: userId });
+
+    if (cart) {
+      cartCount = cart.items.length;
+    }
+
+    if (user && user.wishlist) {
+      wishlistCount = user.wishlist.length;
+    }
+
+       res.render('newEmail',{cartCount, 
+      wishlistCount, 
+      user: user})
    } catch (error) {
       res.status(500).send('Internal server error')
    }
@@ -322,7 +368,25 @@ const resetEmail=async(req,res)=>{
 }
 const changePassword=async(req,res)=>{
   try {
-     res.render('changePassword')
+    const userId = req.session.user;
+    if (!userId) {
+        return res.redirect('/login');
+    }
+    let cartCount = 0;
+    let wishlistCount = 0;
+    const user = await User.findById(userId);
+    const cart = await Cart.findOne({ userId: userId });
+
+    if (cart) {
+      cartCount = cart.items.length;
+    }
+
+    if (user && user.wishlist) {
+      wishlistCount = user.wishlist.length;
+    }
+     res.render('changePassword',{cartCount, 
+      wishlistCount, 
+      user: user})
   } catch (error) {
      res.status(500).send('Internal server error')
   }
@@ -374,7 +438,19 @@ const changePasswordValid=async(req,res)=>{
     if(!userId){
       res.redirect('/login')
     }
-    res.render('password')
+    let cartCount = 0;
+    let wishlistCount = 0;
+    const user = await User.findById(userId);
+    const cart = await Cart.findOne({ userId: userId });
+
+    if (cart) {
+      cartCount = cart.items.length;
+    }
+
+    if (user && user.wishlist) {
+      wishlistCount = user.wishlist.length;
+    }
+    res.render('password',{cartCount,wishlistCount,})
   } catch (error) {
     console.log('error',error);
     res.status(500).send('Internal server error')
@@ -405,6 +481,18 @@ const updatepassword=async(req,res)=>{
  const address=async(req,res)=>{
   try {
     const userId=req.session.user;
+    let cartCount = 0;
+    let wishlistCount = 0;
+    const user = await User.findById(userId);
+    const cart = await Cart.findOne({ userId: userId });
+
+    if (cart) {
+      cartCount = cart.items.length;
+    }
+
+    if (user && user.wishlist) {
+      wishlistCount = user.wishlist.length;
+    }
     const page = parseInt(req.query.page) || 1;
     const limit = 2;
     const skip = (page - 1) * limit;
@@ -422,7 +510,9 @@ const updatepassword=async(req,res)=>{
      res.render('address',{ 
       userAddress: { address: paginatedAddresses },
       currentPage: page,
-       totalPages: totalPages
+       totalPages: totalPages,
+       cartCount, 
+      wishlistCount, 
      })
   } catch (error) {
     console.log('error',error);
@@ -432,8 +522,21 @@ const updatepassword=async(req,res)=>{
 
  const addAddress=async(req,res)=>{
    try {
-     const user=req.session.user;
-     res.render('addAddress',{user:user})           
+     const userId=req.session.user;
+     let cartCount = 0;
+    let wishlistCount = 0;
+    const user = await User.findById(userId);
+    const cart = await Cart.findOne({ userId: userId });
+
+    if (cart) {
+      cartCount = cart.items.length;
+    }
+
+    if (user && user.wishlist) {
+      wishlistCount = user.wishlist.length;
+    }
+
+     res.render('addAddress',{user:user,cartCount,wishlistCount})           
    } catch (error) {
     res.status(500).send('Internal server error')
    }
@@ -466,7 +569,17 @@ const updatepassword=async(req,res)=>{
   const editAddress=async(req,res)=>{
    try {
      const addressId=req.query.id;
-     const user=req.session.user;
+     const userId=req.session.user;
+     let cartCount = 0;
+    let wishlistCount = 0;
+    const user = await User.findById(userId);
+    const cart = await Cart.findOne({ userId: userId });
+    if (cart) {
+      cartCount = cart.items.length;
+    }
+    if (user && user.wishlist) {
+      wishlistCount = user.wishlist.length;
+    }
      const currentAddress=await Address.findOne({
       'address._id':addressId,
      })
@@ -479,7 +592,7 @@ const updatepassword=async(req,res)=>{
      if(!addressData){
       return res.status(400).send('Client error');
      }
-     res.render('editAddress',{address:addressData,user:user})
+     res.render('editAddress',{address:addressData,user:user,cartCount,wishlistCount})
    } catch (error) {
      console.log('error',error);
      res.status(500).send('Internal server error')
@@ -532,7 +645,7 @@ const updatepassword=async(req,res)=>{
           }
         }
       })
-      res.redirect('address')
+      res.redirect(`/address?message=Item removed successfully`)
     } catch (error) {
       console.log('Error in delete address',error);
       res.status(500).send('Internal server error')
@@ -559,10 +672,21 @@ const updatepassword=async(req,res)=>{
  const getwallet=async(req,res)=>{
   try {
     const userId=req.session.user;
+    let cartCount = 0;
+    let wishlistCount = 0;
+    const user = await User.findById(userId);
+    const cart = await Cart.findOne({ userId: userId });
+
+    if (cart) {
+      cartCount = cart.items.length;
+    }
+
+    if (user && user.wishlist) {
+      wishlistCount = user.wishlist.length;
+    }
     const page = parseInt(req.query.page) || 1;
         const limit = 3; 
         const skip = (page - 1) * limit;
-    const user=await User.findById(userId);
     const allTransactions = user.history.reverse();
     const paginatedTransactions = allTransactions.slice(skip, skip + limit);
     const totalTransactions = allTransactions.length;
@@ -573,7 +697,9 @@ const updatepassword=async(req,res)=>{
       walletBalance: user.wallet || 0,
       transactions: paginatedTransactions, 
       currentPage: page,
-      totalPages: totalPages
+      totalPages: totalPages,
+      cartCount, 
+      wishlistCount, 
     })
   } catch (error) {
     console.log('error',error);

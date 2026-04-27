@@ -1,13 +1,26 @@
 const User=require('../../models/userSchema');
 const Coupon=require('../../models/couponSchema');
+const Cart=require('../../models/cartSchema');
 const Order=require('../../models/orderSchema')
 
 const loadedCoupon=async(req,res)=>{
     try {
-         const page = parseInt(req.query.page) || 1; 
+         const page = parseInt(req.query.page) || 1;
          const limit = 6; 
         const skip = (page - 1) * limit;
         const userId=req.session.user;
+        let cartCount = 0;
+    let wishlistCount = 0;
+    const user = await User.findById(userId);
+    const cart = await Cart.findOne({ userId: userId });
+
+    if (cart) {
+      cartCount = cart.items.length;
+    }
+
+    if (user && user.wishlist) {
+      wishlistCount = user.wishlist.length;
+    }
         const today=new Date()
         today.setHours(0, 0, 0, 0);
          const totalCoupons = await Coupon.countDocuments();
@@ -23,6 +36,8 @@ const loadedCoupon=async(req,res)=>{
             userId,
             currentPage: page,
             totalPages: totalPages,
+            cartCount, 
+           wishlistCount,
         })
     } catch (error) {
         console.log('error',error);

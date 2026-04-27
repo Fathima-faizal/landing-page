@@ -9,6 +9,18 @@ const PDFdocument=require('pdfkit')
 const getorder = async(req, res) => {
     try {
         const userId = req.session.user;
+        let cartCount = 0;
+    let wishlistCount = 0;
+    const user = await User.findById(userId);
+    const cart = await Cart.findOne({ userId: userId });
+
+    if (cart) {
+      cartCount = cart.items.length;
+    }
+
+    if (user && user.wishlist) {
+      wishlistCount = user.wishlist.length;
+    }
         const page = parseInt(req.query.page) || 1; 
         const limit = 4; 
         const skip = (page - 1) * limit;
@@ -30,7 +42,9 @@ const getorder = async(req, res) => {
             currentPage: page,
             totalPages: Math.ceil(totalOrders / limit),
             totalOrders,
-            search
+            search,
+            cartCount, 
+         wishlistCount, 
          });
     } catch (error) {
         console.log('error', error);
@@ -80,6 +94,18 @@ const postorder = async (req, res) => {
 const orderdetails=async(req,res)=>{
     try {
         const orderId=req.params.id;
+        let cartCount = 0;
+        let wishlistCount = 0;
+        const user = await User.findById(userId);
+    const cart = await Cart.findOne({ userId: userId });
+
+    if (cart) {
+      cartCount = cart.items.length;
+    }
+
+    if (user && user.wishlist) {
+      wishlistCount = user.wishlist.length;
+    }
         const page = parseInt(req.query.page) || 1; 
         const limit = 2; 
         const skip = (page - 1) * limit;
@@ -99,7 +125,9 @@ const orderdetails=async(req,res)=>{
             paymentMethod: order.paymentMethod,
             currentPage: page,
             totalPages: totalPages,
-            addressData:addressData
+            addressData:addressData,
+            cartCount, 
+           wishlistCount, 
         })
     } catch (error) {
         console.log('error',error);
@@ -109,6 +137,18 @@ const orderdetails=async(req,res)=>{
 const getReturnPage = async (req, res) => {
     try {
         const orderId = req.params.orderId;
+        let cartCount = 0;
+    let wishlistCount = 0;
+    const user = await User.findById(userId);
+    const cart = await Cart.findOne({ userId: userId });
+
+    if (cart) {
+      cartCount = cart.items.length;
+    }
+
+    if (user && user.wishlist) {
+      wishlistCount = user.wishlist.length;
+    }
         const order = await Order.findById(orderId).populate({
             path:'orderedItems.productId',
             populate: { path: 'category' }
@@ -118,7 +158,7 @@ const getReturnPage = async (req, res) => {
             return res.redirect('/order');
         }
         
-        res.render('return', { order });
+        res.render('return', { order,cartCount, wishlistCount, });
     } catch (error) {
         console.error(error);
         res.status(500).send("Internal Server Error");
@@ -210,6 +250,18 @@ const cancelOrderItem = async (req, res) => {
 const getreview = async (req, res) => {
     try {
          const {orderId,productId}=req.params;
+         let cartCount = 0;
+    let wishlistCount = 0;
+    const user = await User.findById(userId);
+    const cart = await Cart.findOne({ userId: userId });
+
+    if (cart) {
+      cartCount = cart.items.length;
+    }
+
+    if (user && user.wishlist) {
+      wishlistCount = user.wishlist.length;
+    }
         
     const order=await Order.findById(orderId).populate({
             path:'orderedItems.productId',
@@ -218,7 +270,7 @@ const getreview = async (req, res) => {
             }
         });
      const item = order.orderedItems.find(i => i.productId._id.toString() === productId);
-     res.render('review', { order, item });
+     res.render('review', { order, item ,cartCount, wishlistCount,});
   } catch (error) {
     console.log('error',error);
     res.status(500).send('Internal server error')
