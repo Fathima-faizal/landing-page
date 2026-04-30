@@ -58,6 +58,15 @@ const postorder = async (req, res) => {
         const cart = await Cart.findOne({ userId }).populate('items.proudctId'); 
         
         if (!cart) return res.status(400).json({ status: false, message: "Cart not found" });
+        
+
+        if (paymentMethod === 'Razorpay') {
+            return res.json({ 
+                status: true, 
+                onlinePayment: true,
+                totalAmount: req.session.grandTotal 
+            });
+        }
  
         const orderItems = cart.items.map(item => ({
             productId: item.proudctId._id, 
@@ -71,6 +80,7 @@ const postorder = async (req, res) => {
             orderedItems: orderItems,
             totalPrice: req.session.grandTotal, 
             finalAmount: req.session.grandTotal,
+            paymentMethod:paymentMethod,
             address: addressId,
             status: 'pending', 
             createdOn: new Date() 
@@ -93,6 +103,7 @@ const postorder = async (req, res) => {
 }
 const orderdetails=async(req,res)=>{
     try {
+        const userId=req.session.user;
         const orderId=req.params.id;
         let cartCount = 0;
         let wishlistCount = 0;

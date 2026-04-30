@@ -117,6 +117,24 @@
                     <% }) %>
                 <% } %>
             </div>
+            <div class="available-coupons">
+    <h4><i class="fa-solid fa-ticket"></i> Available Coupons</h4>
+    <div class="coupon-list-container custom-scrollbar">
+        <% if (locals.coupons && coupons.length > 0) { %>
+            <% coupons.forEach(coupon => { %>
+                <div class="coupon-mini-card">
+                    <div class="coupon-info">
+                        <span class="c-code"><%= coupon.couponCode %></span>
+                        <p class="c-desc">Save ₹<%= coupon.discountAmount %> on orders above ₹<%= coupon.minimumPrice %></p>
+                    </div>
+                    <button class="copy-coupon-btn" onclick="copyAndApply('<%= coupon.couponCode %>')">Apply</button>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p>No coupons available right now.</p>
+        <% } %>
+    </div>
+</div>
                <div class="coupon-section">
         <div class="coupon-input-group">
             <input type="text" id="couponCode" placeholder="Enter Coupon Code" style="text-transform: uppercase;" <%= appliedCoupon ? 'disabled' : '' %> value="<%= appliedCoupon || '' %>">
@@ -199,6 +217,10 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
+    function copyAndApply(code) {
+    document.getElementById('couponCode').value = code;
+    applyCoupon();
+}
    function applyCoupon() {
     const code = document.getElementById('couponCode').value;
     const total = Number("<%= grandTotal %>");
@@ -289,8 +311,7 @@ function removeCoupon() {
         }
     });
 }
-
-function razorpayPayment(order) {
+function razorpayPayment(order) { 
     const options = {
         "key": "rzp_test_SesqziujsCZTrM",
         "amount": order.razorpayOrder.amount,
@@ -301,18 +322,24 @@ function razorpayPayment(order) {
             $.ajax({
                 url: '/verifyPayment',
                 method: 'POST',
-                data: { response, orderId: order.orderId },
+                data: {
+                    response: response, 
+                    orderData: order.orderData 
+                },
                 success: (res) => {
-                    if (res.success) location.href = '/orderSuccess';
+                    if (res.success) location.href = '/ordersuccess';
                     else location.href = '/orderFailure';
                 }
             });
         },
-        "modal": { "ondismiss": () => { location.href = '/orderFailure'; } }
+       "modal": { 
+    "ondismiss": function() { 
+        window.location.href = '/orderFailure'; 
+    } 
+}
     };
     const rzp = new Razorpay(options);
     rzp.open();
-
 }
    </script>
 </body>

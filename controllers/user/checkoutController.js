@@ -3,6 +3,7 @@ const Product=require('../../models/productSchema');
 const Address=require('../../models/addressSchema');
 const Cart=require('../../models/cartSchema');
 const Order=require('../../models/orderSchema');
+const Coupon=require('../../models/couponSchema')
 const env=require('dotenv').config();
 const Razorpay=require('razorpay');
 const crypto=require('crypto')
@@ -16,7 +17,13 @@ const razorpayInstance = new Razorpay({
 const getcheckout=async(req,res)=>{
     try {
         const userId=req.session.user;
+         let cartCount=0;
+        let wishlistCount=0
         const user=await User.findById(userId)
+        const coupons = await Coupon.find({ 
+            islisted: true, 
+            expireOn: { $gt: new Date() }  
+    })
         const addressData = await Address.findOne({ userId: userId });
         const cart=await Cart.findOne({userId}).populate({
             path:'items.proudctId',
@@ -26,6 +33,13 @@ const getcheckout=async(req,res)=>{
         model: 'category' 
     }
         })
+        if (cart) {
+      cartCount = cart.items.length;
+    }
+
+    if (user && user.wishlist) {
+      wishlistCount = user.wishlist.length;
+    }
         if (!cart || cart.items.length === 0) {
             return res.redirect('/cart');
         }
@@ -59,7 +73,10 @@ const getcheckout=async(req,res)=>{
            grandTotal,
            discount,
            finalAmount,
-            appliedCoupon
+           appliedCoupon,
+           cartCount, 
+           wishlistCount,
+           coupons: coupons || []
         })
     } catch (error) {
         console.log('error',error);
@@ -89,6 +106,20 @@ const placeorder=async(req,res)=>{
         let total = cart.items.reduce((acc, item) => acc + (item.proudctId.salesPrice * item.quantity), 0);
         const discount = couponData ? couponData.discount : 0;
         const finalAmountAfterDiscount = total - discount;
+        if (paymentMethod === 'Razorpay') {
+            const options = {
+                amount: Math.round(finalAmountAfterDiscount * 100), 
+                currency: "INR",
+                receipt: "rcpt_" + Date.now()
+            };
+            const razorpayOrder = await razorpayInstance.orders.create(options);
+            return res.json({ 
+                success: true, 
+                method: 'Razorpay', 
+                razorpayOrder,
+                orderData: { addressId, paymentMethod, discount, total, finalAmountAfterDiscount } 
+            });
+        }
         if (paymentMethod === 'Wallet') {
             if (user.wallet < finalAmountAfterDiscount) {
                 return res.json({ success: false, message: "Insufficient Wallet Balance" });
@@ -144,29 +175,49 @@ const placeorder=async(req,res)=>{
 }
 const verifyPayment = async (req, res) => {
     try {
-        const { response, orderId } = req.body;
+        const { response, orderData } = req.body;
         const userId = req.session.user;
-        const hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
+        let hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
         hmac.update(response.razorpay_order_id + "|" + response.razorpay_payment_id);
-        const generated_signature = hmac.digest('hex');
-
-        if (generated_signature === response.razorpay_signature) {
-            await Order.findByIdAndUpdate(orderId, { status: 'pending' });
-            const order = await Order.findById(orderId);
-            for (const item of order.orderedItems) {
-                await Product.findByIdAndUpdate(item.productId, {
+        hmac = hmac.digest('hex');
+        if (hmac === response.razorpay_signature) {
+            const cart = await Cart.findOne({ userId }).populate('items.proudctId');
+            
+            const orderItems = cart.items.map(item => ({
+                productId: item.proudctId._id,
+                quantity: item.quantity,
+                price: item.proudctId.salesPrice,
+                status: 'pending'
+            }));
+            const newOrder = new Order({
+                userId: userId,
+                orderedItems: orderItems,
+                totalPrice: orderData.total,
+                discount: orderData.discount,
+                finalAmount: orderData.finalAmountAfterDiscount,
+                address: orderData.addressId,
+                paymentMethod: 'Razorpay',
+                status: 'pending',
+                paymentStatus: 'Success'
+            });
+            await newOrder.save();
+            for (const item of cart.items) {
+                await Product.findByIdAndUpdate(item.proudctId._id, {
                     $inc: { quantity: -item.quantity }
                 });
             }
             await Cart.findOneAndDelete({ userId });
+            req.session.coupon = null;
+
             res.json({ success: true });
         } else {
-            res.json({ success: false });
+            res.json({ success: false, message: "Payment verification failed" });
         }
     } catch (error) {
-        res.status(500).send("Error verifying payment");
+        console.error(error);
+        res.status(500).json({ success: false });
     }
-};
+}
 const ordersuccess=async(req,res)=>{
     try {
         res.render('ordersuccess')
