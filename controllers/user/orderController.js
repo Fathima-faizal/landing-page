@@ -147,6 +147,7 @@ const orderdetails=async(req,res)=>{
 }
 const getReturnPage = async (req, res) => {
     try {
+        const userId=req.session.user;
         const orderId = req.params.orderId;
         let cartCount = 0;
     let wishlistCount = 0;
@@ -208,51 +209,66 @@ const cancelOrderItem = async (req, res) => {
             return res.status(404).json({ success: false, message: "Order not found" });
         }
         const itemIndex = order.orderedItems.findIndex(item => item.productId.toString() === productId);
-        if (itemIndex > -1) {
-            const item = order.orderedItems[itemIndex];
-            await Product.findByIdAndUpdate(productId, {
-                $inc: { quantity: item.quantity }
-            });
-            const oldFinalAmount = order.finalAmount;
-            order.orderedItems.splice(itemIndex, 1);
-            let newSubtotal = order.orderedItems.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0);
-            const coupon = await Coupon.findOne({ couponCode: order.couponCode });
-            if (coupon && (newSubtotal < coupon.minimumPrice || order.orderedItems.length === 0)) {
-                order.discount = 0;
-                order.couponapplied = false;
+        if (itemIndex === -1) {
+            return res.status(404).json({ success: false, message: "Item not found" });
+        }
+        const itemToCancel = order.orderedItems[itemIndex];
+if (order.couponCode) {
+    const coupon = await Coupon.findOne({ couponCode: order.couponCode.trim() });
+    if (coupon) {
+        const priceOfItemToCancel = Number(itemToCancel.price) * Number(itemToCancel.quantity);
+        const remainingSubtotal = Number(order.totalPrice) - priceOfItemToCancel;
+            if (remainingSubtotal <Number(coupon.minimumPrice) && remainingSubtotal > 0) {
+                return res.status(200).json({ 
+                    success: false,
+                    message: `This product cannot be canceled. A minimum purchase of ₹${coupon.minimumPrice} is required to keep the '${order.couponCode}' coupon valid.`
+                });
             }
-            order.totalPrice = newSubtotal;
-            if (order.orderedItems.length === 0) {
-                order.totalPrice = 0;
-                order.discount = 0;
-                order.finalAmount = 0;
-                order.status = 'cancelled';
-            } else {
-                order.finalAmount = newSubtotal - order.discount;
-            }
-            const refundAmount = oldFinalAmount - order.finalAmount;
-            if (order.paymentMethod !== 'COD' && refundAmount > 0) {
-                const user = await User.findById(order.userId);
-                if (user) {
-                    user.wallet = (Number(user.wallet) || 0) + Number(refundAmount);
-                    user.history.push({
-                        description: `Refund for Cancelled Item in Order #${order.orderId.toString().slice(-6)}`,
-                        amount: refundAmount,
-                        type: 'credit',
-                        status: 'Completed',
-                        date: new Date()
-                    });
-                    await user.save();
-                }
-            }
-            if (order.orderedItems.length === 0) {
-                order.status = 'cancelled';
-            }
-            await order.save();
-            return res.json({ success: true, message: "Item cancelled and Order Summary updated successfully" });
+    }
+}
+        await Product.findByIdAndUpdate(productId, {
+            $inc: { quantity: itemToCancel.quantity }
+        });
+
+        const oldFinalAmount = order.finalAmount;
+        order.orderedItems.splice(itemIndex, 1);
+
+        let newSubtotal = order.orderedItems.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0);
+
+        order.totalPrice = newSubtotal;
+
+        if (order.orderedItems.length === 0) {
+            order.totalPrice = 0;
+            order.discount = 0;
+            order.finalAmount = 0;
+            order.status = 'cancelled';
+        } else {
+            order.finalAmount = newSubtotal - order.discount;
         }
 
-        res.json({ success: false, message: "Item not found" });
+        const refundAmount = oldFinalAmount - order.finalAmount;
+        if (order.paymentMethod !== 'COD' && refundAmount > 0) {
+            const user = await User.findById(order.userId);
+            if (user) {
+                user.wallet = (Number(user.wallet) || 0) + Number(refundAmount);
+                user.history.push({
+                    description: `Refund for Cancelled Item in Order #${order.orderId.toString().slice(-6)}`,
+                    amount: refundAmount,
+                    type: 'credit',
+                    status: 'Completed',
+                    date: new Date()
+                });
+                await user.save();
+            }
+        }
+
+        if (order.orderedItems.length === 0) {
+            order.status = 'cancelled';
+        }
+
+        await order.save();
+        return res.json({ success: true, message: "Item cancelled and Order Summary updated successfully" });
+
     } catch (error) {
         console.error("Error in cancelOrderItem:", error);
         res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -260,6 +276,7 @@ const cancelOrderItem = async (req, res) => {
 };
 const getreview = async (req, res) => {
     try {
+        const userId=req.session.user;
          const {orderId,productId}=req.params;
          let cartCount = 0;
     let wishlistCount = 0;

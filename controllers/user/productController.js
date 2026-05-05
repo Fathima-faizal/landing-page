@@ -16,9 +16,7 @@ const productdetails = async (req, res) => {
         }
         const productId = req.query.id;
         const productData = await Product.findById(productId).populate('category');
-        if (!productData) {
-            return res.redirect('/pageNotFound');
-        }
+        const isCategoryUnlisted = productData.category ? !productData.category.islisted : false;
         await applyBestOffer(productData);
         const relatedProducts = await Product.find({
          _id: { $ne: productId },
@@ -28,6 +26,7 @@ const productdetails = async (req, res) => {
         res.render('productDetails', {
             userData: userData,
             product: productData,
+            isOutOfStock: productData.quantity <= 0 || isCategoryUnlisted || productData.isBlocked,
             quantity: productData.quantity,
             category: productData.category,
             cartCount: cartCount,

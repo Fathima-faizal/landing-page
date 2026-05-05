@@ -91,16 +91,21 @@
                         <button type="button" onclick="updateQty(1)">+</button>
                     </div>
                 </div>
-
                 <div class="button-actions">
-                    <% if (product.quantity > 0) { %>
-                        <button class="btn-primary add-to-cart" onclick="addToCart('<%=product._id%>')">
-                            <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </button>
-                    <% } else { %>
-                        <button class="btn-out-of-stock" disabled>Currently Unavailable</button>
-                    <% } %>
-                </div>
+    <% if (!isOutOfStock) { %>
+        <button class="btn-primary add-to-cart" onclick="addToCart('<%=product._id%>')">
+            <i class="fa-solid fa-cart-plus"></i> Add to Cart
+        </button>
+    <% } else { %>
+        <button class="btn-out-of-stock" disabled style="background-color: #ff4d4d; color: white; cursor: not-allowed;">
+            <% if (product.isBlocked) { %>
+                Currently Unavailable
+            <% } else { %>
+                Out of Stock
+            <% } %>
+        </button>
+    <% } %>
+</div>
             </div>
 
             <div class="service-features">
