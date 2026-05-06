@@ -37,39 +37,51 @@ const getorders=async(req,res)=>{
         res.status(500).send('Internal server error')
     }
 }
-const updatestatus=async(req,res)=>{
+const updateItemStatus = async (req, res) => {
     try {
-        const {id}=req.params;
-        const {status}=req.body;
-        const order=await Order.findById(id);
-        order.status=status.toLowerCase();
-        if(order.status==='approve'){
-            const user = await User.findById(order.userId);
-            if (user) {
-                const refundAmount = order.finalAmount;
-                user.wallet = (user.wallet || 0) + refundAmount;
-                user.history.push({
-                    description: `Refund for Approved Return #${order.orderId.toString().slice(-6)}`,
-                    amount: refundAmount,
-                    type: 'credit',
-                    status: 'Completed',
-                    date: new Date()
-                });
-                await user.save();
-                for (const item of order.orderedItems) {
-                    await Product.findByIdAndUpdate(item.productId, {
-                        $inc: { quantity: item.quantity }
+        const { orderId, itemId, newStatus } = req.body;
+        const order = await Order.findOneAndUpdate(
+            { _id: orderId, "orderedItems._id": itemId },
+            { $set: { "orderedItems.$.status": newStatus } },
+            { new: true }
+        );
+
+        if (!order) {
+            return res.json({ success: false, message: "Order or Item not found" });
+        }
+        const allItemsStatus = order.orderedItems.map(item => item.status);
+        const uniqueStatuses = [...new Set(allItemsStatus)];
+        if (uniqueStatuses.length === 1) {
+            order.status = uniqueStatuses[0].toLowerCase();
+            if (order.status === 'approve') {
+                const user = await User.findById(order.userId);
+                if (user) {
+                    const refundAmount = order.finalAmount;
+                    user.wallet = (user.wallet || 0) + refundAmount;
+                    user.history.push({
+                        description: `Refund for Approved Return #${order.orderId}`,
+                        amount: refundAmount,
+                        type: 'credit',
+                        status: 'Completed',
+                        date: new Date()
                     });
+                    await user.save();
+                    for (const item of order.orderedItems) {
+                        await Product.findByIdAndUpdate(item.productId, {
+                            $inc: { quantity: item.quantity }
+                        });
+                    }
                 }
             }
+            await order.save();
         }
-        await order.save();
-        res.json({success:true,message:'Status updated successfully'})
+
+        res.json({ success: true, message: "Item status updated successfully!" });
     } catch (error) {
-        console.log('error',error);
-        res.status(500).send('Internal server error')
+        console.error(error);
+        res.status(500).json({ success: false, message: "Internal server error" });
     }
-}
+};
 const viewdetails = async (req, res) => {
     try {
         const { orderId } = req.params;
@@ -155,7 +167,7 @@ const deleteReview=async(req,res)=>{
 
 module.exports={
     getorders,
-    updatestatus,
+    updateItemStatus,
     viewdetails,
     getReview,
     deleteReview,

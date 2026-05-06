@@ -64,7 +64,7 @@ router.get('/deleteProduct',adminAuth,productController.deleteProduct);
                       //order Management//
 
  router.get('/orderManagement',adminAuth,orderController.getorders)                     
- router.patch('/updateStatus/:id',adminAuth,orderController.updatestatus)
+ router.patch('/updateItemStatus',adminAuth,orderController.updateItemStatus)
  router.get('/Views/:orderId',adminAuth,orderController.viewdetails)
 
                      //review Management//

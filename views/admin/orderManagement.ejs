@@ -95,50 +95,35 @@
                     </form>
                 </div>
 
-                <table class="user-table">
-                    <thead>
-                        <tr>
-                            <th>OrderId</th>
-                            <th>Date</th>
-                            <th>User</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                   <tbody>
-   <% orders.forEach(order => { %>
-                <tr>
-                    <td>#<%= order.orderId %></td>
-                    <td><%= new Date(order.createdOn).toLocaleDateString() %></td>
-                    <td><%= order.userId ? order.userId.name : 'Guest' %><br>
-                        <%=order.userId? order.userId.email:'Guest'%></td>
-                    <td>
-                        <% if (order.status === 'return') { %>
-                    <div class="action-buttons">
-                        <button onclick="changeStatus('<%= order._id %>', 'approve')" class="btn-approve">Approve</button>
-                        <button onclick="changeStatus('<%= order._id %>', 'reject')" class="btn-reject">Reject</button>
-                    </div>
-                <% } else { %>
-                        <select onchange="changeStatus('<%= order._id %>', this.value)" class="status-select">
-                            <% 
-                             const statusFlow = ['pending', 'processing','cancelled','shipped', 'delivered','return','approve','reject'];
-                             const currentIndex = statusFlow.indexOf(order.status);
-                             statusFlow.forEach((s, index) => {
-                                if (index >= currentIndex) {
-                                    %>
-                                <option value="<%= s %>" <%= order.status === s ? 'selected' : '' %>><%= s %></option>
-                               <%}%>
-                                <% }) %>
-                        </select>
-                        <%}%>
-                    </td>
-                    <td>
-                        <a href="/admin/Views/<%= order._id %>" class="btn-view">View Detail</a>
-                    </td>
-                </tr>
-            <% }) %>
-    
-</tbody>
+               <table class="user-table">
+    <thead>
+        <tr>
+            <th>OrderId</th>
+            <th>Date</th>
+            <th>User</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% orders.forEach(order => { %>
+            <tr>
+                <td>#<%= order.orderId %></td>
+                <td><%= new Date(order.createdOn).toLocaleDateString() %></td>
+                <td><%= order.userId ? order.userId.name : 'Guest' %><br>
+                    <%= order.userId ? order.userId.email : '' %></td>
+                <td>
+                    <span class="status-badge <%= order.status %>">
+                        <%= order.status.toUpperCase() %>
+                    </span>
+                </td>
+                <td>
+                    <a href="/admin/Views/<%= order._id %>" class="btn-view">View Detail</a>
+                </td>
+            </tr>
+        <% }) %>
+    </tbody>
+</table>
                 </table>
                 <div class="container">
                     <nav aria-label="page navigation">
@@ -167,31 +152,7 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-function changeStatus(orderId, newStatus) {
-    Swal.fire({
-        title: 'Update Status?',
-        text: `Change order status to ${newStatus}?`,
-        icon: 'question',
-        showCancelButton: true
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch(`/admin/updateStatus/${orderId}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: newStatus })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire('Updated!', data.message, 'success');
-                    location.reload();
-                } else {
-                    Swal.fire('Error', data.message, 'error');
-                }
-            });
-        }
-    });
-}
+
 </script>
 </body>
 </html>

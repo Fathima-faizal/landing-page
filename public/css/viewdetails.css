@@ -203,3 +203,47 @@ flex-direction: column;
     text-transform: capitalize;
     color: #28a745; 
 }
+.status-select-small {
+    background-color: #f8f9fa;
+    color: #333;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.status-select-small:hover {
+    border-color: #1a4d2e;
+    background-color: #fff;
+}
+
+/* Optional: Color-coding the item rows based on status */
+.items-table tr:has(option[value="Cancelled"]:selected) {
+    opacity: 0.7;
+    background-color: #fff5f5;
+}
+/* സ്റ്റാറ്റസ് സെലക്ട് ബോക്സിന്റെ സ്റ്റൈൽ */
+.status-select-small {
+    background-color: #28a745; /* പച്ച നിറം */
+    color: white;               /* വെള്ള ടെക്സ്റ്റ് */
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    outline: none;
+    appearance: none; /* ബ്രൗസറിന്റെ ഡിഫോൾട്ട് ആരോ ഒഴിവാക്കാൻ */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* ഓപ്ഷനുകൾക്ക് ഉള്ളിലെ ടെക്സ്റ്റ് ശരിയായി കാണാൻ (ചില ബ്രൗസറുകളിൽ ഇത് ആവശ്യമാണ്) */
+.status-select-small option {
+    background-color: white;
+    color: black;
+}
+
+/* ഹോവർ ചെയ്യുമ്പോൾ ചെറിയ മാറ്റം വരാൻ */
+.status-select-small:hover {
+    background-color: #218838;
+}

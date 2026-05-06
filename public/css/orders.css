@@ -181,7 +181,59 @@ body {
     display: flex;
     gap: 5px;
 }
+/* ബേസിക് ബാഡ്ജ് സ്റ്റൈൽ */
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: inline-block;
+    color: white; /* എല്ലാ ബാഡ്ജിലെയും ടെക്സ്റ്റ് വെള്ള */
+}
 
+/* ഓരോ സ്റ്റാറ്റസിനും പ്രത്യേകം നിറങ്ങൾ */
+
+/* Pending - മഞ്ഞ/ഓറഞ്ച് */
+.status-badge.pending {
+    background-color: #f39c12;
+    color: #fff;
+}
+
+/* Processing - നീല */
+.status-badge.processing {
+    background-color: #3498db;
+}
+
+/* Shipped - ഇളം നീല/വയലറ്റ് */
+.status-badge.shipped {
+    background-color: #9b59b6;
+}
+
+/* Delivered - പച്ച */
+.status-badge.delivered {
+    background-color: #27ae60;
+}
+
+/* Cancelled - ചുവപ്പ് */
+.status-badge.cancelled {
+    background-color: #e74c3c;
+}
+
+/* Return - കടും ചുവപ്പ്/തവിട്ട് */
+.status-badge.return {
+    background-color: #d35400;
+}
+
+/* Approve - തിളക്കമുള്ള പച്ച */
+.status-badge.approve {
+    background-color: #2ecc71;
+}
+
+/* Reject - കറുപ്പ്/ഗ്രേ */
+.status-badge.reject {
+    background-color: #34495e;
+}
 .btn-approve {
     background-color: #28a745;
     color: white;

@@ -109,30 +109,46 @@
     </div>
 
     <table class="items-table">
-        <thead>
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Status</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% order.orderedItems.forEach(item => { %>
             <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
+                <td>
+                    <img src="/uploads/<%= item.productId.productimage[0] %>" width="50">
+                    <div class="category-name"><%= item.productId.category.name %></div>
+                </td>
+                <td>₹<%= item.price %></td>
+                <td><%= item.quantity %></td>
+                <td>
+                    <select 
+    class="status-select-small" onchange="updateItemStatus('<%= order._id %>', '<%= item._id %>', this.value)">
+    <% const statusLevels = ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'return', 'approve', 'reject'];
+        const currentIndex = statusLevels.indexOf(item.status.toLowerCase());
+        statusLevels.forEach((s, index) => { 
+            if (index >= currentIndex) { 
+    %>
+                <option value="<%= s %>" <%= item.status === s ? 'selected' : '' %>>
+                    <%= s.charAt(0).toUpperCase() + s.slice(1) %>
+                </option>
+    <% 
+            }
+        }) 
+    %>
+</select>
+                </td>
+                <td>₹<%= item.price * item.quantity %></td>
             </tr>
-        </thead>
-        <tbody>
-            <% order.orderedItems.forEach(item => { %>
-                <tr>
-                    <td>
-                        <img src="/uploads/<%= item.productId.productimage[0] %>" width="50">
-                         <div class="category-name">
-                         <%= item.productId.category.name %>
-                    </div>
-                    </td>
-                    <td>₹<%= item.price %></td>
-                    <td><%= item.quantity %></td>
-                    <td>₹<%= item.price * item.quantity %></td>
-                </tr>
-            <% }) %>
-        </tbody>
-    </table>
+        <% }) %>
+    </tbody>
+</table>
      <div class="summary-card">
     <p><strong>Total Price:</strong> ₹<%= order.totalPrice %></p>
 
@@ -169,7 +185,34 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-
+    function updateItemStatus(orderId, itemId, newStatus) {
+    Swal.fire({
+        title: 'Update Item Status?',
+        text: `Change this item status to ${newStatus}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#1a4d2e',
+        confirmButtonText: 'Yes, Update'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('/admin/updateItemStatus', { 
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId, itemId, newStatus })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('Success', data.message, 'success').then(() => location.reload());
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            });
+        } else {
+            location.reload(); 
+        }
+    });
+}
 </script>
 </body>
 </html>
