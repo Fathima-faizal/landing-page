@@ -3,7 +3,9 @@ const Category=require('../../models/categorySchema');
 const  User=require('../../models/userSchema');
 const product = require('../../models/productSchema');
 const Order=require('../../models/orderSchema');
-const Cart=require('../../models/cartSchema')
+const Cart=require('../../models/cartSchema');
+const Status=require('../../constants/statusCode');
+const Error=require('../../constants/errorMessage')
 const {applyBestOffer}=require('../../controllers/admin/productConroller')
 const productdetails = async (req, res) => {
     try {

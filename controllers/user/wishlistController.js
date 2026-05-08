@@ -1,6 +1,8 @@
 const User=require('../../models/userSchema');
 const Product=require('../../models/productSchema');
-const Cart=require('../../models/cartSchema')
+const Cart=require('../../models/cartSchema');
+const Status=require('../../constants/statusCode')
+const Error=require('../../constants/errorMessage')
 
 const getwishlist=async(req,res)=>{
     try {

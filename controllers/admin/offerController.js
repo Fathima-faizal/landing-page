@@ -1,6 +1,8 @@
 const Offer=require('../../models/offerSchema');
 const Product=require('../../models/productSchema')
 const Category=require('../../models/categorySchema')
+const Status=require('../../constants/statusCode');
+const Error=require('../../constants/errorMessage')
 
 const loadoffer=async(req,res)=>{
     try {

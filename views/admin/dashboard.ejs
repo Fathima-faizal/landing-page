@@ -102,9 +102,12 @@
                 </div>
             </div>
 
-            <div id="salesSection" class="report-section" style="margin-top: 20px; display: none;">
-                <div class="report-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3>Sales Report</h3>
+<div id="salesSection" class="report-section" style="margin-top: 20px; display: none;">
+    <div class="report-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+            <h3>Sales Report</h3>
+            <p id="reportPeriod" style="font-size: 0.9rem; color: #666; margin-top: 5px;"></p>
+        </div>
                     <div class="filter-group">
                         <select id="filterType" onchange="toggleDateInputs()">
                             <option value="custom">Custom Range</option>
@@ -236,27 +239,35 @@
         }
     });
     async function applyFilter() {
-        const startDate = document.getElementById('startDate').value;
+    const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
     const filterType = document.getElementById('filterType').value;
-        if (filterType === 'custom') {
+    const reportPeriod = document.getElementById('reportPeriod');
+    let displayStart = startDate;
+    let displayEnd = endDate || new Date().toISOString().split('T')[0];
+    const now = new Date();
+    if (filterType === 'daily') {
+        displayStart = now.toLocaleDateString();
+        displayEnd = now.toLocaleDateString();
+    } else if (filterType === 'weekly') {
+        let lastWeek = new Date();
+        lastWeek.setDate(now.getDate() - 7);
+        displayStart = lastWeek.toLocaleDateString();
+        displayEnd = now.toLocaleDateString();
+    } else if (filterType === 'yearly') {
+        displayStart = `01/01/${now.getFullYear()}`;
+        displayEnd = now.toLocaleDateString();
+    } else if (filterType === 'custom') {
         if (!startDate || !endDate) return alert("Please select both dates");
-
-        const today = new Date();
-        today.setHours(23, 59, 59, 999);
-       if (new Date(startDate) > today || new Date(endDate) > today) {
-            return alert("Future dates are not allowed");
-        }
-
-        if (new Date(startDate) > new Date(endDate)) {
-            return alert("Start date cannot be after end date");
-        }
+        displayStart = new Date(startDate).toLocaleDateString();
+        displayEnd = new Date(endDate).toLocaleDateString();
     }
-        const response = await fetch(`/admin/salesReport?startDate=${startDate}&endDate=${endDate}&filterType=${filterType}`);
-        const data = await response.json();
-        updateTable(data);
-    }
+    reportPeriod.innerText = `Showing report from ${displayStart} to ${displayEnd}`;
 
+    const response = await fetch(`/admin/salesReport?startDate=${startDate}&endDate=${endDate}&filterType=${filterType}`);
+    const data = await response.json();
+    updateTable(data);
+}
     function updateTable(data) {
         const tbody = document.querySelector('.report-table tbody');
         tbody.innerHTML = data.map(order => `
@@ -272,20 +283,28 @@
             </tr>
         `).join('');
     }
-
-
     function downloadExcel() {
         const table = document.querySelector(".report-table");
-        const ws = XLSX.utils.table_to_sheet(table);
+        const periodText = document.getElementById('reportPeriod').innerText;
+        const generatedTime = `Generated on: ${new Date().toLocaleString()}`;
+        const headerData = [
+        ["VisionVogue Sales Report"],
+        [periodText],
+        [generatedTime],
+        []
+    ]
+    const ws = XLSX.utils.aoa_to_sheet(headerData);
+    XLSX.utils.sheet_add_dom(ws, table, { origin: -1 });
          const wscols = [
         {wch: 15},
-        {wch: 30}, 
+        {wch: 40}, 
         {wch: 12}, 
         {wch: 12}, 
+        {wch: 15},
         {wch: 15} 
         ];
         ws['!cols'] = wscols;
-        const wb = XLSX.utils.book_new();
+         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Sales Report");
         XLSX.writeFile(wb, "Sales_Report.xlsx");
     }
@@ -311,10 +330,16 @@
 function downloadPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
+    const periodText = document.getElementById('reportPeriod').innerText;
     doc.setFontSize(18);
     doc.text("VisionVogue Sales Report", 14, 15);
     doc.setFontSize(10);
     doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 22);
+    if(periodText) {
+        doc.setFontSize(11);
+        doc.setTextColor(100);
+        doc.text(periodText, 14, 28);
+    }
     doc.autoTable({
         html: '.report-table',
         startY: 30,

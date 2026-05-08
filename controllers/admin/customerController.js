@@ -1,5 +1,6 @@
 const User=require('../../models/userSchema');
-
+const Status=require('../../constants/statusCode');
+const Error=require('../../constants/errorMessage')
 
 const customerinfo=async(req,res)=>{
     try {

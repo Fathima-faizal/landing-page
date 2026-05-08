@@ -1,5 +1,6 @@
 const Category=require('../../models/categorySchema');
-
+const Status=require('../../constants/statusCode');
+const Error=require('../../constants/errorMessage');
 
 const loadcategory=async(req,res)=>{
     try {

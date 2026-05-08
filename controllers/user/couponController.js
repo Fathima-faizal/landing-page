@@ -2,6 +2,9 @@ const User=require('../../models/userSchema');
 const Coupon=require('../../models/couponSchema');
 const Cart=require('../../models/cartSchema');
 const Order=require('../../models/orderSchema')
+const Status=require('../../constants/statusCode');
+const Error=require('../../constants/errorMessage')
+
 
 const loadedCoupon=async(req,res)=>{
     try {

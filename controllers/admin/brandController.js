@@ -1,7 +1,8 @@
 const Brand=require('../../models/brandSchema');
 const Product=require('../../models/productSchema');
 const User = require('../../models/userSchema');
-
+const Status=require('../../constants/statusCode');
+const Error=require('../../constants/errorMessage');
 
 const getbrand=async(req,res)=>{
    try {

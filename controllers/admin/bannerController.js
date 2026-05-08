@@ -1,5 +1,6 @@
 const Banner=require('../../models/bannerSchema');
-
+const Status=require('../../constants/statusCode');
+const Error=require('../../constants/errorMessage')
 
 
 const loadbanner=async(req,res)=>{

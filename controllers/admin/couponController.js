@@ -42,6 +42,13 @@ const addcoupon=async(req,res)=>{
 }
 const postcoupon=async(req,res)=>{
  try {
+    const { name, couponCode, couponType, startdate, Enddate, Minimumprice, discountPercentage } = req.body;
+    if (parseInt(Minimumprice) <= parseInt(discountPercentage)) {
+            return res.status(400).json({ 
+                status: false, 
+                message: "Minimum purchase amount must be greater than the discount value." 
+            });
+        }
     const data={
         name:req.body.name,
         couponCode:req.body.couponCode,
@@ -81,6 +88,12 @@ const posteditCoupon=async(req,res)=>{
     try {
         const id=req.params.id;
         const {name,couponCode,couponType,startdate,Enddate,Minimumprice,discountPercentage}=req.body;
+        if (parseInt(Minimumprice) <= parseInt(discountPercentage)) {
+            return res.status(400).json({ 
+                status: false, 
+                message: "Minimum purchase amount must be greater than the discount value." 
+            });
+        }
         const ExistingCoupon=await Coupon.findOne(
             {$or:[
                 {name:name},
