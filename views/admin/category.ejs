@@ -106,11 +106,11 @@
         <td><%=category.description%></td>
         <td class="actions">
             <% if(category.islisted === false) { %>
-                <a href="/admin/listCategory?id=<%=category._id%>">
+               <a href="javascript:void(0)" onclick="confirmCategoryAction('<%= category._id %>', '<%= category.name %>', 'list')">
                     <button class="btn-block">list</button>
                 </a>
             <% } else { %>
-                <a href="/admin/unlistCategory?id=<%=category._id%>">
+                <a href="javascript:void(0)" onclick="confirmCategoryAction('<%= category._id %>', '<%= category.name %>', 'unlist')">
                     <button class="btn-unblock">Unlist</button>
                 </a>
             <% } %>
@@ -154,6 +154,32 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
+
+    function confirmCategoryAction(id, name, action) {
+    const isListing = action === 'list';
+
+    Swal.fire({
+        title: isListing ? 'List Category?' : 'Unlist Category?',
+        text: isListing 
+            ? `Are you sure you want to list "${name}"? It will become visible to users on the shop website.` 
+            : `Are you sure you want to unlist "${name}"? Products attached to it will be hidden from the store front.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: isListing ? '#28a745' : '#d33', // Green for listing, Red for unlisting
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: isListing ? 'Yes, List it!' : 'Yes, Unlist it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Forward the window routing to your express controller endpoints
+            if (isListing) {
+                window.location.href = `/admin/listCategory?id=${id}`;
+            } else {
+                window.location.href = `/admin/unlistCategory?id=${id}`;
+            }
+        }
+    });
+}
 function confirmDeleteCategory(id, name) {
     Swal.fire({
         title: 'Remove Category?',

@@ -47,31 +47,34 @@
             </div>
 
             <form action="/shop" method="get" id="filterForm">
-                <div class="filter-section">
-                    <h4 class="filter-title">Categories</h4>
-                    <div class="filter-list custom-scrollbar">
-                        <% for(let i=0; i < category.length; i++) { %>
-                            <label class="checkbox-container">
-                                <input type="checkbox" name="category" value="<%= category[i]._id %>">
-                                <span class="checkmark"></span>
-                                <span class="label-text"><%= category[i].name %></span>
-                            </label>
-                        <% } %>
-                    </div>
-                </div>
+                <input type="hidden" name="search" value="<%= search %>">
+                <input type="hidden" name="sort" value="<%= selectedSort %>">
+                <input type="hidden" name="page" value="1">
+                <!-- Categories Section -->
+                 <h4 class="filter-title">Category</h4>
+<div class="filter-list custom-scrollbar">
+    <% for(let i=0; i < category.length; i++) { %>
+        <label class="checkbox-container">
+            <input type="checkbox" name="category" value="<%= category[i]._id %>"
+                <%= selectedCategory.includes(category[i]._id.toString()) ? 'checked' : '' %>>
+            <span class="checkmark"></span>
+            <span class="label-text"><%= category[i].name %></span>
+        </label>
+    <% } %>
+</div>
 
-                <div class="filter-section">
-                    <h4 class="filter-title">Brands</h4>
-                    <div class="filter-list custom-scrollbar">
-                        <% for(let i=0; i < brand.length; i++) { %>
-                            <label class="checkbox-container">
-                                <input type="checkbox" name="brand" value="<%= brand[i]._id %>">
-                                <span class="checkmark"></span>
-                                <span class="label-text"><%= brand[i].name %></span>
-                            </label>
-                        <% } %>
-                    </div>
-                </div>
+<!-- Brands Section -->
+ <h4 class="filter-title">Brand</h4>
+<div class="filter-list custom-scrollbar">
+    <% for(let i=0; i < brand.length; i++) { %>
+        <label class="checkbox-container">
+            <input type="checkbox" name="brand" value="<%= brand[i]._id %>"
+                <%= selectedBrand.includes(brand[i]._id.toString()) ? 'checked' : '' %>>
+            <span class="checkmark"></span>
+            <span class="label-text"><%= brand[i].name %></span>
+        </label>
+    <% } %>
+</div>
 
                 <div class="filter-section">
                     <h4 class="filter-title">Price Range</h4>
@@ -89,21 +92,41 @@
             <div class="top-bar">
                 <div class="search-premium">
                     <form action="/shop" method="get">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" name="search" placeholder="Search for eyewear...">
-                        <button type="submit">Search</button>
+                        <% selectedCategory.forEach(cat => { %>
+            <input type="hidden" name="category" value="<%= cat %>">
+        <% }) %>
+        <% selectedBrand.forEach(b => { %>
+            <input type="hidden" name="brand" value="<%= b %>">
+        <% }) %>
+        <input type="hidden" name="minPrice" value="<%= minPrice %>">
+        <input type="hidden" name="maxPrice" value="<%= maxPrice %>">
+        <input type="hidden" name="sort" value="<%= selectedSort %>">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" name="search" placeholder="Search for eyewear..." value="<%= search %>">
+        <button type="submit">Search</button>
                     </form>
                 </div>
 
                 <div class="sort-premium">
                     <form action="/shop" method="get">
-                        <select name="sort" onchange="this.form.submit()">
-                            <option value="default"<%= selectedSort === 'default' ? 'selected' : '' %>>Default</option>
-                            <option value="az" <%= locals.selectedSort === 'az' ? 'selected' : '' %>>Name: A to Z</option>
-                            <option value="za" <%= locals.selectedSort === 'za' ? 'selected' : '' %>>Name: Z to A</option>
-                            <option value="low-high" <%= locals.selectedSort === 'low-high' ? 'selected' : '' %>>Price: Low to High</option>
-                            <option value="high-low" <%= locals.selectedSort === 'high-low' ? 'selected' : '' %>>Price: High to Low</option>
-                        </select>
+                        <input type="hidden" name="search" value="<%= search %>">
+        <% selectedCategory.forEach(cat => { %>
+            <input type="hidden" name="category" value="<%= cat %>">
+        <% }) %>
+        <% selectedBrand.forEach(b => { %>
+            <input type="hidden" name="brand" value="<%= b %>">
+        <% }) %>
+        <input type="hidden" name="minPrice" value="<%= minPrice %>">
+        <input type="hidden" name="maxPrice" value="<%= maxPrice %>">
+
+        <select name="sort" onchange="this.form.submit()">
+            <option value="default" <%= selectedSort === 'default' ? 'selected' : '' %>>Default</option>
+            <option value="az" <%= selectedSort === 'az' ? 'selected' : '' %>>Name: A to Z</option>
+            <option value="za" <%= selectedSort === 'za' ? 'selected' : '' %>>Name: Z to A</option>
+            <option value="low-high" <%= selectedSort === 'low-high' ? 'selected' : '' %>>Price: Low to High</option>
+            <option value="high-low" <%= selectedSort === 'high-low' ? 'selected' : '' %>>Price: High to Low</option>
+        </select>
                     </form>
                 </div>
             </div>
@@ -135,11 +158,11 @@
             </div>
 
             <div class="pagination-container">
-                <%for(let i=1;i<=totalpages;i++){%>
-                    <a href="?page=<%= i %>&search=<%= search %>&&category=<%= selectedCategory %>&brand=<%= selectedBrand %>&sort=<%= selectedSort %>&minPrice=<%= minPrice %>&maxPrice=<%= maxPrice %>" 
-                       class="page-num <%=(i===currentPage)? 'active':''%>"><%= i %></a>
-                <%}%>
-            </div>
+    <% for(let i=1; i<=totalpages; i++){ %>
+        <a href="javascript:void(0)" onclick="changePage('<%= i %>')" 
+           class="page-num <%= (i===currentPage)? 'active':'' %>"><%= i %></a>
+    <% } %>
+</div>
         </section>
     </div>
 </main>
@@ -199,6 +222,11 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
+    function changePage(pageNumber) {
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('page', pageNumber);
+    window.location.search = urlParams.toString();
+}
     function addtoWishlist(productId) {
     $.ajax({
         url: '/addtoWishlist',

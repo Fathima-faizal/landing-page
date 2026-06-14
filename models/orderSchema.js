@@ -27,6 +27,10 @@ const orderSchema=new Schema({
         type:Number,
         default:0
       },
+      discountEach: {
+        type: Number,
+        default: 0
+    },
     returnReason:{
         type:String,
         default:null

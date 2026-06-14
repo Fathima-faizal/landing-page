@@ -117,35 +117,71 @@
     <div class="items-card-premium">
         <h3>Ordered Items (<%= order.orderedItems.length %>)</h3>
         <div class="product-stack">
-            <% order.orderedItems.forEach(item => { %>
-                <div class="product-row-premium">
-                    <div class="product-thumb">
-                        <img src="/uploads/<%= item.productId.productimage[0] %>" alt="product">
+           <% order.orderedItems.forEach(item => { %>
+    <div class="product-row-premium">
+        <!-- Column 1: Image -->
+        <div class="product-thumb">
+            <img src="/uploads/<%= item.productId.productimage[0] %>" alt="product">
+        </div>
+        
+        <!-- Column 2: Info Details -->
+        <div class="product-main-info">
+            <span class="cat-label"><%= item.productId.category ? item.productId.category.name : 'General' %></span>
+            <h4><%= item.productId.productName %></h4>
+            <p class="brand-text">Brand: <%= item.productId.brand %></p>
+            <p class="qty-text">Qty: <strong><%= item.quantity %></strong></p>
+        </div>
+        
+        <!-- Column 3: Price Calculation -->
+        <div class="product-price-section">
+            <p class="unit-price">Original: ₹<%= item.price.toLocaleString() %></p>
+            <% if(item.discountEach > 0) { %>
+                <p class="discount-text">Discount: -₹<%= item.discountEach %></p>
+            <% } %>
+            <% const itemTotalOriginal = item.price * item.quantity; %>
+            <% const itemFinalPaid = itemTotalOriginal - (item.discountEach || 0); %>
+            <p class="total-item-price">Paid: ₹<%= itemFinalPaid.toLocaleString() %></p>
+        </div>
+        
+        <!-- Column 4: Status and Action Buttons -->
+        <div class="product-row-actions">
+            <% const itemStatus = item.status ? item.status.toLowerCase() : 'pending'; %>
+            
+            <div class="item-status-wrapper">
+                <span class="status-badge <%= itemStatus %>">
+                    <% if (itemStatus === 'pending') { %><i class="fa-regular fa-clock"></i>
+                    <% } else if (itemStatus === 'processing') { %><i class="fa-solid fa-gear fa-spin"></i>
+                    <% } else if (itemStatus === 'shipped') { %><i class="fa-solid fa-truck-fast"></i>
+                    <% } else if (itemStatus === 'delivered') { %><i class="fa-solid fa-house-circle-check"></i>
+                    <% } else if (itemStatus === 'cancelled') { %><i class="fa-solid fa-circle-xmark"></i>
+                    <% } else if (itemStatus === 'return') { %><i class="fa-solid fa-arrow-rotate-left"></i>
+                    <% } else if (itemStatus === 'approve') { %><i class="fa-solid fa-circle-check"></i>
+                    <% } else if (itemStatus === 'reject') { %><i class="fa-solid fa-ban"></i><% } %>
+                    <%= item.status %>
+                </span>
+            </div>
+
+            <div class="item-buttons-wrapper">
+                <% if (['pending', 'processing'].includes(itemStatus)) { %>
+                    <button type="button" class="btn-cancel-item" onclick="handleCancel('<%= order._id %>', '<%= item.productId._id %>')">
+                        <i class="fa-solid fa-ban"></i> Cancel Item
+                    </button>
+                <% } %>
+
+                <% if (itemStatus === 'delivered') { %>
+                    <div class="delivered-actions-grid">
+                        <a href="/review/<%= order._id %>/<%= item.productId._id %>" class="btn-review-item">
+                            <i class="fa-solid fa-star"></i> Review
+                        </a>
+                        <a href="/return/<%= order._id %>?productId=<%= item.productId._id %>" class="btn-return-item">
+                            <i class="fa-solid fa-arrow-rotate-left"></i> Return
+                        </a>
                     </div>
-                    <div class="product-main-info">
-                        <span class="cat-label"><%= item.productId.category ? item.productId.category.name : 'General' %></span>
-                        <h4><%= item.productId.productName %></h4>
-                        <p class="brand-text">Brand: <%= item.productId.brand %></p>
-                        <p class="qty-text">Qty: <strong><%= item.quantity %></strong></p>
-                    </div>
-                    <div class="product-price-section">
-                        <p class="unit-price">₹<%= item.price.toLocaleString() %> / unit</p>
-                        <p class="total-item-price">₹<%= (item.price * item.quantity).toLocaleString() %></p>
-                    </div>
-                    <div class="product-row-actions">
-                        <% if (order.status !== 'cancelled' && order.status !== 'delivered'&& order.status!=='shipped') { %>
-                            <button type="button" class="btn-cancel-item" onclick="handleCancel('<%= order._id %>', '<%= item.productId._id %>')">
-                                <i class="fa-solid fa-ban"></i> Cancel
-                            </button>
-                        <% } %>
-                        <% if (order.status === 'delivered') { %>
-                            <a href="/review/<%= order._id %>/<%= item.productId._id %>" class="btn-review-item">
-                                <i class="fa-solid fa-star"></i> Review
-                            </a>
-                        <% } %>
-                    </div>
-                </div>
-            <% }) %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+<% }) %>
         </div>
     </div>
            <div class="container">

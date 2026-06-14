@@ -106,11 +106,11 @@
         
         <td class="actions">
              <%if(brand[i].isBlocked===false){%>
-                <a href="/admin/blockBrand?id=<%=brand[i]._id%>">
+                <a href="javascript:void(0)" onclick="confirmBrandAction('<%= brand[i]._id %>', '<%= brand[i].name %>', 'block')">
                     <button class="btn-block">Block</button>
                 </a>
                 <%}else{%>
-                <a href="/admin/unblockBrand?id=<%=brand[i]._id%>">
+                <a href="javascript:void(0)" onclick="confirmBrandAction('<%= brand[i]._id %>', '<%= brand[i].name %>', 'unblock')">
                     <button class="btn-unblock">UnBlock</button>
                 </a>
                 <%}%>
@@ -154,6 +154,31 @@
         window.history.go(1);
     };
 
+    function confirmBrandAction(id, name, action) {
+    const isBlocking = action === 'block';
+
+    Swal.fire({
+        title: isBlocking ? 'Block Brand?' : 'Unblock Brand?',
+        text: isBlocking 
+            ? `Are you sure you want to block "${name}"? Products under this brand might hidden from users.` 
+            : `Are you sure you want to unblock "${name}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: isBlocking ? '#d33' : '#28a745', // Red for block, Green for unblock
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: isBlocking ? 'Yes, Block it!' : 'Yes, Unblock it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Redirect to the corresponding route if confirmed
+            if (isBlocking) {
+                window.location.href = `/admin/blockBrand?id=${id}`;
+            } else {
+                window.location.href = `/admin/unblockBrand?id=${id}`;
+            }
+        }
+    });
+}
 function confirmDeleteBrand(id, name) {
     Swal.fire({
         title: 'Delete Brand?',

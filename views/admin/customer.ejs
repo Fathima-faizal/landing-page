@@ -6,6 +6,7 @@
     <title>Professional Admin Dashboard</title>
     <link rel="stylesheet" href="/css/customer.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -83,7 +84,7 @@
                     <div class="search-box">
                         <input type="text" name="search" placeholder="Search">
                         <button class="btn-clear">Clear</button>
-                        </form>
+                    </form>
                     </div>
                 </div>
 
@@ -97,37 +98,41 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <%for(let i=0;i<data.length;i++){%>
+                        <% for(let i=0; i<data.length; i++) { %>
                         <tr>
-                            <td><%=data[i]._id%></td>
-                            <td><%=data[i].name%></td>
-                            <td><%=data[i].email%></td>
+                            <td><%= data[i]._id %></td>
+                            <td><%= data[i].name %></td>
+                            <td><%= data[i].email %></td>
                             <td class="actions">
-                                <%if(data[i].isBlocked===false){%>
-                               <a href="/admin/blockCustomer?id=<%=data[i]._id%>"><button class="btn-block">block</button></a>
-                                <%}else{%>
-                               <a href="/admin/unblockCustomer?id=<%=data[i]._id%>"> <button class="btn-unblock">Unblock</button></a>
-                                <%}%>
+                                <% if(data[i].isBlocked === false) { %>
+                                    <a href="javascript:void(0)" onclick="confirmCustomerAction('<%= data[i]._id %>', '<%= data[i].name %>', 'block')">
+                                        <button class="btn-block">block</button>
+                                    </a>
+                                <% } else { %>
+                                    <a href="javascript:void(0)" onclick="confirmCustomerAction('<%= data[i]._id %>', '<%= data[i].name %>', 'unblock')">
+                                        <button class="btn-unblock">Unblock</button>
+                                    </a>
+                                <% } %>
                             </td>
                         </tr>
-                        <%}%>
+                        <% } %>
                     </tbody>
                 </table>
                 <div class="container">
                     <nav aria-label="page navigation">
-                        <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>
-                            <%for(let i=1;i<=totalPages;i++){%>
-                                <li class="page-item <%=(i===currentPage)? 'active':''%>">
+                        <ul class="pagination justify-cotent-center mb-20" style="margin-right:20px;">
+                            <% for(let i=1; i<=totalPages; i++) { %>
+                                <li class="page-item <%= (i===currentPage)? 'active':'' %>">
                                  <a class="page-link" href="?page=<%= i %>&search=<%= search %>"><%= i %></a>
                                 </li>
-                                <%}%>
+                            <% } %>
                         </ul>
                     </nav>
                 </div>
             </section>
         </main>
     </div>
-   <script>
+<script>
     window.addEventListener("pageshow", function (event) {
         var historyTraversal = event.persisted || 
                                (typeof window.performance != "undefined" && 
@@ -140,6 +145,31 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
+
+    function confirmCustomerAction(id, name, action) {
+        const isBlocking = action === 'block';
+
+        Swal.fire({
+            title: isBlocking ? 'Block User Account?' : 'Unblock User Account?',
+            text: isBlocking 
+                ? `Are you sure you want to block ${name}? They will be logged out and cannot sign back into their account.` 
+                : `Are you sure you want to unblock ${name}? Their access to the store will be restored immediately.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: isBlocking ? '#d33' : '#28a745', 
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: isBlocking ? 'Yes, Block user!' : 'Yes, Unblock user!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if (isBlocking) {
+                    window.location.href = `/admin/blockCustomer?id=${id}`;
+                } else {
+                    window.location.href = `/admin/unblockCustomer?id=${id}`;
+                }
+            }
+        });
+    }
 </script>
 </body>
 </html>

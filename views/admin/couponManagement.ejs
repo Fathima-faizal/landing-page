@@ -114,11 +114,11 @@
         <td><%=coupons[i].discountPercentage%></td>
         <td class="actions">
             <% if(coupons[i].islisted === false) { %>
-                <a href="/admin/listCoupon?id=<%=coupons[i]._id%>">
+               <a href="javascript:void(0)" onclick="confirmCouponAction('<%= coupons[i]._id %>', '<%= coupons[i].couponCode %>', 'list')">
                     <button class="btn-block">list</button>
                 </a>
             <% } else { %>
-                <a href="/admin/unlistCoupon?id=<%=coupons[i]._id%>">
+                <a href="javascript:void(0)" onclick="confirmCouponAction('<%= coupons[i]._id %>', '<%= coupons[i].couponCode %>', 'unlist')">
                     <button class="btn-unblock">unlist</button>
                 </a>
             <% } %>
@@ -161,6 +161,32 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
+
+    function confirmCouponAction(id, code, action) {
+    const isListing = action === 'list';
+
+    Swal.fire({
+        title: isListing ? 'List Coupon?' : 'Unlist Coupon?',
+        text: isListing 
+            ? `Are you sure you want to list the coupon code "${code}"? Customers will be able to apply it during checkout.` 
+            : `Are you sure you want to unlist the coupon code "${code}"? Customers won't be able to use it anymore.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: isListing ? '#28a745' : '#d33', // Green for listing, Red for unlisting
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: isListing ? 'Yes, List it!' : 'Yes, Unlist it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Forward execution to your backend express routes
+            if (isListing) {
+                window.location.href = `/admin/listCoupon?id=${id}`;
+            } else {
+                window.location.href = `/admin/unlistCoupon?id=${id}`;
+            }
+        }
+    });
+}
 function confirmDeleteCoupon(id, name) {
     Swal.fire({
         title: 'Delete Coupon?',

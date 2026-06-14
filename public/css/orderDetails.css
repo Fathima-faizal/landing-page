@@ -295,8 +295,6 @@ body {
     font-weight: 600;
     font-size: 0.9rem;
 }
-
-/* 4. Info Grid (Address & Payment) */
 .details-info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -374,116 +372,160 @@ body {
     margin-bottom: 20px;
 }
 
+/* Product Grid Alignment Fixes */
 .product-row-premium {
     display: grid;
-    grid-template-columns: 80px 1fr 120px 120px;
-    align-items: center;
-    gap: 20px;
-    padding: 15px 0;
-    border-bottom: 1px solid #f9f9f9;
+    grid-template-columns: 100px 1fr 150px 220px; /* Adjusted columns for spacious action areas */
+    align-items: center; /* Vertically centers elements across columns */
+    gap: 24px;
+    padding: 25px 0;
+    border-bottom: 1px solid #f0f0f0;
 }
 
+/* Image styling fallback size */
 .product-thumb img {
-    width: 100%;
-    border-radius: 6px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
     border: 1px solid #eee;
 }
 
-.cat-label {
-    font-size: 0.65rem;
-    background: #f0f0f0;
-    padding: 2px 6px;
-    border-radius: 4px;
-    color: #666;
+/* Clear vertical tracking inside columns */
+.product-main-info, 
+.product-price-section, 
+.product-row-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-.product-main-info h4 {
-    font-size: 0.95rem;
-    margin: 4px 0;
+.product-main-info {
+    align-items: flex-start;
+    gap: 4px;
 }
 
-.total-item-price {
+.product-price-section {
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.product-price-section .discount-text {
+    color: #2e7d32;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+/* Column 4: Right-aligned Status & Actions Controls */
+.product-row-actions {
+    align-items: flex-end; /* Pushes the elements to clean right alignment */
+    gap: 12px;
+}
+
+.item-status-wrapper {
+    margin-bottom: 0; /* Clear bottom margins messing alignment up */
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
     font-weight: 700;
-    color: #1a4d2e;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
-/* Action Buttons */
-.btn-cancel-item, .btn-review-item {
-    border: none;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
+/* Dynamic status backgrounds and text colors */
+.status-badge.delivered { background-color: #e8f5e9; color: #2e7d32; }
+.status-badge.shipped   { background-color: #e3f2fd; color: #1565c0; }
+.status-badge.pending   { background-color: #fff3e0; color: #ef6c00; }
+.status-badge.processing{ background-color: #e0f7fa; color: #00838f; }
+.status-badge.cancelled { background-color: #ffebee; color: #c62828; }
+.status-badge.return    { background-color: #f3e5f5; color: #7b1fa2; }
+.status-badge.approve   { background-color: #e0f2f1; color: #00796b; }
+.status-badge.reject    { background-color: #ffebee; color: #c62828; }
+
+
+.btn-review-item {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
 }
-/* Container for the stepper */
+
+.btn-review-item:hover {
+    background-color: #2e7d32;
+    color: white;
+    border-color: #2e7d32;
+}
+
+/* Premium Return Button (Muted Dark/Border Theme) */
+.btn-return-item {
+    background-color: #ffffff;
+    color: black;
+    border: 1px solid red;
+}
+
+.btn-return-item:hover {
+    background-color: red;
+    color:black;
+    border-color: red;
+}
+
+/* Premium Cancel Button */
+.btn-cancel-item {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+    cursor: pointer;
+}
+
+.btn-cancel-item:hover {
+    background-color: #c62828;
+    color: white;
+    border-color: #c62828;
+}
+/* Stack adjustments for Buttons */
+.item-buttons-wrapper {
+    width: 100%;
+}
+
+.delivered-actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 8px; 
+    width: 100%;
+}
+
+/* Clean buttons uniform layout standards */
+.btn-review-item, 
+.btn-return-item, 
+.btn-cancel-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    width: 100%;
+    height: 38px; /* Consistent baseline height */
+    box-sizing: border-box;
+}
+
+/* Horizontal Stepper Typo Fix */
 .stepper-horizontal {
     display: flex;
-    justify-content:间-between;
+    justify-content: space-between; /* Fixed Chinese character typo in your css here */
     align-items: center;
     position: relative;
     margin-top: 20px;
     padding: 0 20px;
 }
-
-/* The connecting line background */
-.stepper-horizontal::before {
-    content: "";
-    position: absolute;
-    top: 25px; /* Half of the circle height */
-    left: 10%;
-    right: 10%;
-    height: 4px;
-    background: #e0e0e0;
-    z-index: 1;
-}
-
-.step {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    flex: 1;
-}
-
-.step .circle {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: #e0e0e0; /* Default Gray */
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 10px;
-    transition: all 0.4s ease;
-    font-size: 1.2rem;
-}
-
-.step span {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #888;
-}
-
-/* Active State (The Green Part) */
-.step.active .circle {
-    background: #28a745; /* Green Color */
-    box-shadow: 0 0 15px rgba(40, 167, 69, 0.4);
-}
-
-.step.active span {
-    color: #28a745;
-}
-
-.btn-cancel-item { background: #fff5f5; color: #d32f2f; }
-.btn-cancel-item:hover { background: #fee2e2; }
-
-.btn-review-item { background: #f0fdf4; color: #166534; }
-.btn-review-item:hover { background: #dcfce7; }
 .footer {
     background: #558b2f; /* Muted olive green */
     color: white;

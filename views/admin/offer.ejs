@@ -108,13 +108,13 @@
                     <td><%= offer.expiryDate.toLocaleDateString('en-us') %></td>
                     <td class="actions">
                      <% if(offer.isActive === false) { %>
-                <a href="/admin/activeOffer?id=<%=offer._id%>">
-                    <button class="btn-block">UnActive</button>
-                </a>
+                <a href="javascript:void(0)" onclick="confirmOfferAction('<%= offer._id %>', '<%= offer.name %>', 'activate')">
+            <button class="btn-unblock">Activate</button>
+        </a>
             <% } else { %>
-                <a href="/admin/unactiveOffer?id=<%=offer._id%>">
-                    <button class="btn-unblock">Active</button>
-                </a>
+               <a href="javascript:void(0)" onclick="confirmOfferAction('<%= offer._id %>', '<%= offer.name %>', 'deactivate')">
+            <button class="btn-block">Deactivate</button>
+        </a>
             <% } %>
             <a href="/admin/editOffer/<%=offer._id%>">
     <i class="fa-regular fa-pen-to-square" style="color: black; margin-top: 5px;"></i>
@@ -155,6 +155,32 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
+
+    function confirmOfferAction(id, name, action) {
+    const isActivating = action === 'activate';
+
+    Swal.fire({
+        title: isActivating ? 'Activate Offer?' : 'Deactivate Offer?',
+        text: isActivating 
+            ? `Are you sure you want to activate the offer "${name}"? This discount will be applied to the relevant products immediately.` 
+            : `Are you sure you want to deactivate the offer "${name}"? The discount will be removed from the store immediately.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: isActivating ? '#28a745' : '#d33', // Green for activate, Red for deactivate
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: isActivating ? 'Yes, Activate it!' : 'Yes, Deactivate it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Forward execution to your backend Express routes
+            if (isActivating) {
+                window.location.href = `/admin/activeOffer?id=${id}`;
+            } else {
+                window.location.href = `/admin/unactiveOffer?id=${id}`;
+            }
+        }
+    });
+}
     function confirmDeleteOffer(id, name) {
     Swal.fire({
         title: 'Remove Offer?',

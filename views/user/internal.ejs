@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal Server Error - 500</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f9fa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .container {
+            max-width: 550px;
+            padding: 40px 20px;
+        }
+        .error-code {
+            font-size: 120px;
+            font-weight: 900;
+            color: #e74c3c;
+            line-height: 1;
+            margin-bottom: 15px;
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        p {
+            font-size: 16px;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .buttons-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background-color: #fff;
+            color: #7f8c8d;
+            border: 1px solid #bdc3c7;
+        }
+        .btn-secondary:hover {
+            background-color: #f2f4f4;
+            color: #333;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="error-code">500</div>
+        <h1>Something went wrong on our end</h1>
+        <p>Our servers are experiencing an unexpected issue. Don't worry, our team has been notified and we are working hard to fix it.</p>
+        
+        <div class="buttons-container">
+            <button onclick="window.location.reload();" class="btn btn-secondary">Try Again</button>
+            <a href="/home" class="btn btn-primary">Go Back Home</a>
+        </div>
+    </div>
+
+</body>
+</html>

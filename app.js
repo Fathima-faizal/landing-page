@@ -34,7 +34,7 @@ app.use(express.static(path.join(__dirname,'public')));
 
 app.use((err, req, res, next) => {
   console.error(err);
-  res.status(500).json({success: false,message: err.message || "Internal Server Error"});
+  res.status(500).render('internal')
 });
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads'))); 
 app.use('/uploads', express.static('uploads'));
@@ -44,7 +44,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/',userRouter);
 app.use('/admin',adminRouter)
 app.use((req, res, next) => {
-    res.status(404).json({success:false,message: "Page Not Found" }); 
+    res.status(404).render('pagenotfound'); 
   
 });
 app.listen(process.env.port,()=>{

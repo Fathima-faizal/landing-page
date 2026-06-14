@@ -17,63 +17,63 @@
 <div class="dashboard-container">
     <aside class="sidebar">
         <div class="nav-item active">
-                <a href="/admin/dashboard">
+            <a href="/admin/dashboard">
                 <i class="fas fa-th-large"></i> <span>Dashboard</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="/admin/product">
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="/admin/product">
                 <i class="fas fa-box"></i> <span>Product Management</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="/admin/orderManagement">
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="/admin/orderManagement">
                 <i class="fas fa-shopping-cart"></i> <span>Order Management</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="/admin/customer">
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="/admin/customer">
                 <i class="fas fa-user"></i> <span>User Management</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="/admin/category">
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="/admin/category">
                 <i class="fas fa-layer-group"></i> <span>Category Management</span>
-                </a>
-            </div> 
-            <div class="nav-item">
-                <a href="/admin/banner">
+            </a>
+        </div> 
+        <div class="nav-item">
+            <a href="/admin/banner">
                 <i class="fas fa-image"></i> <span>Banner Management</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="/admin/inventory">
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="/admin/inventory">
                 <i class="fa-solid fa-clipboard-list"></i> <span>Invetry Management</span>
-                </a>
-            </div>
-            <hr class="nav-divider">
+            </a>
+        </div>
+        <hr class="nav-divider">
 
-            <div class="nav-item">
-                <a href="/admin/couponManagement">
+        <div class="nav-item">
+            <a href="/admin/couponManagement">
                 <i class="fas fa-ticket-alt"></i> <span>Coupon</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="/admin/brand">
-               <i class="fa-solid fa-tags"></i><span>Brand</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="/admin/Reviews">
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="/admin/brand">
+                <i class="fa-solid fa-tags"></i><span>Brand</span>
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="/admin/Reviews">
                 <i class="fas fa-comment-alt"></i> <span>Review</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="/admin/offer">
-               <i class="fas fa-tag"></i> <span>Offers</span>
-                </a>
-            </div>
-        </aside>
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="/admin/offer">
+                <i class="fas fa-tag"></i> <span>Offers</span>
+            </a>
+        </div>
+    </aside>
 
     <main class="main-content">
         <header class="top-header">
@@ -85,12 +85,73 @@
             
             <div class="stats-grid">
                 <div class="stat-card"><i class="fas fa-users"></i><div><p>Users</p><h3><%= userCount %></h3></div></div>
-                <div class="stat-card"><i class="fas fa-shopping-cart"></i><div><p>Orders</p><h3><%= orderCount %></h3></div></div>
-                <div class="stat-card"><i class="fas fa-wallet"></i><div><p>Revenue</p><h3>₹<%= revenue %></h3></div></div>
+                <div class="stat-card"><i class="fas fa-shopping-cart"></i><div><p>Delivered Orders</p><h3><%= orderCount %></h3></div></div>
+                <div class="stat-card"><i class="fas fa-wallet"></i><div><p>Total Revenue</p><h3>₹<%= revenue %></h3></div></div>
             </div>
 
+           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); min-height: 250px;">
+        <h3 style="margin-bottom: 15px; color:#2c3e50;"><i class="fas fa-fire" style="color:#e67e22;"></i> Top 5 Best Selling Products</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem; table-layout: fixed;">
+            <thead>
+                <tr style="border-bottom: 2px solid #edf2f7; text-align: left;">
+                    <th style="padding: 10px 8px; width: 70%;">Product Name</th>
+                    <th style="padding: 10px 8px; text-align: center; width: 30%;">Qty Sold</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (topProducts && topProducts.length > 0) { %>
+                    <% topProducts.forEach(prod => { %>
+                        <tr style="border-bottom: 1px solid #edf2f7;">
+                            <td style="padding: 12px 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <%= prod.productName || 'Unknown Product' %>
+                            </td>
+                            <td style="padding: 12px 8px; text-align: center; font-weight: bold; color: #2c3e50;">
+                                <%= prod.totalQty %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="2" style="padding: 20px; text-align: center; color: #888;">No product sales recorded yet.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); min-height: 250px;">
+        <h3 style="margin-bottom: 15px; color:#2c3e50;"><i class="fas fa-chart-pie" style="color:#9b59b6;"></i> Top 5 Trending Categories</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem; table-layout: fixed;">
+            <thead>
+                <tr style="border-bottom: 2px solid #edf2f7; text-align: left;">
+                    <th style="padding: 10px 8px; width: 70%;">Category</th>
+                    <th style="padding: 10px 8px; text-align: center; width: 30%;">Items Sold</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (topCategories && topCategories.length > 0) { %>
+                    <% topCategories.forEach(cat => { %>
+                        <tr style="border-bottom: 1px solid #edf2f7;">
+                            <td style="padding: 12px 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <%= cat.categoryName || 'Uncategorized' %>
+                            </td>
+                            <td style="padding: 12px 8px; text-align: center; font-weight: bold; color: #2c3e50;">
+                                <%= cat.itemCount %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="2" style="padding: 20px; text-align: center; color: #888;">No category metrics tracked yet.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
             <div style="margin: 20px 0; display: flex; justify-content: flex-end;">
-                <button id="toggleBtn" onclick="toggleDashboard()" class="filter-btn" style="min-width: 150px; background-color: #3498db; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">
+                <button id="toggleBtn" onclick="toggleDashboard()" class="filter-btn" style="min-width: 180px; background-color: #3498db; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold;">
                     Show Sales Report
                 </button>
             </div>
@@ -102,12 +163,12 @@
                 </div>
             </div>
 
-<div id="salesSection" class="report-section" style="margin-top: 20px; display: none;">
-    <div class="report-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <div>
-            <h3>Sales Report</h3>
-            <p id="reportPeriod" style="font-size: 0.9rem; color: #666; margin-top: 5px;"></p>
-        </div>
+            <div id="salesSection" class="report-section" style="margin-top: 20px; display: none;">
+                <div class="report-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div>
+                        <h3>Sales Report (Delivered Orders Only)</h3>
+                        <p id="reportPeriod" style="font-size: 0.9rem; color: #666; margin-top: 5px;">Showing all processed data logs</p>
+                    </div>
                     <div class="filter-group">
                         <select id="filterType" onchange="toggleDateInputs()">
                             <option value="custom">Custom Range</option>
@@ -126,9 +187,9 @@
                         <tr>
                             <th>Date</th>
                             <th>Order ID</th>
-                            <th>Price</th>
-                            <th>Discount</th>
-                            <th>Final Amount</th>
+                            <th>Base Price</th>
+                            <th>Discount Applied</th>
+                            <th>Final Revenue</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -140,16 +201,7 @@
                             <td>₹<%= order.totalPrice %></td>
                             <td>₹<%= order.discount %></td>
                             <td>₹<%= order.finalAmount %></td>
-                            <% 
-    let statusClass = 'status-black';
-    if(order.status === 'cancelled') statusClass = 'status-red';
-    else if(order.status === 'delivered') statusClass = 'status-green';
-    else if(order.status === 'pending') statusClass = 'status-yellow';
-%>
-
-<td class="<%= statusClass %>">
-    <%= order.status.toUpperCase() %>
-</td>
+                            <td class="status-green"><%= order.status.toUpperCase() %></td>
                         </tr>
                         <% }) %>
                     </tbody>
@@ -157,10 +209,10 @@
 
                 <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
                     <button class="download-btn" onclick="downloadPDF()" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
-                        <i class="fas fa-file-pdf"></i> PDF
+                        <i class="fas fa-file-pdf"></i> Download PDF
                     </button>
                     <button class="download-btn" onclick="downloadExcel()" style="background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
-                        <i class="fas fa-file-excel"></i> Excel (CSV)
+                        <i class="fas fa-file-excel"></i> Download Excel
                     </button>
                 </div>
             </div>
@@ -170,19 +222,36 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-    const today = new Date();
-    const dd = String(today.getDate()).padStart(2, '0');
-    const mm = String(today.getMonth() + 1).padStart(2, '0'); 
-    const yyyy = today.getFullYear();
-    const todayFormatted = yyyy + '-' + mm + '-' + dd;
-    const startInput = document.getElementById('startDate');
-    const endInput = document.getElementById('endDate');
-    startInput.setAttribute('max', todayFormatted);
-    endInput.setAttribute('max', todayFormatted)
-    startInput.addEventListener('change', function() {
-        endInput.setAttribute('min', startInput.value);
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); 
+        const yyyy = today.getFullYear();
+        const todayFormatted = yyyy + '-' + mm + '-' + dd;
+        const startInput = document.getElementById('startDate');
+        const endInput = document.getElementById('endDate');
+        
+        if(startInput && endInput) {
+            startInput.setAttribute('max', todayFormatted);
+            endInput.setAttribute('max', todayFormatted);
+            startInput.addEventListener('change', function() {
+                endInput.setAttribute('min', startInput.value);
+            });
+        }
     });
-});
+
+    function toggleDateInputs() {
+        const type = document.getElementById('filterType').value;
+        const startInput = document.getElementById('startDate');
+        const endInput = document.getElementById('endDate');
+        if(type !== 'custom') {
+            startInput.style.display = 'none';
+            endInput.style.display = 'none';
+        } else {
+            startInput.style.display = 'inline-block';
+            endInput.style.display = 'inline-block';
+        }
+    }
+
     function toggleDashboard() {
         const revenue = document.getElementById('revenueSection');
         const sales = document.getElementById('salesSection');
@@ -201,6 +270,7 @@
         }
     }
 
+    // Chart Render Configuration
     const rawData = JSON.parse('<%- chartData %>'); 
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const labels = rawData.map(item => months[item._id - 1]);
@@ -224,8 +294,7 @@
                 fill: true,
                 tension: 0, 
                 pointRadius: 6,                        
-                pointBackgroundColor: '#3498db',
-                showLine: true                        
+                pointBackgroundColor: '#3498db'
             }]
         },
         options: { 
@@ -238,36 +307,40 @@
             }
         }
     });
-    async function applyFilter() {
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    const filterType = document.getElementById('filterType').value;
-    const reportPeriod = document.getElementById('reportPeriod');
-    let displayStart = startDate;
-    let displayEnd = endDate || new Date().toISOString().split('T')[0];
-    const now = new Date();
-    if (filterType === 'daily') {
-        displayStart = now.toLocaleDateString();
-        displayEnd = now.toLocaleDateString();
-    } else if (filterType === 'weekly') {
-        let lastWeek = new Date();
-        lastWeek.setDate(now.getDate() - 7);
-        displayStart = lastWeek.toLocaleDateString();
-        displayEnd = now.toLocaleDateString();
-    } else if (filterType === 'yearly') {
-        displayStart = `01/01/${now.getFullYear()}`;
-        displayEnd = now.toLocaleDateString();
-    } else if (filterType === 'custom') {
-        if (!startDate || !endDate) return alert("Please select both dates");
-        displayStart = new Date(startDate).toLocaleDateString();
-        displayEnd = new Date(endDate).toLocaleDateString();
-    }
-    reportPeriod.innerText = `Showing report from ${displayStart} to ${displayEnd}`;
 
-    const response = await fetch(`/admin/salesReport?startDate=${startDate}&endDate=${endDate}&filterType=${filterType}`);
-    const data = await response.json();
-    updateTable(data);
-}
+    async function applyFilter() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const filterType = document.getElementById('filterType').value;
+        const reportPeriod = document.getElementById('reportPeriod');
+        
+        let displayStart = startDate;
+        let displayEnd = endDate || new Date().toISOString().split('T')[0];
+        const now = new Date();
+
+        if (filterType === 'daily') {
+            displayStart = now.toLocaleDateString();
+            displayEnd = now.toLocaleDateString();
+        } else if (filterType === 'weekly') {
+            let lastWeek = new Date();
+            lastWeek.setDate(now.getDate() - 7);
+            displayStart = lastWeek.toLocaleDateString();
+            displayEnd = now.toLocaleDateString();
+        } else if (filterType === 'yearly') {
+            displayStart = `01/01/${now.getFullYear()}`;
+            displayEnd = now.toLocaleDateString();
+        } else if (filterType === 'custom') {
+            if (!startDate || !endDate) return alert("Please select both dates");
+            displayStart = new Date(startDate).toLocaleDateString();
+            displayEnd = new Date(endDate).toLocaleDateString();
+        }
+        reportPeriod.innerText = `Showing report from ${displayStart} to ${displayEnd}`;
+
+        const response = await fetch(`/admin/salesReport?startDate=${startDate}&endDate=${endDate}&filterType=${filterType}`);
+        const data = await response.json();
+        updateTable(data);
+    }
+
     function updateTable(data) {
         const tbody = document.querySelector('.report-table tbody');
         tbody.innerHTML = data.map(order => `
@@ -277,96 +350,117 @@
                 <td>₹${order.totalPrice}</td>
                 <td>₹${order.discount}</td>
                 <td>₹${order.finalAmount}</td>
-                <span style="color: ${order.status === 'cancelled' ? 'red' : order.status === 'delivered' ? 'green' : 'orange'}">
-                    ${order.status.toUpperCase()}
-                </span>
+                <td class="status-green">${order.status.toUpperCase()}</td>
             </tr>
         `).join('');
     }
+
+    // Helper to calculate sales totals straight from the updated DOM table
+    function calculateReportSummary() {
+        const rows = document.querySelectorAll(".report-table tbody tr");
+        let totalOrders = rows.length;
+        let totalBaseAmount = 0;
+        let totalDiscountAmount = 0;
+        let totalFinalRevenue = 0;
+
+        rows.forEach(row => {
+            const cells = row.getElementsByTagName("td");
+            if(cells.length >= 5) {
+                const base = parseFloat(cells[2].innerText.replace(/[₹,]/g, '')) || 0;
+                const disc = parseFloat(cells[3].innerText.replace(/[₹,]/g, '')) || 0;
+                const final = parseFloat(cells[4].innerText.replace(/[₹,]/g, '')) || 0;
+                
+                totalBaseAmount += base;
+                totalDiscountAmount += disc;
+                totalFinalRevenue += final;
+            }
+        });
+
+        return { totalOrders, totalBaseAmount, totalDiscountAmount, totalFinalRevenue };
+    }
+
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const periodText = document.getElementById('reportPeriod').innerText;
+        const summary = calculateReportSummary();
+
+        // Document Title
+        doc.setFontSize(20);
+        doc.setTextColor(44, 62, 80);
+        doc.text("VisionVogue Sales Report", 14, 15);
+        
+        doc.setFontSize(9);
+        doc.setTextColor(120);
+        doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 21);
+        doc.text(periodText, 14, 26);
+
+        // Render Summary block structural headers
+        doc.setDrawColor(220);
+        doc.setFillColor(248, 249, 250);
+        doc.rect(14, 32, 182, 24, 'F');
+
+        doc.setFontSize(10);
+        doc.setTextColor(60);
+        doc.setFont(undefined, 'bold');
+        doc.text("SALES REPORT SUMMARY", 18, 38);
+        
+        doc.setFont(undefined, 'normal');
+        doc.setFontSize(9);
+        doc.text(`Total Volume: ${summary.totalOrders} Orders`, 18, 45);
+        doc.text(`Gross Base Price: ₹${summary.totalBaseAmount.toFixed(2)}`, 18, 51);
+        doc.text(`Total Discounts Given: ₹${summary.totalDiscountAmount.toFixed(2)}`, 100, 45);
+        doc.text(`Net Final Revenue: ₹${summary.totalFinalRevenue.toFixed(2)}`, 100, 51);
+
+        doc.autoTable({
+            html: '.report-table',
+            startY: 62,
+            theme: 'grid',
+            styles: { fontSize: 8, cellPadding: 3 },
+            headStyles: { fillColor: [44, 62, 80], textColor: [255, 255, 255] },
+            didParseCell: function (data) {
+                if (data.section === 'body' && [2, 3, 4].includes(data.column.index)) {
+                    let text = data.cell.raw.innerText || data.cell.raw.textContent;
+                    data.cell.text = text.replace('₹', '').trim();
+                }
+            }
+        });
+
+        doc.save("Sales_Report_VisionVogue.pdf");
+    }
+
     function downloadExcel() {
         const table = document.querySelector(".report-table");
         const periodText = document.getElementById('reportPeriod').innerText;
-        const generatedTime = `Generated on: ${new Date().toLocaleString()}`;
-        const headerData = [
-        ["VisionVogue Sales Report"],
-        [periodText],
-        [generatedTime],
-        []
-    ]
-    const ws = XLSX.utils.aoa_to_sheet(headerData);
-    XLSX.utils.sheet_add_dom(ws, table, { origin: -1 });
-         const wscols = [
-        {wch: 15},
-        {wch: 40}, 
-        {wch: 12}, 
-        {wch: 12}, 
-        {wch: 15},
-        {wch: 15} 
+        const summary = calculateReportSummary();
+
+        const summaryData = [
+            ["VisionVogue Sales Report"],
+            [periodText],
+            ["Generated on:", new Date().toLocaleString()],
+            [],
+            ["--- REPORT SUMMARY METRICS ---"],
+            ["Total Fulfilled Orders", summary.totalOrders],
+            ["Total Base Amount", `₹${summary.totalBaseAmount.toFixed(2)}`],
+            ["Total Discounts ", `₹${summary.totalDiscountAmount.toFixed(2)}`],
+            ["Net Final Revenue", `₹${summary.totalFinalRevenue.toFixed(2)}`],
+            [], // spacer row
+            ["--- ITEM LOG DETAILS ---"]
+        ];
+
+        const ws = XLSX.utils.aoa_to_sheet(summaryData);
+        // Append domestic DOM table directly underneath summary matrix bounds
+        XLSX.utils.sheet_add_dom(ws, table, { origin: -1 });
+
+        const wscols = [
+            {wch: 18}, {wch: 25}, {wch: 15}, {wch: 18}, {wch: 18}, {wch: 15}
         ];
         ws['!cols'] = wscols;
-         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Sales Report");
-        XLSX.writeFile(wb, "Sales_Report.xlsx");
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Sales Summary Logs");
+        XLSX.writeFile(wb, "Sales_Report_VisionVogue.xlsx");
     }
-
-    function updateTable(data) {
-    const tbody = document.querySelector('.report-table tbody');
-    tbody.innerHTML = data.map(order => `
-        <tr>
-            <td>${new Date(order.createdOn).toLocaleDateString()}</td>
-            <td>#${order._id.toString()}</td>
-            <td>₹${order.totalPrice}</td>
-            <td>₹${order.discount}</td>
-            <td>₹${order.finalAmount}</td>
-            <td>
-                <span style="color: ${order.status === 'cancelled' ? 'red' : order.status === 'delivered' ? 'green' : 'orange'}">
-                    ${order.status.toUpperCase()}
-                </span>
-            </td>
-        </tr>
-    `).join('');
-}
-
-function downloadPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const periodText = document.getElementById('reportPeriod').innerText;
-    doc.setFontSize(18);
-    doc.text("VisionVogue Sales Report", 14, 15);
-    doc.setFontSize(10);
-    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 22);
-    if(periodText) {
-        doc.setFontSize(11);
-        doc.setTextColor(100);
-        doc.text(periodText, 14, 28);
-    }
-    doc.autoTable({
-        html: '.report-table',
-        startY: 30,
-        theme: 'grid',
-        styles: { 
-            fontSize: 8, 
-            cellPadding: 3 
-        },
-        headStyles: { 
-            fillColor: [46, 204, 113], 
-            textColor: [255, 255, 255],
-            fontStyle: 'bold'
-        },
-        didParseCell: function (data) {
-            if (data.section === 'body' && [2, 3, 4].includes(data.column.index)) {
-                let text = data.cell.raw.innerText || data.cell.raw.textContent;
-                data.cell.text = text.replace('₹', '').trim();
-            }
-            if (data.section === 'body' && data.column.index === 5) {
-                let status = data.cell.raw.innerText || data.cell.raw.textContent;
-                data.cell.text = status.trim().toUpperCase();
-            }
-        }
-    });
-
-    doc.save("Sales_Report_VisionVogue.pdf");
-}
 </script>
 </body>
 </html>

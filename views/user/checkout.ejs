@@ -298,7 +298,9 @@ function removeCoupon() {
         method: 'POST',
         data: { 
             addressId: addressId,
-            paymentMethod: paymentMethod
+            paymentMethod: paymentMethod,
+            discount: "<%= discount %>",
+            couponCode: "<%= appliedCoupon %>"
         },
         success: (res) => {
             if (res.method === 'Razorpay') {

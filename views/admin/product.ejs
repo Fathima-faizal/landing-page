@@ -110,13 +110,13 @@
          <td><%= data[i].quantity %></td>
         <td class="actions">
             <% if(data[i].isBlocked === false) { %>
-                <a href="/admin/blockProduct?id=<%=data[i]._id%>">
-                    <button class="btn-block">Block</button>
-                </a>
+               <a href="javascript:void(0)" onclick="confirmProductAction('<%= data[i]._id %>', '<%= data[i].productName %>', 'block')">
+        <button class="btn-block">Block</button>
+    </a>
             <% } else { %>
-                <a href="/admin/unblockProduct?id=<%=data[i]._id%>">
-                    <button class="btn-unblock">Unblock</button>
-                </a>
+                <a href="javascript:void(0)" onclick="confirmProductAction('<%= data[i]._id %>', '<%= data[i].productName %>', 'unblock')">
+        <button class="btn-unblock">Unblock</button>
+    </a>
             <% } %>
             <a href="/admin/editProduct/<%= data[i]._id %>">
     <i class="fa-regular fa-pen-to-square" style="color: black; margin-top: 5px;"></i>
@@ -158,6 +158,31 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
+    function confirmProductAction(id, productName, action) {
+    const isBlocking = action === 'block';
+
+    Swal.fire({
+        title: isBlocking ? 'Block Product?' : 'Unblock Product?',
+        text: isBlocking 
+            ? `Are you sure you want to block "${productName}"? It will be hidden from the storefront, and customers won't be able to purchase it.` 
+            : `Are you sure you want to unblock "${productName}"? It will become visible on the shop website immediately.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: isBlocking ? '#d33' : '#28a745', // Red for block, Green for unblock
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: isBlocking ? 'Yes, Block it!' : 'Yes, Unblock it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Forward the navigation to your Express routes
+            if (isBlocking) {
+                window.location.href = `/admin/blockProduct?id=${id}`;
+            } else {
+                window.location.href = `/admin/unblockProduct?id=${id}`;
+            }
+        }
+    });
+}
 function confirmDelete(productId, productName) {
     Swal.fire({
         title: 'Are you sure?',

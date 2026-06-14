@@ -73,46 +73,43 @@
                             <th class="text-right">Manage</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <% if (orders && orders.length > 0) { %>
-                            <% orders.forEach(order => { %>
-                                <tr class="order-row-premium">
-                                    <td>
-                                        <span class="order-id-chip">#<%= order.orderId %></span>
-                                    </td>
-                                    <td>
-                                        <div class="date-cell">
-                                            <i class="fa-regular fa-calendar-days"></i>
-                                            <%= order.createdOn ? new Date(order.createdOn).toLocaleDateString('en-GB') : 'N/A' %>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="price-text">₹<%= order.finalAmount.toLocaleString() %></span>
-                                    </td>
-                                    <td>
-                                        <span class="status-badge <%= order.status.toLowerCase() %>">
-                                            <i class="fa-solid fa-circle"></i> <%= order.status %>
-                                        </span>
-                                    </td>
-                                    <td class="text-right">
-                                        <div class="action-group">
-                                            <a href="/orderDetails/<%= order._id %>" class="view-link"> Details</a>
-                                            <% if (order.status === 'delivered') { %>
-                                                <a href="/return/<%= order._id %>" class="return-link">Return</a>
-                                            <% } %>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <% }) %>
-                        <% } else { %>
-                            <tr>
-                                <td colspan="5" class="empty-state">
-                                    <i class="fa-solid fa-box-open"></i>
-                                    <p>No orders found matching your search.</p>
-                                </td>
-                            </tr>
-                        <% } %>
-                    </tbody>
+                   <tbody>
+    <% if (orders && orders.length > 0) { %>
+        <% orders.forEach(order => { %>
+            <tr class="order-row-premium">
+                <td>
+                    <span class="order-id-chip">#<%= order.orderId %></span>
+                </td>
+                <td>
+                    <div class="date-cell">
+                        <i class="fa-regular fa-calendar-days"></i>
+                        <%= order.createdOn ? new Date(order.createdOn).toLocaleDateString('en-GB') : 'N/A' %>
+                    </div>
+                </td>
+                <td>
+                    <span class="price-text">₹<%= order.finalAmount.toLocaleString() %></span>
+                </td>
+                <td>
+                    <span class="status-badge <%= order.status.toLowerCase() %>">
+                        <i class="fa-solid fa-circle"></i> <%= order.status %>
+                    </span>
+                </td>
+                <td class="text-right">
+                    <div class="action-group">
+                        <a href="/orderDetails/<%= order._id %>" class="view-link"> Details</a>
+                    </div>
+                </td>
+            </tr>
+        <% }) %>
+    <% } else { %>
+        <tr>
+            <td colspan="5" class="empty-state">
+                <i class="fa-solid fa-box-open"></i>
+                <p>No orders found matching your search.</p>
+            </td>
+        </tr>
+    <% } %>
+</tbody>
                 </table>
             </div>
  <div class="container">
