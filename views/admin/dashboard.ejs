@@ -380,55 +380,73 @@
     }
 
     function downloadPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const periodText = document.getElementById('reportPeriod').innerText;
-        const summary = calculateReportSummary();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const startDateVal = document.getElementById('startDate')?.value || '';
+    const endDateVal = document.getElementById('endDate')?.value || '';
+    const filterTypeVal = document.getElementById('filterType')?.value || 'custom';
+    const periodText = document.getElementById('reportPeriod').innerText;
+    const summary = calculateReportSummary();
 
-        // Document Title
-        doc.setFontSize(20);
-        doc.setTextColor(44, 62, 80);
-        doc.text("VisionVogue Sales Report", 14, 15);
+    // Document Title
+    doc.setFontSize(20);
+    doc.setTextColor(44, 62, 80);
+    doc.setFont(undefined, 'bold');
+    doc.text("VisionVogue Sales Report", 14, 15);
+    
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(100);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 21);
         
-        doc.setFontSize(9);
-        doc.setTextColor(120);
-        doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 21);
-        doc.text(periodText, 14, 26);
-
-        // Render Summary block structural headers
-        doc.setDrawColor(220);
-        doc.setFillColor(248, 249, 250);
-        doc.rect(14, 32, 182, 24, 'F');
-
-        doc.setFontSize(10);
-        doc.setTextColor(60);
-        doc.setFont(undefined, 'bold');
-        doc.text("SALES REPORT SUMMARY", 18, 38);
-        
-        doc.setFont(undefined, 'normal');
-        doc.setFontSize(9);
-        doc.text(`Total Volume: ${summary.totalOrders} Orders`, 18, 45);
-        doc.text(`Gross Base Price: ₹${summary.totalBaseAmount.toFixed(2)}`, 18, 51);
-        doc.text(`Total Discounts Given: ₹${summary.totalDiscountAmount.toFixed(2)}`, 100, 45);
-        doc.text(`Net Final Revenue: ₹${summary.totalFinalRevenue.toFixed(2)}`, 100, 51);
-
-        doc.autoTable({
-            html: '.report-table',
-            startY: 62,
-            theme: 'grid',
-            styles: { fontSize: 8, cellPadding: 3 },
-            headStyles: { fillColor: [44, 62, 80], textColor: [255, 255, 255] },
-            didParseCell: function (data) {
-                if (data.section === 'body' && [2, 3, 4].includes(data.column.index)) {
-                    let text = data.cell.raw.innerText || data.cell.raw.textContent;
-                    data.cell.text = text.replace('₹', '').trim();
-                }
-            }
-        });
-
-        doc.save("Sales_Report_VisionVogue.pdf");
+    let dateRangeText = periodText;
+    if (startDateVal && endDateVal) {
+        dateRangeText = `Filter Period: ${startDateVal} to ${endDateVal}`;
+    } else if (filterTypeVal !== 'custom') {
+        dateRangeText = `Filter Type: ${filterTypeVal.toUpperCase()} (${periodText})`;
     }
+    doc.text(dateRangeText, 14, 27);
 
+    // Render Summary block structural background matrix container
+    doc.setDrawColor(220);
+    doc.setFillColor(248, 249, 250);
+    // FIXED: Increased background frame height slightly to 26 to comfortably fit multi-line content
+    doc.rect(14, 32, 182, 26, 'F');
+
+    doc.setFontSize(10);
+    doc.setTextColor(44, 62, 80);
+    doc.setFont(undefined, 'bold');
+    doc.text("SALES REPORT SUMMARY", 18, 38);
+    
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(60);
+    
+    // FIXED: Replaced '₹' symbol with explicit string standard 'INR ' to strip font spacing corruption completely
+    doc.text(`Total Volume: ${summary.totalOrders} Orders`, 18, 45);
+    doc.text(`Total Price: INR ${summary.totalBaseAmount.toFixed(2)}`, 18, 51);
+    
+    doc.text(`Total Discounts Amount: INR ${summary.totalDiscountAmount.toFixed(2)}`, 105, 45);
+    doc.text(` Final Revenue: INR ${summary.totalFinalRevenue.toFixed(2)}`, 105, 51);
+
+    doc.autoTable({
+        html: '.report-table',
+        startY: 64, // Pushed start position safely below our expanded summary card block boundary
+        theme: 'grid',
+        styles: { fontSize: 8, cellPadding: 3 },
+        headStyles: { fillColor: [44, 62, 80], textColor: [255, 255, 255] },
+        didParseCell: function (data) {
+            // Cleans internal domestic numbers inside rows out cleanly when exporting
+            if (data.section === 'body' && [2, 3, 4].includes(data.column.index)) {
+                let text = data.cell.raw.innerText || data.cell.raw.textContent;
+                // Replaces currency tokens with standard decimal representations safely
+                data.cell.text = text.replace(/[₹,]/g, '').trim();
+            }
+        }
+    });
+
+    doc.save("Sales_Report_VisionVogue.pdf");
+}
     function downloadExcel() {
         const table = document.querySelector(".report-table");
         const periodText = document.getElementById('reportPeriod').innerText;
@@ -440,10 +458,10 @@
             ["Generated on:", new Date().toLocaleString()],
             [],
             ["--- REPORT SUMMARY METRICS ---"],
-            ["Total Fulfilled Orders", summary.totalOrders],
-            ["Total Base Amount", `₹${summary.totalBaseAmount.toFixed(2)}`],
+            ["Total  Orders", summary.totalOrders],
+            ["Total  Amount", `₹${summary.totalBaseAmount.toFixed(2)}`],
             ["Total Discounts ", `₹${summary.totalDiscountAmount.toFixed(2)}`],
-            ["Net Final Revenue", `₹${summary.totalFinalRevenue.toFixed(2)}`],
+            ["Final Revenue", `₹${summary.totalFinalRevenue.toFixed(2)}`],
             [], // spacer row
             ["--- ITEM LOG DETAILS ---"]
         ];

@@ -44,20 +44,29 @@ const getwishlist=async(req,res)=>{
         res.status(500).send('Internal server error')
     }
 }
-const addwishlist=async(req,res)=>{
+const addwishlist = async (req, res) => {
     try {
-        const productId=req.body.productId;
-        const userId=req.session.user;
-        const user=await User.findById(userId);
-        if(user.wishlist.includes(productId)){
-            return res.status(400).json({status:false,message:`product already in wishlist`})
+        const productId = req.body.productId;
+        const userId = req.session.user;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ status: false, message: 'User not found' });
+        }
+        if (user.wishlist.includes(productId)) {
+            return res.status(400).json({ status: false, message: `Product already in wishlist` });
         }
         user.wishlist.push(productId);
         await user.save();
-        return res.status(200).json({status:true,message:`product added to wishlist`})
+        const currentCount = user.wishlist.length;
+        return res.status(200).json({ 
+            status: true, 
+            message: `Product added to wishlist`,
+            count: currentCount 
+        });
+
     } catch (error) {
-        console.log('error',error);
-        res.status(500).send('Internal server error')
+        console.log('error', error);
+        res.status(500).send('Internal server error');
     }
 }
 const deleteWishlist=async(req,res)=>{
