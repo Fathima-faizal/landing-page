@@ -229,18 +229,18 @@
 }
     function addtoWishlist(productId) {
     $.ajax({
-        url: '/addtoWishlist',
+        url: '/addtoWishlist', 
         method: 'POST',
         data: { productId: productId },
         success: (response) => {
             if (response.status) {
                 const icon = document.getElementById(`wishlist-icon-${productId}`);
-                 if (icon) {
-                 icon.classList.remove('fa-regular');
-                 icon.classList.add('fa-solid', 'active');
-                  }
+                if (icon) {
+                    icon.classList.remove('fa-regular');
+                    icon.classList.add('fa-solid', 'active');
+                }
                 const badgeContainer = document.getElementById('wishlist-count-badge');
-                if (response.count > 0) {
+                if (badgeContainer && response.count > 0) {
                     badgeContainer.innerHTML = `<span class="wishlist-badge">${response.count}</span>`;
                 }
                 Swal.fire({
@@ -259,6 +259,9 @@
                     showConfirmButton: false
                 });
             }
+        },
+        error: (err) => {
+            console.log("Error adding item to wishlist: ", err);
         }
     });
 }

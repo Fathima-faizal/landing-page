@@ -94,7 +94,7 @@ const postorder = async (req, res) => {
             totalPrice: totalCartPrice, 
             discount: totalDiscount,
             couponCode: couponCode, 
-            finalAmount: finalCalculatedAmount, // Fixed session fallback reference bug
+            finalAmount: finalCalculatedAmount, 
             paymentMethod: paymentMethod,
             address: addressId,
             status: 'pending', 
@@ -207,31 +207,76 @@ const submitReturn = async (req, res) => {
         const userId = req.session.user;
         const order = await Order.findById(orderId);
         if (!order) {
-            return res.status(444).json({ status: false, message: "Order not found" });
+            return res.status(404).json({ status: false, message: "Order not found" });
         }
+
         let itemFound = false;
+        let refundAmount = 0;
+        let itemOriginalTotal = 0;
+        let itemDiscountGiven = 0;
+
         for (const item of order.orderedItems) {
             if (item.productId.toString() === productId.toString()) {
-                item.status = 'return'; // Or 'return request' depending on your design flow
+                if (item.status === 'return') {
+                    return res.json({ status: false, message: "This item has already been returned" });
+                }
+                
+                item.status = 'return'; 
                 item.returnReason = reason;
                 itemFound = true;
+
+                itemOriginalTotal = Number(item.price) * Number(item.quantity);
+                itemDiscountGiven = Number(item.discountEach) || 0; 
+                refundAmount = itemOriginalTotal - itemDiscountGiven;
             }
         }
+
         if (!itemFound) {
             return res.json({ status: false, message: "Product not found in this order" });
         }
+
         const allReturned = order.orderedItems.every(item => item.status === 'return');
         if (allReturned) {
             order.status = 'return'; 
         }
+        order.totalPrice -= itemOriginalTotal;
+        order.discount -= itemDiscountGiven;
+        order.finalAmount -= refundAmount;
+
+        if (allReturned) {
+            order.totalPrice = 0;
+            order.discount = 0;
+            order.finalAmount = 0;
+        }
+        await Product.findByIdAndUpdate(productId, {
+            $inc: { quantity: order.orderedItems.find(item => item.productId.toString() === productId.toString()).quantity }
+        });
+
+        if (order.paymentMethod !== 'COD' && refundAmount > 0) {
+            const user = await User.findById(userId); 
+            if (user) {
+                user.wallet = (Number(user.wallet) || 0) + refundAmount;
+                
+                user.history.push({
+                    description: `Refund for Returned Item (Price: ₹${refundAmount})`,
+                    amount: refundAmount,
+                    type: 'credit',
+                    status: 'Completed',
+                    date: new Date()
+                });
+                await user.save();
+            }
+        }
       
+        order.markModified('orderedItems');
         await order.save();
 
         return res.json({ 
             status: true, 
-            message: "Return request submitted to admin",
-          
+            message: "Item returned and refund successfully credited to your wallet",
+            refundAmount 
         });
+
     } catch (error) {
         console.error(error);
         res.status(500).send("Error submitting return");
@@ -275,7 +320,6 @@ const cancelOrderItem = async (req, res) => {
         const itemDiscountGiven = Number(itemToCancel.discountEach) || 0; 
         const refundAmount = itemOriginalTotal - itemDiscountGiven;
 
-        // 4. Mutate Order States safely
        itemToCancel.status = 'cancelled';
         order.totalPrice -= itemOriginalTotal;
         order.discount -= itemDiscountGiven;
@@ -294,7 +338,7 @@ const cancelOrderItem = async (req, res) => {
                 user.wallet = (Number(user.wallet) || 0) + refundAmount;
                 
                 user.history.push({
-                    description: `Refund for Cancelled Item (Price: ₹${itemOriginalTotal} | Discount Applied: -₹${itemDiscountGiven})`,
+                    description: `Refund for Cancelled Item (Price: ₹${refundAmount} )`,
                     amount: refundAmount,
                     type: 'credit',
                     status: 'Completed',

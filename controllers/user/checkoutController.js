@@ -125,14 +125,10 @@ const finalAmountAfterDiscount = Math.max(0, total - discount);
         discountEach: proportionalDiscount 
     };
 });
-
-        // 3. Wallet Specific Logic
         if (paymentMethod === 'Wallet') {
             if (user.wallet < finalAmountAfterDiscount) {
                 return res.json({ success: false, message: "Insufficient Wallet Balance" });
             }
-            
-            // Deduct the discounted final price from wallet
             user.wallet -= finalAmountAfterDiscount;
             user.history.push({
                 description: 'Order Payment (Coupon Applied)',
@@ -142,8 +138,6 @@ const finalAmountAfterDiscount = Math.max(0, total - discount);
             });
             await user.save();
         }
-
-        // 4. Handle Razorpay Initial Order Creation
         if (paymentMethod === 'Razorpay') {
             const options = {
                 amount: Math.round(finalAmountAfterDiscount * 100), 
@@ -158,23 +152,17 @@ const finalAmountAfterDiscount = Math.max(0, total - discount);
                 orderData: { addressId, paymentMethod, discount, total, finalAmountAfterDiscount } 
             });
         }
-
-        // 5. Structure Ordered Items with Proportional Coupon Discount (For Wallet/COD)
         const orderItems = cart.items.map(item => {
             const itemTotalPrice = item.proudctId.salesPrice * item.quantity;
-            // Distribute discount proportionally across items
             const itemDiscount = total > 0 ? Math.round((itemTotalPrice / total) * discount) : 0;
-            
             return {
                 productId: item.proudctId._id,
                 quantity: item.quantity,
                 price: item.proudctId.salesPrice,
-                discountEach: itemDiscount, // Now correctly populating
+                discountEach: itemDiscount,
                 status: 'pending'
             };
         });
-
-        // 6. Create the actual Order Document
         const newOrder = new Order({
             userId: userId,
             orderId: 'ORD' + Math.floor(1000 + Math.random() * 9000),
@@ -192,15 +180,11 @@ const finalAmountAfterDiscount = Math.max(0, total - discount);
         });
 
         await newOrder.save();
-
-        // 7. Deduct Inventory Stock
         for (const item of cart.items) {
             await Product.findByIdAndUpdate(item.proudctId._id, {
                 $inc: { quantity: -item.quantity } 
             });
         }
-
-        // 8. Clean up Cart and Coupon Sessions
         await Cart.findOneAndDelete({ userId });
         req.session.coupon = null;
 
@@ -211,7 +195,6 @@ const finalAmountAfterDiscount = Math.max(0, total - discount);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 };
-// Clean fix for verifyPayment inside your Controller:
 const verifyPayment = async (req, res) => {
     try {
         const { response, orderData } = req.body;
@@ -226,8 +209,7 @@ const verifyPayment = async (req, res) => {
             if (!cart) return res.status(400).json({ success: false, message: "Cart not found" });
             
             const totalCartPrice = cart.items.reduce((acc, item) => acc + (item.proudctId.salesPrice * item.quantity), 0);
-            
-            // FIX: Explicitly prioritize incoming orderData payload calculations
+
             let totalDiscount = orderData && orderData.discount ? Number(orderData.discount) : 0;
             let couponCode = orderData && orderData.couponCode ? orderData.couponCode : null;
 
