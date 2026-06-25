@@ -10,7 +10,7 @@ const getcartpage = async (req, res) => {
     try {
         const userId = req.session.user;
         let cartCount=0;
-        let wishlistCount=0
+        let wishlistCount=0;
         const userData=await User.findById(userId);
         if (userData && userData.wishlist) {
             wishlistCount = userData.wishlist.length;
@@ -66,7 +66,7 @@ const getcartpage = async (req, res) => {
             message:message,
             grandtotal:grandtotal,
             cartCount: cartCount,
-            wishlistCount:wishlistCount
+            wishlistCount:wishlistCount,
         });
 
     } catch (error) {
@@ -147,7 +147,7 @@ const changeQuantity = async (req, res) => {
             if (newQuantity > product.quantity) {
                 return res.json({ status: false, message: "Stock limit reached" });
             }
-
+            
             item.quantity = newQuantity;
             item.totalprice = item.quantity * product.salesPrice;
             await cart.save();
@@ -166,7 +166,7 @@ const changeQuantity = async (req, res) => {
                 status: true,
                 newQuantity: item.quantity,
                 newSubtotal: item.totalprice,
-                grandTotal: updatedCart.length > 0 ? updatedCart[0].totalPrice : 0
+                grandTotal: updatedCart.length > 0 ? updatedCart[0].totalPrice : 0,
             });
         }
     } catch (error) {

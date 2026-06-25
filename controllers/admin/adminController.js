@@ -44,11 +44,8 @@ const loadDashboard = async (req, res) => {
     try {
         const userCount = await User.countDocuments({ isBlocked: false });
         
-        // 1. Keep it lowercase 'delivered' to match your overall schema style
         const deliveredOrders = await Order.find({ status: 'delivered' });
         const orderCount = deliveredOrders.length;
-
-        // FIXED: Changed status from 'Delivered' to 'delivered'
         const revenueData = await Order.aggregate([
             { $match: { status: 'delivered' } }, 
             { $group: { _id: null, total: { $sum: '$finalAmount' } } }
@@ -63,7 +60,7 @@ const loadDashboard = async (req, res) => {
                 totalQty: { $sum: '$orderedItems.quantity' }
             }},
             { $sort: { totalQty: -1 } },
-            { $limit: 5 },
+            { $limit: 2 },
             { $lookup: {
                 from: 'products', 
                 localField: '_id',
@@ -92,7 +89,7 @@ const loadDashboard = async (req, res) => {
                 itemCount: { $sum: '$orderedItems.quantity' }
             }},
             { $sort: { itemCount: -1 } },
-            { $limit: 5 },
+            { $limit: 2 },
             { $lookup: {
                 from: 'categories', 
                 localField: '_id',
@@ -107,8 +104,6 @@ const loadDashboard = async (req, res) => {
         ]);
 
         const currentYear = new Date().getFullYear();
-        
-        // FIXED: Changed status from 'Delivered' to 'delivered'
         const monthlyRevenue = await Order.aggregate([
             { 
                 $match: { 
