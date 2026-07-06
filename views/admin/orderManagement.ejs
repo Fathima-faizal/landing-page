@@ -79,52 +79,54 @@
                 <button class="logout-top">Log out</button>
                 </a>
             </header>
-            <section class="content-body">
-                <div class="toolbar">
-                    <form action="/admin/orderManagement" method="get">
-                    <div class="search-box">
-                        <input type="text" name="search" placeholder="Search">
-                        <button class="btn-clear">Clear</button>
-                </div>
-                       <select name="status" class="status" onchange="this.form.submit()">
-                <option value="">All Status</option>
+           <section class="content-body">
+    <div class="toolbar">
+        <form action="/admin/orderManagement" method="get">
+            <div class="search-box">
+                <input type="text" name="search" value="<%= search || '' %>" placeholder="Search orders...">
+                <button type="button" class="btn-clear" onclick="window.location.href='/admin/orderManagement'">Clear</button>
+            </div>
+            
+            <select name="status" class="status" onchange="this.form.submit()">
+                <option value="">All Statuses</option>
                 <% ['pending','processing', 'shipped','cancelled', 'delivered','return','approve','reject'].forEach(s => { %>
                     <option value="<%= s %>" <%= statusFilter === s ? 'selected' : '' %>><%= s.toUpperCase() %></option>
                 <% }) %>
             </select>
-                    </form>
-                </div>
+        </form>
+    </div>
 
-               <table class="user-table">
-    <thead>
-        <tr>
-            <th>OrderId</th>
-            <th>Date</th>
-            <th>User</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        <% orders.forEach(order => { %>
+    <table class="user-table">
+        <thead>
             <tr>
-                <td>#<%= order.orderId %></td>
-                <td><%= new Date(order.createdOn).toLocaleDateString() %></td>
-                <td><%= order.userId ? order.userId.name : 'Guest' %><br>
-                    <%= order.userId ? order.userId.email : '' %></td>
-                <td>
-                    <span class="status-badge <%= order.status %>">
-                        <%= order.status.toUpperCase() %>
-                    </span>
-                </td>
-                <td>
-                    <a href="/admin/Views/<%= order._id %>" class="btn-view">View Detail</a>
-                </td>
+                <th>OrderId</th>
+                <th>Date</th>
+                <th>User</th>
+                <th>Status</th>
+                <th>Action</th>
             </tr>
-        <% }) %>
-    </tbody>
-</table>
-                </table>
+        </thead>
+        <tbody>
+            <% orders.forEach(order => { %>
+                <tr>
+                    <td>#<%= order.orderId %></td>
+                    <td><%= new Date(order.createdOn).toLocaleDateString() %></td>
+                    <td>
+                        <strong><%= order.userId ? order.userId.name : 'Guest' %></strong><br>
+                        <small style="color: #666;"><%= order.userId ? order.userId.email : '' %></small>
+                    </td>
+                    <td>
+                        <span class="status-badge <%= order.status %>">
+                            <%= order.status.toUpperCase() %>
+                        </span>
+                    </td>
+                    <td>
+                        <a href="/admin/Views/<%= order._id %>" class="btn-view"><i class="fas fa-eye"></i> View Detail</a>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
                 <div class="container">
                     <nav aria-label="page navigation">
                         <ul class="pagination justify-cotent-center mb-20"style="margin-right:20px";>

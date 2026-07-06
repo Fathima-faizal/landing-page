@@ -33,8 +33,9 @@ app.set('views',[path.join(__dirname, 'views/user'), path.join(__dirname, 'views
 app.use(express.static(path.join(__dirname,'public')));
 
 app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).render('internal')
+  console.error("Internal Server Error:", err.stack || err);
+    const statusCode = err.status || 500;
+    res.status(statusCode).render('internal');
 });
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads'))); 
 app.use('/uploads', express.static('uploads'));

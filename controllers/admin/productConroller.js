@@ -199,7 +199,7 @@ const posteditProduct = async (req, res) => {
             category: data.category,
             brand:data.brand,
             regularPrice: data.regularPrice,
-            salesPrice: data.regularPrice,
+            salesPrice: data.salesPrice,
             quantity: data.quantity,
             color:data.color,
             productimage: images,

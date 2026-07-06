@@ -66,45 +66,53 @@
                     <div class="form-group full-width">
                         <label>Address Type</label>
                         <input type="text" id="addressType" name="addressType" placeholder="Address Type" >
+                        <span id="addressTypeError" class="error-text" style="color: #ff4d4d; display: none; font-size: 13px; margin-top: 4px;"></span>
                     </div>
 
                     <div class="form-group">
                         <label>House Name/No.</label>
                         <input type="text" id="houseName" name="houseName" placeholder="House Name" >
+                        <span id="houseNameError" class="error-text" style="color: #ff4d4d; display: none; font-size: 13px; margin-top: 4px;"></span>
                     </div>
 
                     <div class="form-group">
                         <label>Street</label>
                         <input type="text" id="street" name="street" placeholder="Street">
+                        <span id="streetError" class="error-text" style="color: #ff4d4d; display: none; font-size: 13px; margin-top: 4px;"></span>
                     </div>
 
                     <div class="form-group full-width">
                         <label>Landmark</label>
                         <input type="text" id="landmark" name="landmark" placeholder="Landmark">
+                        <span id="landmarkError" class="error-text" style="color: #ff4d4d; display: none; font-size: 13px; margin-top: 4px;"></span>
                     </div>
 
                     <div class="form-group">
                         <label>City</label>
                         <input type="text" id="city" name="city" placeholder="City" >
+                        <span id="cityError" class="error-text" style="color: #ff4d4d; display: none; font-size: 13px; margin-top: 4px;"></span>
                     </div>
 
                     <div class="form-group">
                         <label>Zip Code</label>
                         <input type="text" id="zipCode" name="zipCode" placeholder="Zip Code" >
+                        <span id="zipCodeError" class="error-text" style="color: #ff4d4d; display: none; font-size: 13px; margin-top: 4px;"></span>
                     </div>
 
                     <div class="form-group">
                         <label>Country</label>
                         <input type="text" id="country" name="country" placeholder="Country" >
+                        <span id="countryError" class="error-text" style="color: #ff4d4d; display: none; font-size: 13px; margin-top: 4px;"></span>
                     </div>
 
                     <div class="form-group">
                         <label>Phone Number</label>
                         <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Phone Number" >
+                        <span id="phoneNumberError" class="error-text" style="color: #ff4d4d; display: none; font-size: 13px; margin-top: 4px;"></span>
                     </div>
                 </div>
 
-                <div id="formError" class="error-message"></div>
+                <div id="formError" class="error-message" style="margin-top: 10px; font-weight: bold;"></div>
 
                 <div class="form-actions">
                     <button type="submit" class="btn-save">
@@ -153,33 +161,72 @@ document.getElementById('addressForm').addEventListener('submit', function(e) {
     const formError = document.getElementById('formError');
 
     const phoneRegex = /^[6-9]\d{9}$/; 
-    const zipRegex = /^\d{6}$/;       
+    const zipRegex = /^\d{6}$/;      
     
-    let errorMessage = "";
-
-    // 1. Check for empty fields first
-    if (!addressType || !houseName || !street || !landmark || !city || !zipCode || !country || !phoneNumber) {
-        errorMessage = "All fields are required. Please fill in every detail.";
-    } 
-    // 2. Then check Zip Code
-    else if (!zipRegex.test(zipCode)) {
-        errorMessage = "Please enter a valid 6-digit Zip Code.";
+    let isValid = true;
+    document.querySelectorAll('.error-text').forEach(el => {
+        el.innerText = "";
+        el.style.display = "none";
+    });
+    formError.innerText = "";
+    formError.style.display = "none";
+    if (!addressType) {
+        showFieldError('addressTypeError', 'Address type is required (e.g., Home, Office).');
+        isValid = false;
     }
-    // 3. Then check Phone Number
-    else if (!phoneRegex.test(phoneNumber)) {
-        errorMessage = "Please enter a valid 10-digit phone number starting with 6-9.";
+    if (!houseName) {
+        showFieldError('houseNameError', 'House Name or Number is required.');
+        isValid = false;
     }
-
-    if (errorMessage) {
+    if (!street) {
+        showFieldError('streetError', 'Street name or area is required.');
+        isValid = false;
+    }
+    if (!landmark) {
+        showFieldError('landmarkError', 'Landmark is required for easy delivery.');
+        isValid = false;
+    }
+    if (!city) {
+        showFieldError('cityError', 'City is required.');
+        isValid = false;
+    }
+    if (!zipCode) {
+        showFieldError('zipCodeError', 'Zip Code is required.');
+        isValid = false;
+    } else if (!zipRegex.test(zipCode)) {
+        showFieldError('zipCodeError', 'Please enter a valid 6-digit Zip Code.');
+        isValid = false;
+    }
+    if (!country) {
+        showFieldError('countryError', 'Country name is required.');
+        isValid = false;
+    }
+    if (!phoneNumber) {
+        showFieldError('phoneNumberError', 'Phone number is required.');
+        isValid = false;
+    } else if (!phoneRegex.test(phoneNumber)) {
+        showFieldError('phoneNumberError', 'Enter a valid 10-digit number starting with 6-9.');
+        isValid = false;
+    }
+    if (!isValid) {
         e.preventDefault(); 
-        formError.innerText = errorMessage;
+        formError.innerText = "Please fix the highlighted errors above.";
         formError.style.display = "block";
         formError.style.color = "#ff4d4d";
-        window.scrollTo({ top: formError.offsetTop - 100, behavior: 'smooth' });
-    } else {
-        formError.style.display = "none";
+        const firstError = document.querySelector('.error-text[style*="display: block"]');
+        if (firstError) {
+            firstError.parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     }
 });
+
+function showFieldError(elementId, message) {
+    const errorSpan = document.getElementById(elementId);
+    if (errorSpan) {
+        errorSpan.innerText = message;
+        errorSpan.style.display = "block";
+    }
+}
 </script>
 
 

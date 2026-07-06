@@ -125,7 +125,7 @@
                 <div class="coupon-mini-card">
                     <div class="coupon-info">
                         <span class="c-code"><%= coupon.couponCode %></span>
-                        <p class="c-desc">Save ₹<%= coupon.discountAmount %> on orders above ₹<%= coupon.minimumPrice %></p>
+                        <p class="c-desc">Save ₹<%= coupon.discountPercentage %>on orders above ₹<%= coupon.minimumPrice %></p>
                     </div>
                     <button class="copy-coupon-btn" onclick="copyAndApply('<%= coupon.couponCode %>')">Apply</button>
                 </div>
