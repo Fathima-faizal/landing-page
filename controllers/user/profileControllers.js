@@ -688,13 +688,9 @@ const updatepassword=async(req,res)=>{
         if (user.wishlist) {
             wishlistCount = user.wishlist.length;
         }
-
-        // പpagination ലോജിക്
         const page = parseInt(req.query.page) || 1;
         const limit = 3; 
         const skip = (page - 1) * limit;
-
-        // ഒറിജിനൽ അറേ മാറ്റിമറിക്കാതിരിക്കാൻ slice() ഉപയോഗിച്ച് റിവേഴ്സ് ചെയ്യുന്നു
         const allTransactions = [...user.history].reverse();
         const paginatedTransactions = allTransactions.slice(skip, skip + limit);
         const totalTransactions = allTransactions.length;

@@ -79,8 +79,6 @@ body {
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    margin-left: 223%;
-    margin-top: -63%;
 }
 /* Main Content Styles */
 .main-content {
@@ -111,10 +109,13 @@ body {
 }
 .content-body {
     padding: 40px;
-    background-color: #cccccc; /* Greyish background from image */
-    height: calc(130vh - 70px);
-
-
+    background-color: #cccccc; 
+    min-height: calc(100vh - 70px); /* Clean up the vertical layout height */
+    overflow-y: hidden;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Natively centers everything (Toolbar, Table, Pagination) */
 }
 
 .btn-view{
@@ -133,8 +134,22 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    width: 100%;
+    max-width: 900px; /* Forces layout edges to perfectly flush with the table */
 }
-
+.toolbar form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; 
+    gap: 20px;
+}
+.container {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    justify-content: center;
+}
 .search-box {
     display: flex;
     background: white;
@@ -162,10 +177,16 @@ body {
 /* Table Styling */
 .user-table {
     width: 100%;
+    /* 1. Sets a maximum width limit (Adjust this pixel value to make it shorter/longer) */
+    max-width: 900px; 
+    /* 2. Centers the table within the gray dashboard container area */
+    margin: 0 auto; 
     background: white;
     border-collapse: collapse;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Optional: Softens edges cleanly */
+    border-radius: 8px; /* Optional: Gives the corners a smooth look */
+    overflow: hidden;
 }
-
 .user-table th, .user-table td {
     border: 1px solid #eee;
     padding: 15px;
