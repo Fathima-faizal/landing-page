@@ -120,8 +120,7 @@ const loadDashboard = async (req, res) => {
             { $sort: { _id: 1 } }
         ]);
 
-        const salesReport = await Order.find({ status: 'delivered' }).sort({ createdOn: -1 }).limit(5);
-        
+        const salesReport = await Order.find({ "orderedItems.status": 'delivered' }).sort({ createdOn: -1 }).limit(5);
         res.render('dashboard', {
             userCount,
             orderCount,
@@ -140,7 +139,7 @@ const loadDashboard = async (req, res) => {
 const salesreport = async (req, res) => {
     try {
         let { startDate, endDate, filterType } = req.query;
-        let query = { status: 'delivered' };
+        let query = {"orderedItems.status": "delivered"};
         const now = new Date();
         
         if (filterType === 'daily') {
@@ -154,10 +153,22 @@ const salesreport = async (req, res) => {
             end.setHours(23, 59, 59, 999);
             query.createdOn = { $gte: new Date(startDate), $lte: end };
         }
-        const report = await Order.find(query)
-                                  .sort({ createdOn: -1 })
-                                  .limit(5)
-                                  
+        const orders = await Order.find(query).sort({ createdOn: -1 });
+
+        const report = orders.map(order => {
+            const deliveredItems = order.orderedItems.filter(item => item.status === 'delivered');
+            const deliveredTotal = deliveredItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const couponDiscount = order.discount || 0; 
+            
+            return {
+                _id: order._id,
+                createdOn: order.createdOn,
+                totalPrice: deliveredTotal,
+                discount: couponDiscount,
+                finalAmount: order.finalAmount,
+                status: 'Delivered' 
+            };
+        });
         res.json(report);
     } catch (error) {
         console.log('error', error);

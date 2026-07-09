@@ -85,9 +85,9 @@ const editpostCategory=async(req,res)=>{
             description:description,
         },{new:true});
         if(updateCategory){
-            res.redirect('/admin/category')
+           return res.status(200).json({ success: true, message: "Category updated successfully" });
         }else{
-           res.status(400).json({error:'Category not found'})
+         return  res.status(400).json({error:'Category not found'})
         }
     } catch (error) {
         console.log('error',error);

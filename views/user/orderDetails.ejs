@@ -57,7 +57,8 @@
             <h2>Order Details</h2>
             <p>ID: <span class="order-id-text">#<%= order.orderId %></span> | Placed on <%= new Date(order.createdOn).toLocaleDateString() %></p>
         </div>
-        <button type="button" class="btn-invoice-premium" onclick="checkInvoiceStatus('<%= order.status %>', '<%= order._id %>')">
+        <button type="button" class="btn-invoice-premium" 
+    onclick="checkInvoiceStatus('<%= order.status %>', '<%= order._id %>', '<%= JSON.stringify(order.orderedItems.map(i => i.status)) %>')">
     <i class="fa-solid fa-file-pdf"></i> Download Invoice
 </button>
     </div>
@@ -132,7 +133,6 @@
             <p class="qty-text">Qty: <strong><%= item.quantity %></strong></p>
         </div>
         
-        <!-- Column 3: Price Calculation -->
         <div class="product-price-section">
             <p class="unit-price">Original: ₹<%= item.price.toLocaleString() %></p>
             <% if(item.discountEach > 0) { %>
@@ -142,25 +142,36 @@
             <% const itemFinalPaid = itemTotalOriginal - (item.discountEach || 0); %>
             <p class="total-item-price">Paid: ₹<%= itemFinalPaid.toLocaleString() %></p>
         </div>
-        
-        <!-- Column 4: Status and Action Buttons -->
         <div class="product-row-actions">
             <% const itemStatus = item.status ? item.status.toLowerCase() : 'pending'; %>
             
             <div class="item-status-wrapper">
-                <span class="status-badge <%= itemStatus %>">
-                    <% if (itemStatus === 'pending') { %><i class="fa-regular fa-clock"></i>
-                    <% } else if (itemStatus === 'processing') { %><i class="fa-solid fa-gear fa-spin"></i>
-                    <% } else if (itemStatus === 'shipped') { %><i class="fa-solid fa-truck-fast"></i>
-                    <% } else if (itemStatus === 'delivered') { %><i class="fa-solid fa-house-circle-check"></i>
-                    <% } else if (itemStatus === 'cancelled') { %><i class="fa-solid fa-circle-xmark"></i>
-                    <% } else if (itemStatus === 'return') { %><i class="fa-solid fa-arrow-rotate-left"></i>
-                    <% } else if (itemStatus === 'approve') { %><i class="fa-solid fa-circle-check"></i>
-                    <% } else if (itemStatus === 'reject') { %><i class="fa-solid fa-ban"></i><% } %>
-                    <%= item.status %>
-                </span>
-            </div>
+    <% let badgeClass = itemStatus; 
+        let iconClass = "";
+        let displayText = item.status;
+        if (itemStatus === 'return') {
+            badgeClass = 'return-requested';
+            iconClass = 'fa-solid fa-clock-rotate-left';
+            displayText = 'Return Requested';
+        } else if (itemStatus === 'approve') {
+            badgeClass = 'return-approved'; 
+            iconClass = 'fa-solid fa-circle-check';
+            displayText = 'Return';
+        } else if (itemStatus === 'reject') {
+            badgeClass = 'return-rejected'; 
+            iconClass = 'fa-solid fa-circle-xmark';
+            displayText = 'Return Rejected';
+        } else {
+            if (itemStatus === 'pending') iconClass = 'fa-regular fa-clock';
+            else if (itemStatus === 'shipped') iconClass = 'fa-solid fa-truck-fast';
+            else if (itemStatus === 'delivered') iconClass = 'fa-solid fa-house-circle-check';
+            else if (itemStatus === 'cancelled') iconClass = 'fa-solid fa-ban';
+        }%>
 
+    <span class="status-badge <%= badgeClass %>">
+        <i class="<%= iconClass %>"></i> <%= displayText %>
+    </span>
+</div>
             <div class="item-buttons-wrapper">
                 <% if (['pending', 'processing'].includes(itemStatus)) { %>
                     <button type="button" class="btn-cancel-item" onclick="handleCancel('<%= order._id %>', '<%= item.productId._id %>')">
@@ -235,12 +246,27 @@
     window.onpopstate = function () {
         window.history.go(1);
     };
-    function checkInvoiceStatus(status, orderId) {
+function checkInvoiceStatus(status, orderId, itemStatusesJson) {
+    const itemStatuses = JSON.parse(itemStatusesJson);
+    const hasInvalidItems = itemStatuses.some(s => 
+        s.toLowerCase() === 'cancelled' || 
+        s.toLowerCase() === 'return' || 
+        s.toLowerCase() === 'approve' ||
+        s.toLowerCase() === 'reject'
+    );
+
     if (status.toLowerCase() !== 'delivered') {
         Swal.fire({
             title: 'Invoice Unavailable',
             text: 'You can only download the invoice once the order has been delivered.',
             icon: 'info',
+            confirmButtonColor: '#1a4d2e'
+        });
+    } else if (hasInvalidItems) {
+        Swal.fire({
+            title: 'Invoice Unavailable',
+            text: 'Invoice cannot be generated if any product in that order is returned or cancelled.',
+            icon: 'warning',
             confirmButtonColor: '#1a4d2e'
         });
     } else {

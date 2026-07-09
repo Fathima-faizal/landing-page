@@ -88,7 +88,7 @@
                     <div class="qty-picker">
                         <button type="button" onclick="updateQty(-1)">-</button>
                         <input type="number" id="quantity" value="1" readonly>
-                        <button type="button" onclick="updateQty(1)">+</button>
+                        <button type="button" id="plusBtn" onclick="updateQty(1)" data-max="<%= product.quantity %>">+</button>
                     </div>
                 </div>
                 <div class="button-actions">
@@ -97,13 +97,17 @@
             <i class="fa-solid fa-cart-plus"></i> Add to Cart
         </button>
     <% } else { %>
-        <button class="btn-out-of-stock" disabled style="background-color: #ff4d4d; color: white; cursor: not-allowed;">
-            <% if (product.isBlocked) { %>
-                Currently Unavailable
-            <% } else { %>
-                Out of Stock
-            <% } %>
+        <div class="button-actions">
+    <% if (!isOutOfStock && product.quantity > 0) { %>
+        <button class="btn-primary add-to-cart" onclick="addToCart('<%=product._id%>')">
+            <i class="fa-solid fa-cart-plus"></i> Add to Cart
         </button>
+    <% } else { %>
+        <div class="status-message" style="color: #ff4d4d; font-weight: bold;">
+            <%= product.isBlocked || category.islisted ? 'Product Unavailable' : 'Out of Stock' %>
+        </div>
+    <% } %>
+</div>
     <% } %>
 </div>
             </div>
@@ -211,23 +215,23 @@ container.addEventListener('mouseleave', () => {
     img.style.transformOrigin = "center";
     img.style.transform = "scale(1)";
 });
-
 function updateQty(val) {
     const qtyInput = document.getElementById('quantity');
+    const plusBtn = document.getElementById('plusBtn');
+    const maxStock = parseInt(plusBtn.getAttribute('data-max'));
     let currentQty = parseInt(qtyInput.value);
-    let maxQty = 3; 
-
+    
+    let limit = Math.min(maxStock, 5); 
     let newQty = currentQty + val;
 
-    if (newQty >= 1 && newQty <= maxQty) {
+    if (newQty >= 1 && newQty <= limit) {
         qtyInput.value = newQty;
-    } else if (newQty > maxQty) {
+    } else if (newQty > limit) {
         Swal.fire({
             icon: 'warning',
-            title: 'Limit Exceeded',
-            text: 'You can only add a maximum of 3 units.',
-            timer: 1500,
-            showConfirmButton: false
+            title: 'Stock Limit',
+            text: `Only ${limit} items available.`,
+            timer: 1500
         });
     }
 }

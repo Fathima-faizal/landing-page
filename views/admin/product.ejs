@@ -104,7 +104,7 @@
                    <tbody>
     <% for(let i=0; i < data.length; i++) { %> <tr>
         <td><%= data[i].productName %></td>
-        <td><%= data[i].category.name  %></td>
+        <td><%= data[i].category?.name || 'No Category' %></td>
         <td><%= data[i].regularPrice %></td>
          <td><%= data[i].salesPrice %></td>
          <td><%= data[i].quantity %></td>

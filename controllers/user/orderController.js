@@ -421,6 +421,10 @@ const downloadInvoice = async (req, res) => {
         if (order.status.toLowerCase() !== 'delivered') {
             return res.status(403).send('Invoice is only available for delivered orders.');
         }
+        const hasInvalidItems = order.orderedItems.some(item =>item.status === 'cancelled' || item.status === 'return');
+        if (hasInvalidItems) {
+            return res.status(403).send('Invoice cannot be generated because some items in this order were cancelled or returned.');
+        }
         const addressData = await Address.findOne({ "address._id": order.address });
         const addr = addressData ? addressData.address.find(a => a._id.toString() === order.address.toString()) : null;
         const doc = new PDFdocument({ margin: 50, size: 'A4' });

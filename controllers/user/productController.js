@@ -28,6 +28,7 @@ const productdetails = async (req, res) => {
         res.render('productDetails', {
             userData: userData,
             product: productData,
+            maxStock: productData.quantity,
             isOutOfStock: productData.quantity <= 0 || isCategoryUnlisted || productData.isBlocked,
             quantity: productData.quantity,
             category: productData.category,

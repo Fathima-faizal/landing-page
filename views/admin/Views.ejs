@@ -127,33 +127,44 @@
                 </td>
                 <td>₹<%= item.price %></td>
                 <td><%= item.quantity %></td>
-                <td>
-                    <select class="status-select-small" onchange="updateItemStatus('<%= order._id %>', '<%= item._id %>', this.value)">
+          <td>
     <% 
         const currentStatus = item.status.toLowerCase();
-        let allowedStatuses = [];
-        if (currentStatus === 'return') {
-            allowedStatuses = ['return', 'approve', 'reject'];
-        } else if (currentStatus === 'approve' || currentStatus === 'reject') {
-            allowedStatuses = [currentStatus];
-        } else {
-            const standardFlow = ['pending', 'cancelled','processing', 'shipped', 'delivered'];
-            const currentIndex = standardFlow.indexOf(currentStatus);
-            if (currentIndex !== -1) {
-                allowedStatuses = standardFlow.slice(currentIndex);
-            } else {
-                allowedStatuses = [currentStatus];
-            }
-        }
-
-        allowedStatuses.forEach(s => { 
+        
+        const lockedStatuses = ['cancelled', 'delivered'];
+        const isLocked = lockedStatuses.includes(currentStatus);
     %>
-        <option value="<%= s %>" <%= currentStatus === s ? 'selected' : '' %>>
-            <%= s.charAt(0).toUpperCase() + s.slice(1) %>
-        </option>
-    <% }) %>
-</select>
-                </td>
+    
+    <select 
+        class="status-select-small" 
+        onchange="updateItemStatus('<%= order._id %>', '<%= item._id %>', this.value)"
+        <%= isLocked ? 'disabled' : '' %> 
+    >
+        <% 
+            let allowedStatuses = [];
+            
+            if (currentStatus === 'return') {
+                allowedStatuses = ['return', 'approve', 'reject'];
+            } else if (currentStatus === 'approve' || currentStatus === 'reject') {
+                allowedStatuses = [currentStatus];
+            } else {
+                const standardFlow = ['pending', 'processing', 'shipped', 'delivered'];
+                const currentIndex = standardFlow.indexOf(currentStatus);
+                if (currentIndex !== -1) {
+                    allowedStatuses = standardFlow.slice(currentIndex);
+                } else {
+                    allowedStatuses = [currentStatus];
+                }
+            }
+
+            allowedStatuses.forEach(s => { 
+        %>
+            <option value="<%= s %>" <%= currentStatus === s ? 'selected' : '' %>>
+                <%= s.charAt(0).toUpperCase() + s.slice(1) %>
+            </option>
+        <% }) %>
+    </select>
+</td>
                 <td>₹<%= item.price * item.quantity %></td>
             </tr>
         <% }) %>

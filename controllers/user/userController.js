@@ -9,6 +9,7 @@ const nodemailer=require('nodemailer');
 const bcrypt=require('bcrypt');
 const user = require('../../models/userSchema');
 const product = require('../../models/productSchema');
+const Offer=require('../../models/offerSchema');
 const Cart=require('../../models/cartSchema');
 const Banner=require('../../models/bannerSchema')
 
@@ -306,7 +307,20 @@ const loadShop = async (req, res) => {
         wishlistCount = userDatas.wishlist.length;
       }
         }
+const activeOffers = await Offer.find({ 
+    isActive: true, 
+    expiryDate: { $gt: new Date() } 
+});
 
+products.forEach(p => {
+  p.isWishlisted = userWishlist.includes(p._id.toString());
+    const productOffer = activeOffers.find(o => 
+        (o.offerType === 'Product' && o.productId?.equals(p._id)) ||
+        (o.offerType === 'Category' && o.categoryId?.equals(p.category?._id))
+    );
+    
+    p.offer = productOffer ? productOffer.discountPercentage : null;
+});
         res.render('shop', {
             user: userData,
             products,
